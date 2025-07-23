@@ -1,0 +1,167 @@
+
+<style>
+  .breadcrumb-section {
+    height: 41px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  .breadcrumb-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-right: 40px;
+  }
+  
+  .breadcrumb-item {
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .breadcrumb-item.previous {
+    color: #89898C;
+    font-wright: 500;
+  }
+  
+  .breadcrumb-item.current {
+    color: #1A1A1B;
+    font-weight: 500;
+  }
+  
+  .breadcrumb-separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .breadcrumb-item.previous:hover {
+    color: #6a6a6e;
+  }
+  
+ @media (max-width: 767px) {
+.breadcrumb-section {
+  height: 31px;
+}
+   
+.breadcrumb-item {
+  font-size: 12px;
+}
+   
+.breadcrumb-container {
+     padding-right: 12px;
+   }
+  
+}
+
+</style>
+
+<section class="breadcrumb-section">
+  <div class="breadcrumb-container">
+    <a href="{{ routes.root_url }}" class="breadcrumb-item previous">
+      {% if section.settings.home_text != blank %}
+        {{ section.settings.home_text }}
+      {% else %}
+        בית
+      {% endif %}
+    </a>
+
+    {% if collection %}
+      <div class="breadcrumb-separator">
+        <svg width="5" height="9" viewBox="0 0 5 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.455322 4.49998C0.455322 4.5925 0.469777 4.67923 0.498687 4.76018C0.527598 4.84112 0.576745 4.91629 0.646129 4.98567L3.83781 8.17736C3.96502 8.30456 4.12691 8.36816 4.3235 8.36816C4.52009 8.36816 4.68199 8.30456 4.80919 8.17736C4.9364 8.05015 5 7.88826 5 7.69167C5 7.49508 4.9364 7.33318 4.80919 7.20598L2.1032 4.49998L4.80919 1.79399C4.9364 1.66679 5 1.50489 5 1.3083C5 1.11171 4.9364 0.949816 4.80919 0.822611C4.68199 0.695406 4.52009 0.631804 4.3235 0.631804C4.12691 0.631804 3.96502 0.695406 3.83781 0.822611L0.646129 4.01429C0.576745 4.08368 0.527598 4.15884 0.498687 4.23979C0.469777 4.32074 0.455322 4.40747 0.455322 4.49998Z" fill="#89898C"/>
+        </svg>
+      </div>
+      {% if product %}
+        <a href="{{ collection.url }}" class="breadcrumb-item previous">{{ collection.title }}</a>
+      {% else %}
+        <span class="breadcrumb-item current">{{ collection.title }}</span>
+      {% endif %}
+    {% endif %}
+
+    {% if blog %}
+      <div class="breadcrumb-separator">
+        <svg width="5" height="9" viewBox="0 0 5 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.455322 4.49998C0.455322 4.5925 0.469777 4.67923 0.498687 4.76018C0.527598 4.84112 0.576745 4.91629 0.646129 4.98567L3.83781 8.17736C3.96502 8.30456 4.12691 8.36816 4.3235 8.36816C4.52009 8.36816 4.68199 8.30456 4.80919 8.17736C4.9364 8.05015 5 7.88826 5 7.69167C5 7.49508 4.9364 7.33318 4.80919 7.20598L2.1032 4.49998L4.80919 1.79399C4.9364 1.66679 5 1.50489 5 1.3083C5 1.11171 4.9364 0.949816 4.80919 0.822611C4.68199 0.695406 4.52009 0.631804 4.3235 0.631804C4.12691 0.631804 3.96502 0.695406 3.83781 0.822611L0.646129 4.01429C0.576745 4.08368 0.527598 4.15884 0.498687 4.23979C0.469777 4.32074 0.455322 4.40747 0.455322 4.49998Z" fill="#89898C"/>
+        </svg>
+      </div>
+      {% if article %}
+        <a href="{{ blog.url }}" class="breadcrumb-item previous">{{ blog.title }}</a>
+      {% else %}
+        <span class="breadcrumb-item current">{{ blog.title }}</span>
+      {% endif %}
+    {% endif %}
+
+    {% if page %}
+      <div class="breadcrumb-separator">
+        <svg width="5" height="9" viewBox="0 0 5 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.455322 4.49998C0.455322 4.5925 0.469777 4.67923 0.498687 4.76018C0.527598 4.84112 0.576745 4.91629 0.646129 4.98567L3.83781 8.17736C3.96502 8.30456 4.12691 8.36816 4.3235 8.36816C4.52009 8.36816 4.68199 8.30456 4.80919 8.17736C4.9364 8.05015 5 7.88826 5 7.69167C5 7.49508 4.9364 7.33318 4.80919 7.20598L2.1032 4.49998L4.80919 1.79399C4.9364 1.66679 5 1.50489 5 1.3083C5 1.11171 4.9364 0.949816 4.80919 0.822611C4.68199 0.695406 4.52009 0.631804 4.3235 0.631804C4.12691 0.631804 3.96502 0.695406 3.83781 0.822611L0.646129 4.01429C0.576745 4.08368 0.527598 4.15884 0.498687 4.23979C0.469777 4.32074 0.455322 4.40747 0.455322 4.49998Z" fill="#89898C"/>
+        </svg>
+      </div>
+      <span class="breadcrumb-item current">{{ page.title }}</span>
+    {% endif %}
+
+    {% if product %}
+      <div class="breadcrumb-separator">
+        <svg width="5" height="9" viewBox="0 0 5 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.455322 4.49998C0.455322 4.5925 0.469777 4.67923 0.498687 4.76018C0.527598 4.84112 0.576745 4.91629 0.646129 4.98567L3.83781 8.17736C3.96502 8.30456 4.12691 8.36816 4.3235 8.36816C4.52009 8.36816 4.68199 8.30456 4.80919 8.17736C4.9364 8.05015 5 7.88826 5 7.69167C5 7.49508 4.9364 7.33318 4.80919 7.20598L2.1032 4.49998L4.80919 1.79399C4.9364 1.66679 5 1.50489 5 1.3083C5 1.11171 4.9364 0.949816 4.80919 0.822611C4.68199 0.695406 4.52009 0.631804 4.3235 0.631804C4.12691 0.631804 3.96502 0.695406 3.83781 0.822611L0.646129 4.01429C0.576745 4.08368 0.527598 4.15884 0.498687 4.23979C0.469777 4.32074 0.455322 4.40747 0.455322 4.49998Z" fill="#89898C"/>
+        </svg>
+      </div>
+      <span class="breadcrumb-item current">{{ product.title }}</span>
+    {% endif %}
+
+    {% if article %}
+      <div class="breadcrumb-separator">
+        <svg width="5" height="9" viewBox="0 0 5 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.455322 4.49998C0.455322 4.5925 0.469777 4.67923 0.498687 4.76018C0.527598 4.84112 0.576745 4.91629 0.646129 4.98567L3.83781 8.17736C3.96502 8.30456 4.12691 8.36816 4.3235 8.36816C4.52009 8.36816 4.68199 8.30456 4.80919 8.17736C4.9364 8.05015 5 7.88826 5 7.69167C5 7.49508 4.9364 7.33318 4.80919 7.20598L2.1032 4.49998L4.80919 1.79399C4.9364 1.66679 5 1.50489 5 1.3083C5 1.11171 4.9364 0.949816 4.80919 0.822611C4.68199 0.695406 4.52009 0.631804 4.3235 0.631804C4.12691 0.631804 3.96502 0.695406 3.83781 0.822611L0.646129 4.01429C0.576745 4.08368 0.527598 4.15884 0.498687 4.23979C0.469777 4.32074 0.455322 4.40747 0.455322 4.49998Z" fill="#89898C"/>
+        </svg>
+      </div>
+      <span class="breadcrumb-item current">{{ article.title }}</span>
+    {% endif %}
+
+    {% if search %}
+      <div class="breadcrumb-separator">
+        <svg width="5" height="9" viewBox="0 0 5 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.455322 4.49998C0.455322 4.5925 0.469777 4.67923 0.498687 4.76018C0.527598 4.84112 0.576745 4.91629 0.646129 4.98567L3.83781 8.17736C3.96502 8.30456 4.12691 8.36816 4.3235 8.36816C4.52009 8.36816 4.68199 8.30456 4.80919 8.17736C4.9364 8.05015 5 7.88826 5 7.69167C5 7.49508 4.9364 7.33318 4.80919 7.20598L2.1032 4.49998L4.80919 1.79399C4.9364 1.66679 5 1.50489 5 1.3083C5 1.11171 4.9364 0.949816 4.80919 0.822611C4.68199 0.695406 4.52009 0.631804 4.3235 0.631804C4.12691 0.631804 3.96502 0.695406 3.83781 0.822611L0.646129 4.01429C0.576745 4.08368 0.527598 4.15884 0.498687 4.23979C0.469777 4.32074 0.455322 4.40747 0.455322 4.49998Z" fill="#89898C"/>
+        </svg>
+      </div>
+      <span class="breadcrumb-item current">
+        {% if section.settings.search_text != blank %}
+          {{ section.settings.search_text }}
+        {% else %}
+          תוצאות חיפוש
+        {% endif %}
+      </span>
+    {% endif %}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "settings": [
+    {
+      "type": "text",
+      "id": "home_text",
+      "label": "Home Text",
+      "default": "בית",
+      "info": "Text for home breadcrumb"
+    },
+    {
+      "type": "text",
+      "id": "search_text",
+      "label": "Search Results Text",
+      "default": "תוצאות חיפוש",
+      "info": "Text for search results breadcrumb"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Breadcrumbs"
+    }
+  ]
+}
+{% endschema %}

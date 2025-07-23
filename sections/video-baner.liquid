@@ -1,0 +1,179 @@
+{{ 'video-baner.css' | asset_url | stylesheet_tag }}
+
+<div class="media-with-text-section">
+  <div class="media-with-text-container">
+    <!-- Left side - Text content -->
+    <div class="text-content">
+      <!-- Background decoration element -->
+      <div class="background-decoration">
+        <svg width="356" height="410" viewBox="0 0 356 410" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="294.692" cy="294.694" r="242.469" fill="white" fill-opacity="0.1"/>
+          <circle cx="294.693" cy="294.693" r="294.693" fill="white" fill-opacity="0.1"/>
+          <circle cx="294.229" cy="294.227" r="188.846" fill="white" fill-opacity="0.1"/>
+        </svg>
+      </div>
+      
+      <div class="text-content-inner">
+        {% if section.settings.title != blank %}
+          <h2 class="section-title">{{ section.settings.title }}</h2>
+        {% endif %}
+        
+        {% if section.settings.subtitle != blank %}
+          <h3 class="section-subtitle">{{ section.settings.subtitle }}</h3>
+        {% endif %}
+        
+        {% if section.settings.text != blank %}
+          <div class="section-text">{{ section.settings.text }}</div>
+        {% endif %}
+        
+        {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+          <a href="{{ section.settings.button_link }}" class="section-button">
+            {{ section.settings.button_text }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right side - Media content -->
+    <div class="media-content">
+      {% if section.settings.content_type == 'image' and section.settings.image %}
+        <div class="media-image">
+          <img src="{{ section.settings.image | img_url: '600x421' }}" 
+               alt="{{ section.settings.image.alt | escape }}"
+               loading="lazy">
+          <div class="media-overlay"></div>
+        </div>
+      {% elsif section.settings.content_type == 'video' and section.settings.video %}
+        <div class="media-video">
+          <video controls>
+            <source src="{{ section.settings.video }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div class="media-overlay"></div>
+        </div>
+      {% elsif section.settings.content_type == 'youtube' and section.settings.youtube_url != blank %}
+        <div class="media-youtube">
+          {% assign youtube_id = section.settings.youtube_url | split: 'watch?v=' | last | split: '&' | first %}
+          {% if youtube_id == section.settings.youtube_url %}
+            {% assign youtube_id = section.settings.youtube_url | split: 'youtu.be/' | last | split: '?' | first %}
+          {% endif %}
+          <div class="youtube-thumbnail">
+            <img src="https://img.youtube.com/vi/{{ youtube_id }}/maxresdefault.jpg" 
+                 alt="YouTube Video Thumbnail" 
+                 loading="lazy">
+            <div class="youtube-play-button" onclick="loadYouTubeVideo('{{ youtube_id }}', this)">
+              <svg width="68" height="48" viewBox="0 0 68 48" fill="none">
+                <path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.63-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#ff0000"/>
+                <path d="M45 24 27 14v20l18-10z" fill="#fff"/>
+              </svg>
+            </div>
+          </div>
+          <div class="media-overlay"></div>
+        </div>
+      {% else %}
+        <div class="media-placeholder">
+          <p>Select content to display</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+function loadYouTubeVideo(videoId, element) {
+  const container = element.parentElement;
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  iframe.frameBorder = '0';
+  iframe.allowFullscreen = true;
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.style.position = 'absolute';
+  iframe.style.top = '0';
+  iframe.style.left = '0';
+  
+  container.style.position = 'relative';
+  container.innerHTML = '';
+  container.appendChild(iframe);
+}
+</script>
+
+
+
+{% schema %}
+{
+  "name": "Media with Text",
+  "settings": [
+    {
+      "type": "select",
+      "id": "content_type",
+      "label": "Content Type",
+      "options": [
+        {
+          "value": "image",
+          "label": "Image"
+        },
+        {
+          "value": "video",
+          "label": "Video"
+        },
+        {
+          "value": "youtube",
+          "label": "YouTube Video"
+        }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "video",
+      "label": "Video URL"
+    },
+    {
+      "type": "text",
+      "id": "youtube_url",
+      "label": "YouTube URL",
+      "info": "Paste full YouTube video URL"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "ספות נפתחות למיטה"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "קבלו עליכן"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>מה שאתן חיפופות נטפות בהגיעת איכות והוספת החותמת הופמס לנו נטיעה ושבתבע אלחיטת ונהוה בזיון כמו בכל מיטה עם מזנון נטפור.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "לכל הכנסאות"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Media with Text"
+    }
+  ]
+}
+{% endschema %}

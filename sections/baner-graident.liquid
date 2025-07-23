@@ -1,0 +1,486 @@
+{{ 'baner-gradient.css' | asset_url | stylesheet_tag }}
+<div class="hero-banner-wrapper" id="hero-banner-{{ section.id }}">
+  {% if section.settings.background_image %}
+    <div class="hero-background-image">
+      {{ section.settings.background_image | image_url: width: 1920 | image_tag: loading: 'lazy', alt: 'Hero Background' }}
+    </div>
+  {% endif %}
+  
+  <div class="hero-overlay"></div>
+  
+  <div class="hero-banner-content">
+    <div class="hero-text-section">
+      <div class="hero-text-content">
+        {% for block in section.blocks %}
+          <div class="hero-text-block {% if forloop.first %}active{% endif %}" data-text-slide="{{ forloop.index0 }}">
+            {% if block.settings.title %}
+              <h2 class="hero-title">{{ block.settings.title }}</h2>
+            {% endif %}
+            
+            {% if block.settings.description %}
+              <p class="hero-description">{{ block.settings.description }}</p>
+            {% endif %}
+            
+            {% if block.settings.button_text and block.settings.button_url %}
+              <a href="{{ block.settings.button_url }}" class="hero-button">
+                {{ block.settings.button_text }}
+              </a>
+            {% endif %}
+          </div>
+        {% endfor %}
+        
+        <div class="desktop-pagination">
+          {% if section.blocks.size > 1 %}
+            <div class="hero-pagination">
+              {% for block in section.blocks %}
+                <button class="pagination-dot {% if forloop.first %}active{% endif %}" data-slide="{{ forloop.index0 }}" type="button"></button>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="hero-product-section">
+      <div class="hero-product-container">
+        {% for block in section.blocks %}
+          <div class="hero-product-slide {% if forloop.first %}active{% endif %}" data-product-slide="{{ forloop.index0 }}">
+            {% if block.settings.product_image %}
+              {% liquid
+                assign desktop_styles = 'position: relative;'
+                if block.settings.desktop_image_top != blank and block.settings.desktop_image_top != 0
+                  assign desktop_styles = desktop_styles | append: ' top: ' | append: block.settings.desktop_image_top | append: 'px;'
+                endif
+                if block.settings.desktop_image_left != blank and block.settings.desktop_image_left != 0
+                  assign desktop_styles = desktop_styles | append: ' left: ' | append: block.settings.desktop_image_left | append: 'px;'
+                endif
+                assign desktop_transform_parts = ''
+                if block.settings.desktop_image_scale != blank and block.settings.desktop_image_scale != 1
+                  assign desktop_transform_parts = 'scale(' | append: block.settings.desktop_image_scale | append: ')'
+                endif
+                if block.settings.desktop_image_rotate != blank and block.settings.desktop_image_rotate != 0
+                  if desktop_transform_parts != blank
+                    assign desktop_transform_parts = desktop_transform_parts | append: ' '
+                  endif
+                  assign desktop_transform_parts = desktop_transform_parts | append: 'rotate(' | append: block.settings.desktop_image_rotate | append: 'deg)'
+                endif
+                if desktop_transform_parts != blank
+                  assign desktop_styles = desktop_styles | append: ' transform: ' | append: desktop_transform_parts | append: ';'
+                endif
+                if block.settings.desktop_image_width != blank and block.settings.desktop_image_width != 100
+                  assign desktop_styles = desktop_styles | append: ' width: ' | append: block.settings.desktop_image_width | append: '%;'
+                endif
+                if block.settings.desktop_image_height != blank and block.settings.desktop_image_height != 100
+                  assign desktop_styles = desktop_styles | append: ' height: ' | append: block.settings.desktop_image_height | append: '%;'
+                endif
+
+                assign mobile_styles = 'position: relative;'
+                if block.settings.mobile_image_top != blank and block.settings.mobile_image_top != 0
+                  assign mobile_styles = mobile_styles | append: ' top: ' | append: block.settings.mobile_image_top | append: 'px;'
+                endif
+                if block.settings.mobile_image_left != blank and block.settings.mobile_image_left != 0
+                  assign mobile_styles = mobile_styles | append: ' left: ' | append: block.settings.mobile_image_left | append: 'px;'
+                endif
+                assign mobile_transform_parts = ''
+                if block.settings.mobile_image_scale != blank and block.settings.mobile_image_scale != 1
+                  assign mobile_transform_parts = 'scale(' | append: block.settings.mobile_image_scale | append: ')'
+                endif
+                if block.settings.mobile_image_rotate != blank and block.settings.mobile_image_rotate != 0
+                  if mobile_transform_parts != blank
+                    assign mobile_transform_parts = mobile_transform_parts | append: ' '
+                  endif
+                  assign mobile_transform_parts = mobile_transform_parts | append: 'rotate(' | append: block.settings.mobile_image_rotate | append: 'deg)'
+                endif
+                if mobile_transform_parts != blank
+                  assign mobile_styles = mobile_styles | append: ' transform: ' | append: mobile_transform_parts | append: ';'
+                endif
+                if block.settings.mobile_image_width != blank and block.settings.mobile_image_width != 100
+                  assign mobile_styles = mobile_styles | append: ' width: ' | append: block.settings.mobile_image_width | append: '%;'
+                endif
+                if block.settings.mobile_image_height != blank and block.settings.mobile_image_height != 100
+                  assign mobile_styles = mobile_styles | append: ' height: ' | append: block.settings.mobile_image_height | append: '%;'
+                endif
+              %}
+              
+              <img src="{{ block.settings.product_image | image_url: width: 1200 }}" 
+                   alt="{{ block.settings.title | escape }}" 
+                   loading="lazy"
+                   class="hero-product-image"
+                   data-desktop-style="{{ desktop_styles }}"
+                   data-mobile-style="{{ mobile_styles }}">
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  
+  <div class="mobile-pagination">
+    {% if section.blocks.size > 1 %}
+      <div class="hero-pagination">
+        {% for block in section.blocks %}
+          <button class="pagination-dot {% if forloop.first %}active{% endif %}" data-slide="{{ forloop.index0 }}" type="button"></button>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    const sectionId = '{{ section.id }}';
+    const wrapper = document.getElementById('hero-banner-' + sectionId);
+    
+    if (!wrapper) return;
+    
+    const productSlides = wrapper.querySelectorAll('.hero-product-slide');
+    const textBlocks = wrapper.querySelectorAll('.hero-text-block');
+    const dots = wrapper.querySelectorAll('.pagination-dot');
+    const totalSlides = productSlides.length;
+    const productImages = wrapper.querySelectorAll('.hero-product-image');
+    
+    if (totalSlides === 0) return;
+    
+    let currentSlide = 0;
+    let autoSlideInterval = null;
+    
+    // Функція для застосування responsive стилів
+    function applyResponsiveStyles() {
+      const isMobile = window.innerWidth <= 768;
+      
+      productImages.forEach(function(img) {
+        const desktopStyle = img.getAttribute('data-desktop-style');
+        const mobileStyle = img.getAttribute('data-mobile-style');
+        
+        if (isMobile && mobileStyle) {
+          img.style.cssText = mobileStyle;
+        } else if (!isMobile && desktopStyle) {
+          img.style.cssText = desktopStyle;
+        }
+      });
+    }
+    
+    function showSlide(index) {
+      if (index >= totalSlides) index = 0;
+      if (index < 0) index = totalSlides - 1;
+      
+      const previousSlide = currentSlide;
+      currentSlide = index;
+      
+      productSlides.forEach(function(slide, i) {
+        slide.classList.remove('active', 'leaving');
+        if (i === previousSlide && i !== index) {
+          slide.classList.add('leaving');
+        }
+      });
+      
+      textBlocks.forEach(function(block) {
+        block.classList.remove('active');
+      });
+      
+      dots.forEach(function(dot) {
+        dot.classList.remove('active');
+      });
+      
+      setTimeout(function() {
+        if (productSlides[index]) {
+          productSlides[index].classList.add('active');
+        }
+      }, 50);
+      
+      if (textBlocks[index]) {
+        textBlocks[index].classList.add('active');
+      }
+      
+      dots.forEach(function(dot) {
+        const dotIndex = parseInt(dot.getAttribute('data-slide'));
+        if (dotIndex === index) {
+          dot.classList.add('active');
+        }
+      });
+      
+      setTimeout(function() {
+        productSlides.forEach(function(slide) {
+          slide.classList.remove('leaving');
+        });
+      }, 1400);
+      
+      // Застосовуємо responsive стилі після зміни слайду
+      applyResponsiveStyles();
+    }
+    
+    function startAutoSlide() {
+      if (autoSlideInterval) clearInterval(autoSlideInterval);
+      autoSlideInterval = setInterval(function() {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        showSlide(currentSlide);
+      }, 5000);
+    }
+    
+    function stopAutoSlide() {
+      if (autoSlideInterval) {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = null;
+      }
+    }
+    
+    wrapper.addEventListener('click', function(e) {
+      if (e.target.classList.contains('pagination-dot')) {
+        e.preventDefault();
+        stopAutoSlide();
+        const slideIndex = parseInt(e.target.getAttribute('data-slide'));
+        if (!isNaN(slideIndex)) {
+          showSlide(slideIndex);
+        }
+        setTimeout(startAutoSlide, 3000);
+      }
+    });
+    
+    let startX = 0;
+    let endX = 0;
+    
+    wrapper.addEventListener('touchstart', function(e) {
+      startX = e.touches[0].clientX;
+      stopAutoSlide();
+    });
+    
+    wrapper.addEventListener('touchend', function(e) {
+      endX = e.changedTouches[0].clientX;
+      const diff = startX - endX;
+      const threshold = 50;
+      
+      if (Math.abs(diff) > threshold) {
+        if (diff > 0) {
+          currentSlide = (currentSlide + 1) % totalSlides;
+        } else {
+          currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        }
+        showSlide(currentSlide);
+      }
+      setTimeout(startAutoSlide, 3000);
+    });
+    
+    wrapper.addEventListener('mouseenter', stopAutoSlide);
+    wrapper.addEventListener('mouseleave', startAutoSlide);
+    
+    // Слухач для зміни розміру вікна
+    window.addEventListener('resize', applyResponsiveStyles);
+    
+    // Ініціалізація
+    showSlide(0);
+    applyResponsiveStyles();
+    startAutoSlide();
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "tag": "section",
+  "class": "hero-banner-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image",
+      "info": "Main background image for the entire section"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "product_image",
+          "label": "Product Image (PNG)",
+          "info": "Product image that will slide on the right side"
+        },
+        {
+          "type": "header",
+          "content": "📱 Mobile Image Settings"
+        },
+        {
+          "type": "range",
+          "id": "mobile_image_top",
+          "label": "Mobile - Vertical Position",
+          "min": -150,
+          "max": 350,
+          "step": 5,
+          "default": 0,
+          "unit": "px",
+          "info": "Move image up/down on mobile"
+        },
+        {
+          "type": "range",
+          "id": "mobile_image_left",
+          "label": "Mobile - Horizontal Position", 
+          "min": -150,
+          "max": 350,
+          "step": 5,
+          "default": 0,
+          "unit": "px",
+          "info": "Move image left/right on mobile"
+        },
+        {
+          "type": "range",
+          "id": "mobile_image_scale",
+          "label": "Mobile - Scale",
+          "min": 0.3,
+          "max": 2.0,
+          "step": 0.1,
+          "default": 0.8,
+          "info": "Scale the image size on mobile"
+        },
+        {
+          "type": "range",
+          "id": "mobile_image_rotate",
+          "label": "Mobile - Rotation",
+          "min": -45,
+          "max": 45,
+          "step": 5,
+          "default": 0,
+          "unit": "deg",
+          "info": "Rotate the image on mobile"
+        },
+        {
+          "type": "range",
+          "id": "mobile_image_width",
+          "label": "Mobile - Width",
+          "min": 50,
+          "max": 350,
+          "step": 5,
+          "default": 100,
+          "unit": "%",
+          "info": "Adjust image width on mobile"
+        },
+        {
+          "type": "range",
+          "id": "mobile_image_height",
+          "label": "Mobile - Height",
+          "min": 50,
+          "max": 350,
+          "step": 5,
+          "default": 100,
+          "unit": "%",
+          "info": "Adjust image height on mobile"
+        },
+        {
+          "type": "header",
+          "content": "🖥️ Desktop Image Settings"
+        },
+        {
+          "type": "range",
+          "id": "desktop_image_top",
+          "label": "Desktop - Vertical Position",
+          "min": -150,
+          "max": 350,
+          "step": 5,
+          "default": 0,
+          "unit": "px",
+          "info": "Move image up/down on desktop"
+        },
+        {
+          "type": "range",
+          "id": "desktop_image_left",
+          "label": "Desktop - Horizontal Position", 
+          "min": -150,
+          "max": 350,
+          "step": 5,
+          "default": 0,
+          "unit": "px",
+          "info": "Move image left/right on desktop"
+        },
+        {
+          "type": "range",
+          "id": "desktop_image_scale",
+          "label": "Desktop - Scale",
+          "min": 0.3,
+          "max": 2.0,
+          "step": 0.1,
+          "default": 1.0,
+          "info": "Scale the image size on desktop"
+        },
+        {
+          "type": "range",
+          "id": "desktop_image_rotate",
+          "label": "Desktop - Rotation",
+          "min": -45,
+          "max": 45,
+          "step": 5,
+          "default": 0,
+          "unit": "deg",
+          "info": "Rotate the image on desktop"
+        },
+        {
+          "type": "range",
+          "id": "desktop_image_width",
+          "label": "Desktop - Width",
+          "min": 50,
+          "max": 350,
+          "step": 5,
+          "default": 100,
+          "unit": "%",
+          "info": "Adjust image width on desktop"
+        },
+        {
+          "type": "range",
+          "id": "desktop_image_height",
+          "label": "Desktop - Height",
+          "min": 50,
+          "max": 350,
+          "step": 5,
+          "default": 100,
+          "unit": "%",
+          "info": "Adjust image height on desktop"
+        },
+        {
+          "type": "header",
+          "content": "📝 Content Settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "מיטות מתכוננות"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "מבחר מיטות מתכוננות מבית הגלריה, במגוון עיצובים מרשימים לנוחות מקסימלית בשינת הליל שלכם."
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "לכל המיטות המתכוננות"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner",
+      "settings": {
+        "background_image": ""
+      },
+      "blocks": [
+        {
+          "type": "slide"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

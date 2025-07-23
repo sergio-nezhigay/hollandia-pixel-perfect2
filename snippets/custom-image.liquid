@@ -1,0 +1,23 @@
+{% if section.settings.image != blank %}
+  <section class="custom-image-section">
+    <div class="custom-image-wrapper">
+      {% if section.settings.image_url != blank %}
+        <a href="{{ section.settings.image_url }}" class="custom-image-link">
+          <img
+            src="{{ section.settings.image | image_url: width: 1440, height: 465, crop: 'center' }}"
+            alt="{{ section.settings.image.alt | escape }}"
+            width="1440"
+            height="465"
+          >
+        </a>
+      {% else %}
+        <img
+          src="{{ section.settings.image | image_url: width: 1440, height: 465, crop: 'center' }}"
+          alt="{{ section.settings.image.alt | escape }}"
+          width="1440"
+          height="465"
+        >
+      {% endif %}
+    </div>
+  </section>
+{% endif %}

@@ -1,0 +1,44 @@
+.collection-wrapper {
+  background: linear-gradient(to bottom, #ffffff 0%, #ffffff 50%, #f4efec 100%);
+  /*max-width: 1440px;
+  padding: 0 120px;*/
+}
+
+.collection-top {
+  margin: 0 auto;
+  max-width: 1440px;
+  padding: 20px 120px;
+  text-align: right;
+}
+
+.collection-title {
+  font-size: 42px;
+  color: #dd2d4a;
+  font-weight: 700;
+}
+
+.collection-description {
+  font-size: 18px;
+  color: #5f626a;
+  line-height: 1.6;
+  max-width: 580px;
+}
+
+@media (max-width: 768px) {
+  .collection-wrapper {
+    background: white;
+    padding: 0 16px;
+  }
+
+  .collection-top {
+    padding: 12px 0 10px;
+  }
+
+  .collection-title {
+    font-size: 20px;
+  }
+
+  .collection-description {
+    font-size: 10px;
+  }
+}

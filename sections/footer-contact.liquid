@@ -1,0 +1,223 @@
+{{ 'footer-contact.css' | asset_url | stylesheet_tag }}
+<style>
+  .shopify-section-group-footer-group .contact-info-section {
+  background-color: {{ section.settings.background_color }};
+}
+
+.contact-title {
+  color: {{ section.settings.title_color }};
+}
+
+.contact-subtitle {
+  color: {{ section.settings.subtitle_color }};
+}
+
+.working-hours {
+  color: {{ section.settings.hours_color }};
+}
+
+.divider-line {
+  background-color: {{ section.settings.divider_color }};
+}
+
+.contact-item-title {
+  color: {{ section.settings.department_title_color }};
+}
+
+.contact-link {
+  color: {{ section.settings.link_color }};
+}
+
+.whatsapp-link svg {
+  color: {{ section.settings.whatsapp_color }};
+}
+
+.contact-link:not(.whatsapp-link) svg {
+  color: {{ section.settings.phone_icon_color }};
+}
+
+@media (max-width: 768px) {
+  .divider-line {
+    background-color: {{ section.settings.divider_color }};
+  }
+}
+</style>
+
+<section class="contact-info-section">
+  <div class="container">
+    <h2 class="contact-title">{{ section.settings.title }}</h2> 
+    <p class="contact-subtitle">{{ section.settings.subtitle }}</p>
+    <div class="working-hours">{{ section.settings.working_hours }}</div>
+    <div class="divider-line"></div>
+    <div class="contact-container">
+      <div class="contact-row">
+        {% for block in section.blocks %}
+          <div class="contact-item" {{ block.shopify_attributes }}>
+            <h3 class="contact-item-title">{{ block.settings.department_title }}</h3>
+            <div class="contact-links">
+              <a href="tel:{{ block.settings.phone_number }}" class="contact-link">
+                {% render 'phone-icon' %}
+                <span>{{ block.settings.phone_number }}</span>
+              </a>
+              <a href="https://wa.me/{{ block.settings.whatsapp_number }}" class="contact-link whatsapp-link">
+                {% render 'whatsapp-icon' %}
+                <span>{{ block.settings.whatsapp_text }}</span>
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+{% schema %}
+{
+  "name": "Contact Info",
+  "tag": "section",
+  "class": "contact-info-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "כותרות וטקסט"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "כותרת ראשית",
+      "default": "תמיד פה בשבילכם"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "כותרת משנה",
+      "default": "שעות פעילות מוקד שירות לקוחות ושירות האספקות"
+    },
+    {
+      "type": "text",
+      "id": "working_hours",
+      "label": "שעות פעילות",
+      "default": "א-ה: 8:30-16:30"
+    },
+    {
+      "type": "header",
+      "content": "צבעים"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "צבע רקע",
+      "default": "#F4EFEC"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "צבע כותרת ראשית",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "צבע כותרת משנה",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "hours_color",
+      "label": "צבע שעות פעילות",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "צבע קו מפריד",
+      "default": "#B6B8C1"
+    },
+    {
+      "type": "color",
+      "id": "department_title_color",
+      "label": "צבע כותרת מחלקה",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "צבע טקסט קישורים",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "phone_icon_color",
+      "label": "צבע אייקון טלפון",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "whatsapp_color",
+      "label": "צבע אייקון וואטסאפ",
+      "default": "#25D366"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "contact_department",
+      "name": "מחלקת קשר",
+      "settings": [
+        {
+          "type": "text",
+          "id": "department_title",
+          "label": "שם המחלקה",
+          "default": "שירות לקוחות"
+        },
+        {
+          "type": "text",
+          "id": "phone_number",
+          "label": "מספר טלפון",
+          "default": "077-9966249"
+        },
+        {
+          "type": "text",
+          "id": "whatsapp_number",
+          "label": "מספר וואטסאפ (עם קוד מדינה)",
+          "default": "972779966249",
+          "info": "הכנס מספר ללא + (לדוגמה: 972779966249)"
+        },
+        {
+          "type": "text",
+          "id": "whatsapp_text",
+          "label": "טקסט לקישור וואטסאפ",
+          "default": "לצ'אט עם נציג"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Info",
+      "category": "Footer",
+      "blocks": [
+        {
+          "type": "contact_department",
+          "settings": {
+            "department_title": "שירות לקוחות",
+            "phone_number": "077-9966249",
+            "whatsapp_number": "972779966249",
+            "whatsapp_text": "לצ'אט עם נציג"
+          }
+        },
+        {
+          "type": "contact_department",
+          "settings": {
+            "department_title": "תיאום אספקה",
+            "phone_number": "077-8052650",
+            "whatsapp_number": "972778052650",
+            "whatsapp_text": "לצ'אט עם נציג"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,194 @@
+{{ 'footer.css' | asset_url | stylesheet_tag }}
+
+<footer class="footer-section">
+  <div class="footer-container">
+    <div class="footer-content">
+      <div class="footer-middle-container">
+        <div class="footer-menus">
+          {% for block in section.blocks %}
+            {% if block.type == 'menu' %}
+              <div class="footer-menu-block" {{ block.shopify_attributes }}>
+                <h4 class="footer-menu-title">
+                  {{ block.settings.menu_title }}
+                  <span class="menu-toggle" data-menu-toggle>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M6 1V11M1 6H11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                </h4>
+                <ul class="footer-menu-links">
+                  {% for link in linklists[block.settings.menu].links %}
+                    <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="footer-social-info">
+          <h3 class="footer-title">{{ section.settings.social_title | default: 'מומלץ לקנות' }}</h3>
+          <p class="footer-description">{{ section.settings.social_description | default: 'המומלץ ביותר למוכרים האמינים והמהירים המובילים בישראל' }}</p>
+          <a href="{{ section.settings.cta_link | default: '#' }}" class="footer-cta-button">
+            {{ section.settings.cta_text | default: 'למחו להרשמה מהירה' }}
+          </a>
+          
+          <h3 class="footer-social-title">{{ section.settings.social_icons_title | default: 'עקבו אחרינו' }}</h3>
+          <div class="footer-social-icons">
+            {% if section.settings.facebook_url %}
+              <a href="{{ section.settings.facebook_url }}" class="social-icon" target="_blank" rel="noopener">
+                {% render 'facebook-icon' %}
+              </a>
+            {% endif %}
+            {% if section.settings.youtube_url %}
+              <a href="{{ section.settings.youtube_url }}" class="social-icon" target="_blank" rel="noopener">
+                {% render 'youtube-icon' %}
+              </a>
+            {% endif %}
+            {% if section.settings.instagram_url %}
+              <a href="{{ section.settings.instagram_url }}" class="social-icon" target="_blank" rel="noopener">
+                {% render 'instagram-icon' %}
+              </a>
+            {% endif %}
+            {% if section.settings.tiktok_url %}
+              <a href="{{ section.settings.tiktok_url }}" class="social-icon" target="_blank" rel="noopener">
+                {% render 'tik-tok-icon' %}
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img class="footer-logo-desktop" src="{{ 'footer-info.svg' | asset_url }}" alt="{{ shop.name }}">
+          <img class="footer-logo-mobile" src="{{ 'footer-info-mobile.svg' | asset_url }}" alt="{{ shop.name }}">
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="footer-copyright">
+  <div class="footer-container">
+    <p>{{ section.settings.copyright_text | default: '© 2025 כל הזכויות שמורות להולנדיה' }}</p>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuTitles = document.querySelectorAll('.footer-menu-title');
+    
+    menuTitles.forEach(title => {
+      title.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+          const menuBlock = this.closest('.footer-menu-block');
+          const isActive = menuBlock.classList.contains('active');
+          
+          document.querySelectorAll('.footer-menu-block').forEach(block => {
+            block.classList.remove('active');
+          });
+          
+          if (!isActive) {
+            menuBlock.classList.add('active');
+          }
+        }
+      });
+    });
+
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 768) {
+        document.querySelectorAll('.footer-menu-block').forEach(block => {
+          block.classList.remove('active');
+        });
+      }
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Footer",
+  "tag": "footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "social_title",
+      "label": "Social Title",
+      "default": "מומלץ לקנות"
+    },
+    {
+      "type": "textarea",
+      "id": "social_description",
+      "label": "Social Description",
+      "default": "המומלץ ביותר למוכרים האמינים והמהירים המובילים בישראל"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Button Text",
+      "default": "למחו להרשמה מהירה"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA Button Link"
+    },
+    {
+      "type": "text",
+      "id": "social_icons_title",
+      "label": "Social Icons Title",
+      "default": "עקבו אחרינו"
+    },
+    {
+      "type": "url",
+      "id": "tiktok_url",
+      "label": "TikTok URL"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "youtube_url",
+      "label": "YouTube URL"
+    },
+    {
+      "type": "url",
+      "id": "facebook_url",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright Text",
+      "default": "© 2025 כל הזכויות שמורות להולנדיה"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu_title",
+          "label": "Menu Title"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer"
+    }
+  ]
+}
+{% endschema %}

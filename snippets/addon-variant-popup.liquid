@@ -1,0 +1,332 @@
+<div class="addon-variant-popup" id="addonVariantPopup">
+  <div class="addon-popup-overlay"></div>
+  <div class="addon-popup-content">
+    <button class="addon-popup-close">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+    
+    <div class="addon-popup-header">
+      <div class="addon-popup-product-image"></div>
+      <div class="addon-popup-product-info">
+        <h3 class="addon-popup-product-title"></h3>
+        <div class="addon-popup-product-pricing">
+          <span class="addon-popup-discount-badge"></span>
+          <div class="addon-popup-prices">
+            <span class="addon-popup-compare-price"></span>
+            <span class="addon-popup-current-price"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="addon-popup-variants">
+      <div class="addon-popup-description"></div>
+      
+      <h4 class="addon-variant-label">בחירת מידה:</h4>
+      
+      <div class="addon-size-options"></div>
+      
+      <div class="addon-color-section" style="display: none;">
+        <h4 class="addon-variant-label">בחירת צבע:</h4>
+        <div class="addon-color-options"></div>
+      </div>
+    </div>
+    
+    <button class="addon-popup-add-btn">
+      <span class="addon-popup-btn-text">הוסיפו לעגלה</span>
+      <span class="addon-popup-btn-loader" style="display: none;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-dasharray="31.416" stroke-dashoffset="31.416">
+            <animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite"/>
+            <animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+      </span>
+      <span class="addon-popup-btn-success" style="display: none;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </button>
+  </div>
+</div>
+
+<style>
+.addon-popup-add-btn {
+  position: relative;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.addon-popup-add-btn.loading {
+  pointer-events: none;
+  opacity: 0.8;
+  background: #f5f5f5 !important;
+  color: #666 !important;
+}
+
+.addon-popup-add-btn.success {
+  background-color: #DD2D4A !important;
+  color: white !important;
+}
+
+.addon-popup-add-btn .addon-popup-btn-loader svg {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const popup = document.getElementById('addonVariantPopup');
+  if (!popup) return;
+  
+  const popupOverlay = popup.querySelector('.addon-popup-overlay');
+  const popupClose = popup.querySelector('.addon-popup-close');
+  const popupAddBtn = popup.querySelector('.addon-popup-add-btn');
+  
+  let currentProduct = null;
+  let selectedVariant = null;
+  let currentButton = null; // Reference to the original button
+
+  // Create global popup object
+  window.addonVariantPopup = {
+    showPopup: showVariantPopup,
+    closePopup: closePopup
+  };
+
+  function showVariantPopup(product, button = null) {
+    const popupImage = popup.querySelector('.addon-popup-product-image');
+    const popupTitle = popup.querySelector('.addon-popup-product-title');
+    const popupDescription = popup.querySelector('.addon-popup-description');
+    const sizeOptions = popup.querySelector('.addon-size-options');
+    const colorSection = popup.querySelector('.addon-color-section');
+    
+    currentProduct = product;
+    currentButton = button; // Store reference to the original button
+    
+    popupImage.innerHTML = `<img src="${product.featured_image}" alt="${product.title}">`;
+    popupTitle.textContent = product.title;
+    popupDescription.innerHTML = product.description;
+    
+    updatePopupPricing(product.variants[0]);
+    
+    const colorOption = product.options.find(opt => 
+      ['color', 'colour', 'צבע', 'גוון'].includes(opt.name.toLowerCase())
+    );
+    const sizeOption = product.options.find(opt => 
+      ['size', 'גודל', 'מידה'].includes(opt.name.toLowerCase())
+    );
+    
+    if (sizeOption) {
+      renderSizeOptions(sizeOption.values, product.variants);
+    }
+    
+    if (colorOption) {
+      colorSection.style.display = 'block';
+      renderColorOptions(colorOption.values, product.variants);
+    } else {
+      colorSection.style.display = 'none';
+    }
+    
+    selectedVariant = product.variants[0];
+    resetPopupButton();
+    popup.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function renderSizeOptions(sizes, variants) {
+    const container = popup.querySelector('.addon-size-options');
+    container.innerHTML = '';
+    
+    sizes.forEach((size, index) => {
+      const sizeBtn = document.createElement('button');
+      sizeBtn.className = `addon-size-option ${index === 0 ? 'active' : ''}`;
+      sizeBtn.textContent = size;
+      sizeBtn.dataset.size = size;
+      
+      sizeBtn.addEventListener('click', function() {
+        document.querySelectorAll('.addon-size-option').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        updateSelectedVariant();
+      });
+      
+      container.appendChild(sizeBtn);
+    });
+  }
+
+  function renderColorOptions(colors, variants) {
+    const container = popup.querySelector('.addon-color-options');
+    container.innerHTML = '';
+    
+    colors.forEach((color, index) => {
+      const colorBtn = document.createElement('button');
+      colorBtn.className = `addon-color-option ${index === 0 ? 'active' : ''}`;
+      colorBtn.innerHTML = `<div class="color-circle" data-color="${color.toLowerCase()}"></div>`;
+      colorBtn.dataset.color = color;
+      
+      colorBtn.addEventListener('click', function() {
+        document.querySelectorAll('.addon-color-option').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        updateSelectedVariant();
+      });
+      
+      container.appendChild(colorBtn);
+    });
+  }
+
+  function updateSelectedVariant() {
+    const selectedSize = popup.querySelector('.addon-size-option.active')?.dataset.size;
+    const selectedColor = popup.querySelector('.addon-color-option.active')?.dataset.color;
+    
+    const variant = currentProduct.variants.find(v => {
+      let matches = true;
+      
+      if (selectedSize) {
+        const sizeOption = currentProduct.options.findIndex(opt => 
+          ['size', 'גודל', 'מידה'].includes(opt.name.toLowerCase())
+        );
+        if (sizeOption !== -1) {
+          const variantOptionValue = v[`option${sizeOption + 1}`];
+          matches = matches && variantOptionValue === selectedSize;
+        }
+      }
+      
+      if (selectedColor) {
+        const colorOption = currentProduct.options.findIndex(opt => 
+          ['color', 'colour', 'צבע', 'גוון'].includes(opt.name.toLowerCase())
+        );
+        if (colorOption !== -1) {
+          const variantOptionValue = v[`option${colorOption + 1}`];
+          matches = matches && variantOptionValue === selectedColor;
+        }
+      }
+      
+      return matches;
+    });
+    
+    if (variant) {
+      selectedVariant = variant;
+      updatePopupPricing(variant);
+    }
+  }
+
+  function updatePopupPricing(variant) {
+    const discountBadge = popup.querySelector('.addon-popup-discount-badge');
+    const comparePrice = popup.querySelector('.addon-popup-compare-price');
+    const currentPrice = popup.querySelector('.addon-popup-current-price');
+    
+    if (variant.compare_at_price > variant.price) {
+      const discount = Math.round(((variant.compare_at_price - variant.price) / variant.compare_at_price) * 100);
+      discountBadge.textContent = `${discount}% OFF`;
+      discountBadge.style.display = 'inline';
+      comparePrice.textContent = `₪${Math.floor(variant.compare_at_price / 100)}`;
+      comparePrice.style.display = 'inline';
+    } else {
+      discountBadge.style.display = 'none';
+      comparePrice.style.display = 'none';
+    }
+    
+    currentPrice.textContent = `₪${Math.floor(variant.price / 100)}`;
+  }
+
+  function showPopupButtonLoading() {
+    popupAddBtn.classList.add('loading');
+    popupAddBtn.querySelector('.addon-popup-btn-text').textContent = 'מוסיף...';
+    popupAddBtn.querySelector('.addon-popup-btn-loader').style.display = 'inline-block';
+  }
+
+  function showPopupButtonSuccess() {
+    popupAddBtn.classList.remove('loading');
+    popupAddBtn.classList.add('success');
+    popupAddBtn.querySelector('.addon-popup-btn-loader').style.display = 'none';
+    popupAddBtn.querySelector('.addon-popup-btn-success').style.display = 'inline-block';
+    popupAddBtn.querySelector('.addon-popup-btn-text').textContent = 'נוסף';
+    
+    // Also update the original button if it exists
+    if (currentButton && window.showButtonSuccess) {
+      setTimeout(() => {
+        if (currentButton.querySelector) {
+          currentButton.classList.remove('loading');
+          currentButton.classList.add('success');
+          currentButton.querySelector('.addon-btn-loader').style.display = 'none';
+          currentButton.querySelector('.addon-btn-icon').style.display = 'none';
+          currentButton.querySelector('.addon-btn-success').style.display = 'inline-block';
+          currentButton.querySelector('.addon-btn-text').textContent = 'נוסף';
+        }
+      }, 100);
+    }
+    
+    setTimeout(() => {
+      closePopup();
+    }, 1500);
+  }
+
+  function resetPopupButton() {
+    popupAddBtn.classList.remove('loading', 'success');
+    popupAddBtn.querySelector('.addon-popup-btn-text').textContent = 'הוסיפו לעגלה';
+    popupAddBtn.querySelector('.addon-popup-btn-loader').style.display = 'none';
+    popupAddBtn.querySelector('.addon-popup-btn-success').style.display = 'none';
+  }
+
+  function closePopup() {
+    popup.classList.remove('active');
+    document.body.style.overflow = '';
+    
+    // Reset the original button after popup closes
+    if (currentButton && currentButton.querySelector) {
+      setTimeout(() => {
+        currentButton.classList.remove('loading', 'success');
+        currentButton.querySelector('.addon-btn-icon').style.display = 'inline-block';
+        currentButton.querySelector('.addon-btn-loader').style.display = 'none';
+        currentButton.querySelector('.addon-btn-success').style.display = 'none';
+        currentButton.querySelector('.addon-btn-text').textContent = 'הוסף';
+      }, 2000);
+    }
+    
+    currentProduct = null;
+    selectedVariant = null;
+    currentButton = null;
+    resetPopupButton();
+  }
+
+  async function addToCart() {
+    if (!selectedVariant) return;
+    
+    try {
+      showPopupButtonLoading();
+      
+      if (window.cartDrawer && window.cartDrawer.addItem) {
+        const success = await window.cartDrawer.addItem(selectedVariant.id, 1);
+        if (success) {
+          showPopupButtonSuccess();
+        } else {
+          resetPopupButton();
+        }
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      resetPopupButton();
+    }
+  }
+
+  if (popupOverlay) popupOverlay.addEventListener('click', closePopup);
+  if (popupClose) popupClose.addEventListener('click', closePopup);
+  if (popupAddBtn) popupAddBtn.addEventListener('click', addToCart);
+  
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && popup.classList.contains('active')) {
+      closePopup();
+    }
+  });
+});
+</script>

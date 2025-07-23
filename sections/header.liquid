@@ -1,0 +1,467 @@
+{%- liquid assign main_menu = section.settings.main_menu -%}
+
+{{ 'header.css' | asset_url | stylesheet_tag }}
+
+<header class="header">
+  <div class="main-header">
+    <div class="container">
+      <div class="header-left desktop-only">
+        <div class="header-icon" data-cart-open>
+          {% render 'cart-icon' %}
+        </div>
+        <div class="search-container">
+          <div class="search-wrapper">
+            <input type="text" class="search-input" id="search-input" placeholder="חפש">
+            <div class="header-icon search-icon" id="search-toggle">
+              {% render 'search-icon' %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right desktop-only">
+        <a href="{{ section.settings.magazine_link }}" class="header-link">
+          {% render 'note-icon' %}
+          <span>{{ section.settings.magazine_text }}</span>
+        </a>
+        <a href="{{ section.settings.support_link }}" class="header-link">
+          {% render 'support-icon' %}
+          <span>{{ section.settings.support_text }}</span>
+        </a>
+        <a href="{{ section.settings.stores_link }}" class="header-link">
+          {% render 'shop-icon' %}
+          <span>{{ section.settings.stores_text }}</span>
+        </a>
+        <div class="header-logo">
+          <a href="/">{% render 'logo-header' %}</a>
+        </div>
+      </div>
+
+      <div class="mobile-only">
+        <div class="mobile-logo">
+          <a href="/">{% render 'logo-header-mobile' %}</a>
+        </div>
+      </div>
+
+      <div class="header-right mobile-only">
+        <div class="header-icon" id="mobile-search">
+          {% render 'search-icon' %}
+        </div>
+        <div class="header-icon" data-cart-open>
+          {% render 'cart-icon' %}
+        </div>
+        <div class="header-icon">
+          {% render 'shop-icon' %}
+        </div>
+        <div class="burger-menu" id="mobile-menu-toggle">
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="navigation desktop-only">
+    <div class="container">
+      <ul class="nav-menu">
+        {%- for link in linklists[main_menu].links -%}
+          <li>
+            <a href="{{ link.url }}">{{ link.title }}</a>
+            
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'mega_menu' and block.settings.menu_trigger == link.title -%}
+                <div class="mega-menu">
+                  <div class="mega-menu-content">
+                    {%- if block.settings.mega_item_1_image != blank -%}
+                      <a href="{{ block.settings.mega_item_1_link }}" class="mega-menu-item">
+                        <div class="mega-menu-image">
+                          <img src="{{ block.settings.mega_item_1_image | img_url: '474x282' }}" alt="{{ block.settings.mega_item_1_title }}">
+                        </div>
+                        <div class="mega-menu-title">{{ block.settings.mega_item_1_title }}</div>
+                      </a>
+                    {%- endif -%}
+                    
+                    {%- if block.settings.mega_item_2_image != blank -%}
+                      <a href="{{ block.settings.mega_item_2_link }}" class="mega-menu-item">
+                        <div class="mega-menu-image">
+                          <img src="{{ block.settings.mega_item_2_image | img_url: '474x282' }}" alt="{{ block.settings.mega_item_2_title }}">
+                        </div>
+                        <div class="mega-menu-title">{{ block.settings.mega_item_2_title }}</div>
+                      </a>
+                    {%- endif -%}
+                    
+                    {%- if block.settings.mega_item_3_image != blank -%}
+                      <a href="{{ block.settings.mega_item_3_link }}" class="mega-menu-item">
+                        <div class="mega-menu-image">
+                          <img src="{{ block.settings.mega_item_3_image | img_url: '474x282' }}" alt="{{ block.settings.mega_item_3_title }}">
+                        </div>
+                        <div class="mega-menu-title">{{ block.settings.mega_item_3_title }}</div>
+                      </a>
+                    {%- endif -%}
+                    
+                    {%- if block.settings.mega_item_4_image != blank -%}
+                      <a href="{{ block.settings.mega_item_4_link }}" class="mega-menu-item">
+                        <div class="mega-menu-image">
+                          <img src="{{ block.settings.mega_item_4_image | img_url: '474x282' }}" alt="{{ block.settings.mega_item_4_title }}">
+                        </div>
+                        <div class="mega-menu-title">{{ block.settings.mega_item_4_title }}</div>
+                      </a>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<div class="mobile-search-overlay" id="mobile-search-overlay">
+  <input type="text" class="mobile-search-input" id="mobile-search-input" placeholder="חפש">
+</div>
+
+<div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-content">
+    <nav>
+      <ul class="mobile-menu-nav">
+        {%- for link in linklists[main_menu].links -%}
+          {%- assign has_mega = false -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'mega_menu' and block.settings.menu_trigger == link.title -%}
+              {%- assign has_mega = true -%}
+              {%- assign mega_block = block -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+          
+          <li>
+            {%- if has_mega -%}
+              <div class="menu-item has-mega" onclick="toggleMobileMega(this)">{{ link.title }}</div>
+              <div class="mobile-mega-menu">
+                <div class="mobile-mega-grid">
+                  {%- if mega_block.settings.mega_item_1_image != blank -%}
+                    <a href="{{ mega_block.settings.mega_item_1_link }}" class="mobile-mega-item">
+                      <div class="mobile-mega-image">
+                        <img src="{{ mega_block.settings.mega_item_1_image | img_url: '278x164' }}" alt="{{ mega_block.settings.mega_item_1_title }}">
+                      </div>
+                      <div class="mobile-mega-title">{{ mega_block.settings.mega_item_1_title }}</div>
+                    </a>
+                  {%- endif -%}
+                  
+                  {%- if mega_block.settings.mega_item_2_image != blank -%}
+                    <a href="{{ mega_block.settings.mega_item_2_link }}" class="mobile-mega-item">
+                      <div class="mobile-mega-image">
+                        <img src="{{ mega_block.settings.mega_item_2_image | img_url: '278x164' }}" alt="{{ mega_block.settings.mega_item_2_title }}">
+                      </div>
+                      <div class="mobile-mega-title">{{ mega_block.settings.mega_item_2_title }}</div>
+                    </a>
+                  {%- endif -%}
+                  
+                  {%- if mega_block.settings.mega_item_3_image != blank -%}
+                    <a href="{{ mega_block.settings.mega_item_3_link }}" class="mobile-mega-item">
+                      <div class="mobile-mega-image">
+                        <img src="{{ mega_block.settings.mega_item_3_image | img_url: '278x164' }}" alt="{{ mega_block.settings.mega_item_3_title }}">
+                      </div>
+                      <div class="mobile-mega-title">{{ mega_block.settings.mega_item_3_title }}</div>
+                    </a>
+                  {%- endif -%}
+                  
+                  {%- if mega_block.settings.mega_item_4_image != blank -%}
+                    <a href="{{ mega_block.settings.mega_item_4_link }}" class="mobile-mega-item">
+                      <div class="mobile-mega-image">
+                        <img src="{{ mega_block.settings.mega_item_4_image | img_url: '278x164' }}" alt="{{ mega_block.settings.mega_item_4_title }}">
+                      </div>
+                      <div class="mobile-mega-title">{{ mega_block.settings.mega_item_4_title }}</div>
+                    </a>
+                  {%- endif -%}
+                </div>
+                <a href="{{ link.url }}" class="mobile-mega-button">לכל המיטות</a>
+              </div>
+            {%- else -%}
+              <a href="{{ link.url }}" class="menu-item">{{ link.title }}</a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+    <div class="mobile-menu-secondary">
+      <a href="{{ section.settings.magazine_link }}" class="menu-item">{{ section.settings.magazine_text }}</a>
+      <a href="{{ section.settings.support_link }}" class="menu-item">{{ section.settings.support_text }}</a>
+      <a href="{{ section.settings.stores_link }}" class="menu-item">{{ section.settings.stores_text }}</a>
+    </div>
+  </div>
+</div>
+
+{% render 'cart-drawer' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var searchInput = document.getElementById('search-input');
+  var mobileSearchInput = document.getElementById('mobile-search-input');
+  var mobileSearchOverlay = document.getElementById('mobile-search-overlay');
+  
+  if (searchInput) {
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        window.location.href = `{{ routes.search_url }}?q=${encodeURIComponent(this.value)}`;
+      }
+    });
+  }
+
+  if (mobileSearchInput) {
+    mobileSearchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        window.location.href = `{{ routes.search_url }}?q=${encodeURIComponent(this.value)}`;
+      }
+    });
+  }
+
+  var mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  var mobileMenu = document.getElementById('mobile-menu');
+  var mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+  
+  function toggleMobileMenu() {
+    mobileMenu.classList.toggle('active');
+    mobileMenuOverlay.classList.toggle('active');
+    mobileMenuToggle.classList.toggle('active');
+    
+    document.body.classList.toggle('mobile-menu-open');
+    
+    mobileSearchOverlay.classList.remove('active');
+  }
+  
+  if (mobileMenuToggle) mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+  if (mobileMenuOverlay) mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+
+  var mobileSearch = document.getElementById('mobile-search');
+  if (mobileSearch) {
+    mobileSearch.addEventListener('click', function() {
+      mobileSearchOverlay.classList.toggle('active');
+      
+      mobileMenu.classList.remove('active');
+      mobileMenuOverlay.classList.remove('active');
+      mobileMenuToggle.classList.remove('active');
+      
+      if (mobileSearchOverlay.classList.contains('active')) {
+        mobileSearchInput.focus();
+      }
+    });
+  }
+
+  window.toggleMobileMega = function(element) {
+    var megaMenu = element.nextElementSibling;
+    var isActive = element.classList.contains('active');
+    
+    var allToggles = document.querySelectorAll('.menu-item.has-mega');
+    allToggles.forEach(function(toggle) {
+      if (toggle !== element) {
+        toggle.classList.remove('active');
+        toggle.nextElementSibling.classList.remove('active');
+      }
+    });
+    
+    if (!isActive) {
+      element.classList.add('active');
+      megaMenu.classList.add('active');
+    } else {
+      element.classList.remove('active');
+      megaMenu.classList.remove('active');
+    }
+  };
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#mobile-search') && !e.target.closest('.mobile-search-overlay')) {
+      mobileSearchOverlay.classList.remove('active');
+    }
+  });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+  
+  function hideMegaMenus() {
+    const megaMenus = document.querySelectorAll('.mega-menu');
+    megaMenus.forEach(menu => {
+      menu.style.opacity = '0';
+      menu.style.visibility = 'hidden';
+      menu.style.transform = 'translateY(-10px)';
+      menu.style.transition = 'all 0.3s ease';
+    });
+  }
+  
+  function handleScroll() {
+    const currentScrollY = window.scrollY;
+    const scrollDifference = Math.abs(currentScrollY - lastScrollY);
+    
+    if (scrollDifference > 5) {
+      const openMegaMenus = document.querySelectorAll('.mega-menu:hover, .nav-menu li:hover .mega-menu');
+      if (openMegaMenus.length > 0) {
+        hideMegaMenus();
+      }
+    }
+    
+    lastScrollY = currentScrollY;
+    ticking = false;
+  }
+  
+  function requestTick() {
+    if (!ticking) {
+      requestAnimationFrame(handleScroll);
+      ticking = true;
+    }
+  }
+  
+  window.addEventListener('scroll', requestTick, { passive: true });
+  
+  const navItems = document.querySelectorAll('.nav-menu li');
+  navItems.forEach(item => {
+    const megaMenu = item.querySelector('.mega-menu');
+    if (megaMenu) {
+      item.addEventListener('mouseenter', function() {
+        megaMenu.style.opacity = '1';
+        megaMenu.style.visibility = 'visible';
+        megaMenu.style.transform = 'translateY(0)';
+        megaMenu.style.transition = 'all 0.3s ease';
+      });
+      
+      item.addEventListener('mouseleave', function() {
+        megaMenu.style.opacity = '0';
+        megaMenu.style.visibility = 'hidden';
+        megaMenu.style.transform = 'translateY(-10px)';
+        megaMenu.style.transition = 'all 0.3s ease';
+      });
+    }
+  });
+});
+</script>
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "main_menu",
+      "label": "Main Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "header",
+      "content": "Header Links"
+    },
+    {
+      "type": "text",
+      "id": "magazine_text",
+      "label": "Magazine Link Text",
+      "default": "מגזין שינה"
+    },
+    {
+      "type": "url",
+      "id": "magazine_link",
+      "label": "Magazine Link URL"
+    },
+    {
+      "type": "text",
+      "id": "support_text",
+      "label": "Support Link Text",
+      "default": "שירות לקוחות"
+    },
+    {
+      "type": "url",
+      "id": "support_link",
+      "label": "Support Link URL"
+    },
+    {
+      "type": "text",
+      "id": "stores_text",
+      "label": "Stores Link Text",
+      "default": "סניפים"
+    },
+    {
+      "type": "url",
+      "id": "stores_link",
+      "label": "Stores Link URL"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mega_menu",
+      "name": "Mega Menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu_trigger",
+          "label": "Menu Item Name",
+          "info": "Enter the exact name of the menu item that should trigger this mega menu"
+        },
+        {
+          "type": "image_picker",
+          "id": "mega_item_1_image",
+          "label": "Item 1 - Image"
+        },
+        {
+          "type": "text",
+          "id": "mega_item_1_title",
+          "label": "Item 1 - Title"
+        },
+        {
+          "type": "url",
+          "id": "mega_item_1_link",
+          "label": "Item 1 - Link"
+        },
+        {
+          "type": "image_picker",
+          "id": "mega_item_2_image",
+          "label": "Item 2 - Image"
+        },
+        {
+          "type": "text",
+          "id": "mega_item_2_title",
+          "label": "Item 2 - Title"
+        },
+        {
+          "type": "url",
+          "id": "mega_item_2_link",
+          "label": "Item 2 - Link"
+        },
+        {
+          "type": "image_picker",
+          "id": "mega_item_3_image",
+          "label": "Item 3 - Image"
+        },
+        {
+          "type": "text",
+          "id": "mega_item_3_title",
+          "label": "Item 3 - Title"
+        },
+        {
+          "type": "url",
+          "id": "mega_item_3_link",
+          "label": "Item 3 - Link"
+        },
+        {
+          "type": "image_picker",
+          "id": "mega_item_4_image",
+          "label": "Item 4 - Image"
+        },
+        {
+          "type": "text",
+          "id": "mega_item_4_title",
+          "label": "Item 4 - Title"
+        },
+        {
+          "type": "url",
+          "id": "mega_item_4_link",
+          "label": "Item 4 - Link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

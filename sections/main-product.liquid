@@ -1,0 +1,901 @@
+{{ 'main-product.css' | asset_url | stylesheet_tag }}
+{{ 'store-locator.css' | asset_url | stylesheet_tag }}
+
+<script>
+window.productData = {
+  id: {{ product.id }},
+  title: {{ product.title | json }},
+  variants: [
+    {% for variant in product.variants %}
+      {
+        id: {{ variant.id }},
+        title: {{ variant.title | json }},
+        option1: {{ variant.option1 | json }},
+        option2: {{ variant.option2 | json }},
+        option3: {{ variant.option3 | json }},
+        price: {{ variant.price }},
+        available: {{ variant.available | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ]
+};
+</script>
+
+<div class="main-product">
+  <div class="main-product-container">
+    <div class="product-info">
+      <div class="product-info-content">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            
+            {% when 'product_title' %}
+              <div class="product-title-block" {{ block.shopify_attributes }}>
+                {% if block.settings.heading_size == 'h1' %}
+                  <h1 class="product-title">{{ product.title }}</h1>
+                {% elsif block.settings.heading_size == 'h2' %}
+                  <h2 class="product-title">{{ product.title }}</h2>
+                {% else %}
+                  <h3 class="product-title">{{ product.title }}</h3>
+                {% endif %}
+              </div>
+            
+            {% when 'product_reviews' %}
+              {% if block.settings.show_reviews %}
+                {% assign reviews_count = product.metafields.custom.reviews_count | default: 0 %}
+                {% assign reviews_count_num = reviews_count | plus: 0 %}
+                {% assign rating = 0 %}
+                {% if reviews_count_num > 0 %}
+                  {% assign rating_seed = product.id | modulo: 11 %}
+                  {% assign rating_decimal = rating_seed | times: 0.1 %}
+                  {% assign rating = 4.0 | plus: rating_decimal %}
+                  {% if rating > 5.0 %}
+                    {% assign rating = 5.0 %}
+                  {% endif %}
+                {% endif %}
+
+                {% if reviews_count_num > 0 %}
+                  <div class="product-reviews-block" {{ block.shopify_attributes }}>
+                    <div class="product-reviews">
+                      <div class="rating-stars">
+                        {% assign stars_filled = rating | floor %}
+                        {% for i in (1..5) %}
+                          {% if i <= stars_filled %}
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                              <path d="M8.33657 1.65918L10.2852 5.60692L14.6429 6.24386L11.4897 9.31502L12.2339 13.6538L8.33657 11.6042L4.43928 13.6538L5.18342 9.31502L2.03027 6.24386L6.38792 5.60692L8.33657 1.65918Z" fill="#FDB022" stroke="#FDB022" stroke-width="1.68168"/>
+                            </svg>
+                          {% else %}
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                              <path d="M7.83803 1.65918L9.78668 5.60692L14.1443 6.24386L10.9912 9.31502L11.7353 13.6538L7.83803 11.6042L3.94074 13.6538L4.68489 9.31502L1.53174 6.24386L5.88939 5.60692L7.83803 1.65918Z" stroke="#FDB022" stroke-width="1.68168"/>
+                            </svg>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                      <span class="rating-number">{{ rating }}</span>
+                      <span class="reviews-count">({{ reviews_count }})</span>
+                    </div>
+                  </div>
+                {% endif %}
+              {% endif %}
+            
+            {% when 'package_details' %}
+              <div class="package-details-block" {{ block.shopify_attributes }}>
+                <button class="package-details-trigger" type="button" data-block-id="{{ block.id }}">
+                  <span class="package-details-text">{{ block.settings.package_text | default: 'פירוט מרכיבי ומחירי החבילה' }}</span>
+                  <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.36844 12.4873H8.63156V9.11886H12V7.85575H8.63156V4.48732L7.36844 4.48732V7.85575H4.00001L4.00001 9.11886H7.36844V12.4873ZM8.00141 16.4873C6.89494 16.4873 5.85491 16.2773 4.88132 15.8574C3.90772 15.4375 3.06082 14.8676 2.34064 14.1477C1.62044 13.4278 1.05028 12.5813 0.63017 11.6082C0.210057 10.635 0 9.59519 0 8.48872C0 7.38224 0.209966 6.34221 0.629897 5.36862C1.04983 4.39502 1.61972 3.54813 2.33959 2.82794C3.05946 2.10775 3.90598 1.53759 4.87915 1.11748C5.8523 0.697362 6.89212 0.487305 7.99859 0.487305C9.10506 0.487305 10.1451 0.697271 11.1187 1.1172C12.0923 1.53713 12.9392 2.10703 13.6594 2.82689C14.3796 3.54677 14.9497 4.39329 15.3698 5.36646C15.7899 6.33961 16 7.37942 16 8.48589C16 9.59237 15.79 10.6324 15.3701 11.606C14.9502 12.5796 14.3803 13.4265 13.6604 14.1467C12.9405 14.8669 12.094 15.437 11.1209 15.8571C10.1477 16.2772 9.10788 16.4873 8.00141 16.4873ZM8 15.2242C9.88071 15.2242 11.4737 14.5715 12.779 13.2663C14.0842 11.961 14.7369 10.368 14.7369 8.4873C14.7369 6.6066 14.0842 5.01361 12.779 3.70835C11.4737 2.40308 9.88071 1.75045 8 1.75045C6.11929 1.75045 4.52631 2.40308 3.22104 3.70835C1.91577 5.01361 1.26314 6.6066 1.26314 8.4873C1.26314 10.368 1.91577 11.961 3.22104 13.2663C4.52631 14.5715 6.11929 15.2242 8 15.2242Z" fill="#1A1A1B"/>
+                  </svg>
+                </button>
+                <div class="package-details-content" data-block-id="{{ block.id }}">
+                  <div class="package-details-inner">
+                    {{ block.settings.package_content | default: 'תוכן פרטי החבילה יופיע כאן' }}
+                  </div>
+                </div>
+              </div>
+            
+            {% when 'product_tabs' %}
+              <div class="product-tabs-block" {{ block.shopify_attributes }}>
+                <div class="product-tabs" data-block-id="{{ block.id }}">
+                  <div class="tabs-navigation">
+                    <button class="tab-button active" data-tab="tab1">{{ block.settings.tab1_title | default: 'תיאור' }}</button>
+                    <button class="tab-button" data-tab="tab2">{{ block.settings.tab2_title | default: 'מפרט טכני' }}</button>
+                    <button class="tab-button" data-tab="tab3">{{ block.settings.tab3_title | default: 'משלוחים והחזרות' }}</button>
+                  </div>
+                  
+                  <div class="tabs-content">
+                    <div class="tab-content active" data-tab="tab1">
+                      <div class="tab-text">
+                        {{ block.settings.tab1_content | default: product.description }}
+                      </div>
+                    </div>
+                    
+                    <div class="tab-content" data-tab="tab2">
+                      <div class="tab-text">
+                        {{ block.settings.tab2_content | default: 'מפרט טכני של המוצר' }}
+                      </div>
+                    </div>
+                    
+                    <div class="tab-content" data-tab="tab3">
+                      <div class="tab-text">
+                        {{ block.settings.tab3_content | default: 'פרטי משלוחים והחזרות' }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            {% when 'price_table' %}
+              {% render 'price-table-block', product: product, block: block %}
+
+            {% when 'variant_picker' %}
+              {% render 'variant-picker-block', product: product, block: block %}
+              
+            {% when 'addon_products' %}
+              {% render 'addon-products-block', product: product, block: block %}
+              
+            {% when 'add_to_cart' %}
+              <div class="add-to-cart-block" {{ block.shopify_attributes }}>
+                <form data-cart-form class="product-form">
+                  <input type="hidden" name="id" class="variant-id-input" value="{{ product.selected_or_first_available_variant.id }}">
+                  <input type="hidden" name="quantity" class="quantity-input" value="1">
+                  <button type="submit" class="add-to-cart-button" data-product-id="{{ product.id }}">
+                    {{ block.settings.button_text | default: 'הוסיפו לעגלה' }}
+                  </button>
+                </form>
+              </div>
+              
+            {% when 'support_block' %}
+              <div class="support-block" {{ block.shopify_attributes }}>
+                <div class="support-inner">
+                  <div class="support-header">
+                    {% if block.settings.image != blank %}
+                      <div class="support-image">
+                        <img
+                          src="{{ block.settings.image | img_url: '1500x1500' }}"
+                          alt="{{ block.settings.heading_text }}"
+                        />
+                      </div>
+                    {% endif %}
+                    <div class="support-text">
+                      <h2 class="support-heading">{{ block.settings.heading_text }}</h2>
+                      <p class="support-subheading">{{ block.settings.subheading_text }}</p>
+                    </div>
+                  </div>
+                  <div class="support-buttons">
+                    
+                    <a href="{{ block.settings.whatsapp_url }}" class="support-btn support-btn-whatsapp">
+                      {% render 'whatsapp-icon-thin' %}
+                      <span>{{ block.settings.whatsapp_label }}</span>
+                    </a>
+                    <a href="{{ block.settings.phone_url }}" class="support-btn support-btn-phone">
+                      {% render 'phone-icon-thin' %}
+                      <span>{{ block.settings.phone_label }}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+          {% endcase %}
+        {% endfor %}
+      </div>
+    </div>
+    {% render 'product-media', product: product %}
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  initProductTabs();
+  initPackageDetails();
+  initStoreLocator();
+
+  const picker = document.querySelector('.variant-picker-block');
+  const form = document.querySelector('.product-form');
+  if (picker && form) {
+    const swatches = Array.from(picker.querySelectorAll('.color-swatch'));
+    const sizeTrigger = picker.querySelector('.select-trigger');
+    const sizeOptions = Array.from(picker.querySelectorAll('.select-option'));
+    const qtyInput = picker.querySelector('.quantity-input');
+    const qtyPlus = picker.querySelector('.quantity-plus');
+    const qtyMinus = picker.querySelector('.quantity-minus');
+
+    let selectedColor = swatches.find(s => s.classList.contains('active'))?.dataset.color || swatches[0]?.dataset.color;
+    let selectedSize = sizeOptions.find(o => o.classList.contains('selected'))?.dataset.value || sizeOptions[0]?.dataset.value;
+    let quantity = parseInt(qtyInput.value) || 1;
+
+    function updateSelection() {
+      const variant = window.productData.variants.find(v =>
+        (!selectedColor || v.option1 === selectedColor) &&
+        (!selectedSize || v.option2 === selectedSize)
+      ) || window.productData.variants[0];
+
+      form.querySelector('input[name="id"]').value = variant.id;
+      form.querySelector('input[name="quantity"]').value = quantity;
+    }
+
+    swatches.forEach(swatch => {
+      swatch.addEventListener('click', () => {
+        if (swatch.disabled) return;
+        swatches.forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+        selectedColor = swatch.dataset.color;
+        updateSelection();
+      });
+    });
+
+    if (sizeTrigger) {
+      sizeTrigger.addEventListener('click', () => {
+        picker.querySelector('.custom-select').classList.toggle('open');
+      });
+    }
+    sizeOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        sizeOptions.forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        picker.querySelector('.custom-select').classList.remove('open');
+        selectedSize = option.dataset.value;
+        updateSelection();
+      });
+    });
+
+    if (qtyPlus) {
+      qtyPlus.addEventListener('click', () => {
+        quantity = Math.min(99, quantity + 1);
+        qtyInput.value = quantity;
+        updateSelection();
+      });
+    }
+    if (qtyMinus) {
+      qtyMinus.addEventListener('click', () => {
+        quantity = Math.max(1, quantity - 1);
+        qtyInput.value = quantity;
+        updateSelection();
+      });
+    }
+    if (qtyInput) {
+      qtyInput.addEventListener('change', () => {
+        const val = parseInt(qtyInput.value);
+        if (!isNaN(val) && val >= 1 && val <= 99) {
+          quantity = val;
+        } else {
+          qtyInput.value = quantity;
+        }
+        updateSelection();
+      });
+    }
+
+    updateSelection();
+  }
+});
+
+function initProductTabs() {
+  document.querySelectorAll('.product-tabs').forEach(tabs => {
+    tabs.querySelectorAll('.tab-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.dataset.tab;
+        tabs.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        tabs.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        tabs.querySelector(`.tab-content[data-tab="${name}"]`).classList.add('active');
+      });
+    });
+  });
+}
+
+function initPackageDetails() {
+  document.querySelectorAll('.package-details-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const id = trigger.dataset.blockId;
+      const content = document.querySelector(`.package-details-content[data-block-id="${id}"]`);
+      trigger.classList.toggle('active');
+      content.classList.toggle('active');
+    });
+  });
+}
+
+function initStoreLocator() {
+  const trigger = document.querySelector('[data-store-locator-trigger]');
+  const popup = document.querySelector('[data-store-locator-popup]');
+  const drawer = document.querySelector('[data-store-locator-drawer]');
+  const drawerContent = document.querySelector('.drawer-content');
+  const closeButtons = document.querySelectorAll('[data-store-locator-close]');
+  
+  if (!trigger) return;
+  
+  let isMobile = window.innerWidth <= 768;
+  let startY = 0;
+  let currentY = 0;
+  let isDragging = false;
+  
+  trigger.addEventListener('click', function() {
+    if (isMobile) {
+      if (drawer) {
+        drawer.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    } else {
+      if (popup) {
+        popup.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+  });
+  
+  closeButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      closeModals();
+    });
+  });
+  
+  if (popup) {
+    popup.addEventListener('click', function(e) {
+      if (e.target === popup || e.target.classList.contains('popup-overlay')) {
+        closeModals();
+      }
+    });
+  }
+  
+  if (drawer) {
+    drawer.addEventListener('click', function(e) {
+      if (e.target === drawer || e.target.classList.contains('drawer-overlay')) {
+        closeModals();
+      }
+    });
+  }
+  
+  if (drawerContent) {
+    drawerContent.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+  }
+  
+  const popupContent = document.querySelector('.popup-content');
+  if (popupContent) {
+    popupContent.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+  }
+  
+  if (drawerContent) {
+    drawerContent.addEventListener('touchstart', function(e) {
+      startY = e.touches[0].clientY;
+      isDragging = true;
+      drawerContent.classList.add('dragging');
+    });
+    
+    drawerContent.addEventListener('touchmove', function(e) {
+      if (!isDragging) return;
+      
+      currentY = e.touches[0].clientY;
+      const deltaY = currentY - startY;
+      
+      if (deltaY > 0) {
+        const progress = Math.min(deltaY / 200, 1);
+        drawerContent.style.transform = `translateY(${deltaY}px)`;
+        drawerContent.style.opacity = 1 - (progress * 0.3);
+      }
+    });
+    
+    drawerContent.addEventListener('touchend', function(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      drawerContent.classList.remove('dragging');
+      
+      const deltaY = currentY - startY;
+      
+      if (deltaY > 100) {
+        closeModals();
+      } else {
+        drawerContent.style.transform = '';
+        drawerContent.style.opacity = '';
+      }
+    });
+  }
+  
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeModals();
+    }
+  });
+  
+  window.addEventListener('resize', function() {
+    const newIsMobile = window.innerWidth <= 768;
+    if (newIsMobile !== isMobile) {
+      isMobile = newIsMobile;
+      closeModals();
+    }
+  });
+  
+  function closeModals() {
+    if (popup) popup.classList.remove('active');
+    if (drawer) drawer.classList.remove('active');
+    if (drawerContent) {
+      drawerContent.style.transform = '';
+      drawerContent.style.opacity = '';
+    }
+    document.body.style.overflow = '';
+  }
+}
+</script>
+
+{% schema %}
+  {
+  "name": "Main Product",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Store Locator Settings"
+    },
+    {
+      "type": "text",
+      "id": "appointment_text",
+      "label": "Appointment Text",
+      "default": "לתיאום פגישה"
+    },
+    {
+      "type": "text",
+      "id": "additional_text",
+      "label": "Additional Text",
+      "default": "+ 100 נוספים"
+    },
+    {
+      "type": "text",
+      "id": "popup_title",
+      "label": "Popup Title",
+      "default": "מגזן רהב של צבעים מחכים לכם בסניפים"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Store Button Text",
+      "default": "לתיאום פגישה"
+    },
+    {
+      "type": "header",
+      "content": "Store 1"
+    },
+    {
+      "type": "text",
+      "id": "store_1_name",
+      "label": "Store 1 Name"
+    },
+    {
+      "type": "text",
+      "id": "store_1_address",
+      "label": "Store 1 Address"
+    },
+    {
+      "type": "url",
+      "id": "store_1_link",
+      "label": "Store 1 Link"
+    },
+    {
+      "type": "header",
+      "content": "Store 2"
+    },
+    {
+      "type": "text",
+      "id": "store_2_name",
+      "label": "Store 2 Name"
+    },
+    {
+      "type": "text",
+      "id": "store_2_address",
+      "label": "Store 2 Address"
+    },
+    {
+      "type": "url",
+      "id": "store_2_link",
+      "label": "Store 2 Link"
+    },
+    {
+      "type": "header",
+      "content": "Store 3"
+    },
+    {
+      "type": "text",
+      "id": "store_3_name",
+      "label": "Store 3 Name"
+    },
+    {
+      "type": "text",
+      "id": "store_3_address",
+      "label": "Store 3 Address"
+    },
+    {
+      "type": "url",
+      "id": "store_3_link",
+      "label": "Store 3 Link"
+    },
+    {
+      "type": "header",
+      "content": "Store 4"
+    },
+    {
+      "type": "text",
+      "id": "store_4_name",
+      "label": "Store 4 Name"
+    },
+    {
+      "type": "text",
+      "id": "store_4_address",
+      "label": "Store 4 Address"
+    },
+    {
+      "type": "url",
+      "id": "store_4_link",
+      "label": "Store 4 Link"
+    },
+    {
+      "type": "header",
+      "content": "Store 5"
+    },
+    {
+      "type": "text",
+      "id": "store_5_name",
+      "label": "Store 5 Name"
+    },
+    {
+      "type": "text",
+      "id": "store_5_address",
+      "label": "Store 5 Address"
+    },
+    {
+      "type": "url",
+      "id": "store_5_link",
+      "label": "Store 5 Link"
+    },
+    {
+      "type": "header",
+      "content": "Store 6"
+    },
+    {
+      "type": "text",
+      "id": "store_6_name",
+      "label": "Store 6 Name"
+    },
+    {
+      "type": "text",
+      "id": "store_6_address",
+      "label": "Store 6 Address"
+    },
+    {
+      "type": "url",
+      "id": "store_6_link",
+      "label": "Store 6 Link"
+    },
+    {
+      "type": "header",
+      "content": "Store 7"
+    },
+    {
+      "type": "text",
+      "id": "store_7_name",
+      "label": "Store 7 Name"
+    },
+    {
+      "type": "text",
+      "id": "store_7_address",
+      "label": "Store 7 Address"
+    },
+    {
+      "type": "url",
+      "id": "store_7_link",
+      "label": "Store 7 Link"
+    },
+    {
+      "type": "header",
+      "content": "Store 8"
+    },
+    {
+      "type": "text",
+      "id": "store_8_name",
+      "label": "Store 8 Name"
+    },
+    {
+      "type": "text",
+      "id": "store_8_address",
+      "label": "Store 8 Address"
+    },
+    {
+      "type": "url",
+      "id": "store_8_link",
+      "label": "Store 8 Link"
+    },
+    {
+      "type": "header",
+      "content": "Store 9"
+    },
+    {
+      "type": "text",
+      "id": "store_9_name",
+      "label": "Store 9 Name"
+    },
+    {
+      "type": "text",
+      "id": "store_9_address",
+      "label": "Store 9 Address"
+    },
+    {
+      "type": "url",
+      "id": "store_9_link",
+      "label": "Store 9 Link"
+    },
+    {
+      "type": "header",
+      "content": "Store 10"
+    },
+    {
+      "type": "text",
+      "id": "store_10_name",
+      "label": "Store 10 Name"
+    },
+    {
+      "type": "text",
+      "id": "store_10_address",
+      "label": "Store 10 Address"
+    },
+    {
+      "type": "url",
+      "id": "store_10_link",
+      "label": "Store 10 Link"
+    }
+  ],
+  "max_blocks": 15,
+  "blocks": [
+    {
+      "type": "product_title",
+      "name": "Product Title",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "Heading Size",
+          "options": [
+            {"value": "h1", "label": "H1"},
+            {"value": "h2", "label": "H2"},
+            {"value": "h3", "label": "H3"}
+          ],
+          "default": "h1"
+        }
+      ]
+    },
+    {
+      "type": "product_reviews",
+      "name": "Product Reviews",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_reviews",
+          "label": "Show Reviews",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "package_details",
+      "name": "Package Details",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "package_text",
+          "label": "Package Text",
+          "default": "פירוט מרכיבי ומחירי החבילה"
+        },
+        {
+          "type": "richtext",
+          "id": "package_content",
+          "label": "Package Content",
+          "default": "<p>תוכן פרטי החבילה יופיע כאן</p>"
+        }
+      ]
+    },
+    {
+      "type": "product_tabs",
+      "name": "Product Tabs",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab1_title",
+          "label": "Tab 1 Title",
+          "default": "תיאור"
+        },
+        {
+          "type": "richtext",
+          "id": "tab1_content",
+          "label": "Tab 1 Content"
+        },
+        {
+          "type": "text",
+          "id": "tab2_title",
+          "label": "Tab 2 Title",
+          "default": "מפרט טכני"
+        },
+        {
+          "type": "richtext",
+          "id": "tab2_content",
+          "label": "Tab 2 Content"
+        },
+        {
+          "type": "text",
+          "id": "tab3_title",
+          "label": "Tab 3 Title",
+          "default": "משלוחים והחזרות"
+        },
+        {
+          "type": "richtext",
+          "id": "tab3_content",
+          "label": "Tab 3 Content"
+        }
+      ]
+    },
+    {
+      "type": "price_table",
+      "name": "Price Table",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "delivery_price",
+          "label": "Delivery Price",
+          "default": "550"
+        },
+        {
+          "type": "text",
+          "id": "delivery_compare_price",
+          "label": "Delivery Compare Price (optional)"
+        },
+        {
+          "type": "text",
+          "id": "installments_count",
+          "label": "Number of Installments",
+          "default": "12"
+        },
+        {
+          "type": "text",
+          "id": "installments_text",
+          "label": "Installments Text",
+          "default": "תשלומים"
+        }
+      ]
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant Picker",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "color_label",
+          "label": "Color Label",
+          "default": "גוון"
+        },
+        {
+          "type": "text",
+          "id": "size_label",
+          "label": "Size Label",
+          "default": "בחר גודל מיטה"
+        }
+      ]
+    },
+    {
+      "type": "addon_products",
+      "name": "Add-on Products",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Section Title",
+          "default": "השלימו את חווית השינה עם:"
+        }
+      ]
+    },
+    {
+      "type": "add_to_cart",
+      "name": "Add to Cart Button",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "הוסיפו לעגלה"
+        }
+      ]
+    },
+    {
+      "type": "support_block",
+      "name": "Support Block",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading_text",
+          "label": "Heading",
+          "default": "יש לכם שאלות? צריכים עזרה?"
+        },
+        {
+          "type": "text",
+          "id": "subheading_text",
+          "label": "Subtitle",
+          "default": "מומחי השינה שלנו מחויבים לעזור לכם למצוא את מיטת חלומותיכם!"
+        },
+        {
+          "type": "url",
+          "id": "whatsapp_url",
+          "label": "WhatsApp Link"
+        },
+        {
+          "type": "text",
+          "id": "whatsapp_label",
+          "label": "WhatsApp button text",
+          "default": "צור קשר"
+        },
+        {
+          "type": "url",
+          "id": "phone_url",
+          "label": "Phone (tel:)"
+        },
+        {
+          "type": "text",
+          "id": "phone_label",
+          "label": "Call button text",
+          "default": "חייגו"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Employee's photo"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main Product",
+      "blocks": [
+        {
+          "type": "product_title"
+        },
+        {
+          "type": "product_reviews"
+        },
+        {
+          "type": "package_details"
+        },
+        {
+          "type": "product_tabs",
+          "settings": {
+            "tab1_title": "תיאור",
+            "tab1_content": "<p>תיאור מפורט של המוצר יופיע כאן. ניתן לערוך את התוכן דרך הגדרות הסקשן.</p>",
+            "tab2_title": "מפרט טכני",
+            "tab2_content": "<p>מידע טכני ומפרטים נוספים על המוצר.</p><ul><li>חומר איכותי</li><li>עמידות גבוהה</li><li>אחריות יצרן</li></ul>",
+            "tab3_title": "משלוחים והחזרות",
+            "tab3_content": "<p><strong>משלוחים:</strong></p><p>משלוח חינם לכל הארץ על הזמנות מעל ₪199</p><p><strong>החזרות:</strong></p><p>אפשרות החזרה עד 30 יום מרכישה</p>"
+          }
+        },
+        {
+          "type": "price_table"
+        },
+        {
+          "type": "variant_picker"
+        },
+        {
+          "type": "addon_products"
+        },
+        {
+          "type": "add_to_cart"
+        },
+        {
+          "type": "support_block"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

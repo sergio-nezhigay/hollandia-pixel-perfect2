@@ -1,0 +1,267 @@
+{{ 'product-media.css' | asset_url | stylesheet_tag }}
+
+<div class="product-media">
+  <div class="product-media-gallery">
+    <div class="product-main-media">
+      <div class="swiper product-media-swiper">
+        <div class="swiper-wrapper">
+          {% for media in product.media %}
+            <div class="swiper-slide">
+              {% if media.media_type == 'image' %}
+                <!-- Use master/original size for best quality -->
+                <img src="{{ media | image_url: width: 1300, height: 1300 }}" 
+                     alt="{{ media.alt | default: product.title }}" 
+                     class="main-product-image"
+                     loading="lazy" />
+              {% elsif media.media_type == 'video' %}
+                <div class="product-video">
+                  {{ media | video_tag: controls: true, muted: true }}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="product-thumbnails">
+      <div class="thumbnails-container">
+        {% for media in product.media limit: 5 %}
+          <div class="thumbnail-item {% if forloop.first %}active{% endif %}" data-slide-index="{{ forloop.index0 }}">
+            {% if media.media_type == 'image' %}
+              <!-- Higher quality thumbnails -->
+              {{ media | image_url: width: 200 | image_tag: 
+                 loading: 'lazy', 
+                 alt: media.alt | default: product.title }}
+            {% elsif media.media_type == 'video' %}
+              <div class="video-thumbnail">
+                {{ media.preview_image | image_url: width: 200 | image_tag: 
+                   loading: 'lazy', 
+                   alt: media.alt | default: product.title }}
+                <div class="video-play-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M6.66667 4.16667L15 10L6.66667 15.8333V4.16667Z" fill="white"/>
+                  </svg>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+        
+        {% if product.media.size > 5 %}
+          <div class="thumbnail-arrow" data-arrow>
+            <svg width="14" height="7" viewBox="0 0 14 7" fill="none">
+              <path d="M1 1L7 6L13 1" stroke="#DD2D4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
+  <div class="product-thumbnails-mobile">
+    <div class="swiper product-thumbnails-swiper">
+      <div class="swiper-wrapper">
+        {% for media in product.media %}
+          <div class="swiper-slide thumbnail-mobile-item {% if forloop.first %}active{% endif %}" data-slide-index="{{ forloop.index0 }}">
+            {% if media.media_type == 'image' %}
+              <!-- Better mobile thumbnails -->
+              {{ media | image_url: width: 150 | image_tag: 
+                 loading: 'lazy', 
+                 alt: media.alt | default: product.title }}
+            {% elsif media.media_type == 'video' %}
+              <div class="video-thumbnail-mobile">
+                {{ media.preview_image | image_url: width: 150 | image_tag: 
+                   loading: 'lazy', 
+                   alt: media.alt | default: product.title }}
+                <div class="video-play-icon-mobile">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M5.33333 3.33333L12 8L5.33333 12.6667V3.33333Z" fill="white"/>
+                  </svg>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  initProductMedia();
+});
+
+function initProductMedia() {
+  const productMedia = document.querySelector('.product-media');
+  if (!productMedia) return;
+
+  let currentPage = 0;
+  const totalMedia = {{ product.media.size }};
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(totalMedia / itemsPerPage);
+
+  let mainSwiper = new Swiper('.product-media-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 0,
+    allowTouchMove: true,
+    speed: 600,
+    on: {
+      slideChange: function() {
+        updateActiveThumbnail(this.activeIndex);
+        autoScrollThumbnailsMobile(this.activeIndex);
+      }
+    }
+  });
+
+  window.productMediaSwiper = mainSwiper;
+
+  let thumbnailsSwiper = new Swiper('.product-thumbnails-swiper', {
+    slidesPerView: 'auto',
+    spaceBetween: 9,
+    breakpoints: {
+      768: {
+        slidesPerView: 'auto',
+        spaceBetween: 9,
+      }
+    }
+  });
+
+  function updateActiveThumbnail(activeIndex) {
+    const allThumbs = productMedia.querySelectorAll('.thumbnail-item');
+    
+    allThumbs.forEach((thumb, index) => {
+      const slideIndex = parseInt(thumb.dataset.slideIndex);
+      thumb.classList.toggle('active', slideIndex === activeIndex);
+    });
+
+    productMedia.querySelectorAll('.thumbnail-mobile-item').forEach((thumb, index) => {
+      thumb.classList.toggle('active', index === activeIndex);
+    });
+  }
+
+  function autoScrollThumbnailsMobile(activeIndex) {
+    if (thumbnailsSwiper && window.innerWidth <= 768) {
+      thumbnailsSwiper.slideTo(activeIndex);
+    }
+  }
+
+  window.updateGalleryByMediaId = function(mediaId) {
+    if (!mediaId) return;
+    
+    const productMedias = {{ product.media | json }};
+    const mediaIndex = productMedias.findIndex(media => media.id == mediaId);
+    
+    if (mediaIndex !== -1) {
+      const pageWithMedia = Math.floor(mediaIndex / itemsPerPage);
+      if (pageWithMedia !== currentPage) {
+        currentPage = pageWithMedia;
+        showThumbnailPage();
+      }
+      mainSwiper.slideTo(mediaIndex, 600);
+    }
+  };
+
+  function showThumbnailPage() {
+    const container = productMedia.querySelector('.thumbnails-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const startIndex = currentPage * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, totalMedia);
+    const mediaArray = {{ product.media | json }};
+
+    for (let i = startIndex; i < endIndex; i++) {
+      const mediaItem = mediaArray[i];
+      const thumbnailDiv = document.createElement('div');
+      thumbnailDiv.className = 'thumbnail-item';
+      if (i === mainSwiper.activeIndex) {
+        thumbnailDiv.classList.add('active');
+      }
+      thumbnailDiv.dataset.slideIndex = i;
+      
+      if (mediaItem.media_type === 'image') {
+        const img = document.createElement('img');
+        // Use proper image transformation for better quality
+        const imageUrl = mediaItem.preview_image.src;
+        // Remove existing transformations and add proper sizing
+        const baseUrl = imageUrl.split('?')[0];
+        img.src = baseUrl + '?width=200&quality=90';
+        img.alt = mediaItem.alt || '{{ product.title }}';
+        img.loading = 'lazy';
+        thumbnailDiv.appendChild(img);
+      } else if (mediaItem.media_type === 'video') {
+        const videoThumb = document.createElement('div');
+        videoThumb.className = 'video-thumbnail';
+        
+        const img = document.createElement('img');
+        const imageUrl = mediaItem.preview_image.src;
+        const baseUrl = imageUrl.split('?')[0];
+        img.src = baseUrl + '?width=200&quality=90';
+        img.alt = mediaItem.alt || '{{ product.title }}';
+        img.loading = 'lazy';
+        
+        const playIcon = document.createElement('div');
+        playIcon.className = 'video-play-icon';
+        playIcon.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M6.66667 4.16667L15 10L6.66667 15.8333V4.16667Z" fill="white"/>
+          </svg>
+        `;
+        
+        videoThumb.appendChild(img);
+        videoThumb.appendChild(playIcon);
+        thumbnailDiv.appendChild(videoThumb);
+      }
+      
+      container.appendChild(thumbnailDiv);
+    }
+
+    if (totalPages > 1) {
+      const arrow = document.createElement('div');
+      arrow.className = 'thumbnail-arrow';
+      arrow.setAttribute('data-arrow', '');
+      
+      const isLastPage = currentPage === totalPages - 1;
+      arrow.innerHTML = isLastPage ? `
+        <svg width="14" height="7" viewBox="0 0 14 7" fill="none">
+          <path d="M13 6L7 1L1 6" stroke="#DD2D4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      ` : `
+        <svg width="14" height="7" viewBox="0 0 14 7" fill="none">
+          <path d="M1 1L7 6L13 1" stroke="#DD2D4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+      
+      container.appendChild(arrow);
+    }
+  }
+
+  productMedia.addEventListener('click', function(e) {
+    if (e.target.closest('.thumbnail-item')) {
+      const slideIndex = parseInt(e.target.closest('.thumbnail-item').dataset.slideIndex);
+      if (mainSwiper) {
+        mainSwiper.slideTo(slideIndex);
+      }
+    }
+
+    if (e.target.closest('.thumbnail-mobile-item')) {
+      const slideIndex = parseInt(e.target.closest('.thumbnail-mobile-item').dataset.slideIndex);
+      if (mainSwiper) {
+        mainSwiper.slideTo(slideIndex);
+      }
+    }
+
+    if (e.target.closest('.thumbnail-arrow')) {
+      currentPage = (currentPage + 1) % totalPages;
+      showThumbnailPage();
+    }
+  });
+
+  if (totalMedia > itemsPerPage) {
+    showThumbnailPage();
+  }
+}
+</script>

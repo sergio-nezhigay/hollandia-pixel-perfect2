@@ -1,0 +1,522 @@
+{{ 'cart-drawer.css' | asset_url | stylesheet_tag }}
+
+<cart-drawer>
+  <div class="drawer-overlay" id="cart-overlay"></div>
+  <div class="cart-drawer" id="cart-drawer" data-cart-drawer>
+    <div class="drawer-header">
+      <h3 class="drawer-title">עגלת קניות</h3>
+      <button class="drawer-close" id="cart-close" type="button" aria-label="Close cart">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="cart-content" id="cart-content">
+      <div class="cart-empty">
+        <div class="cart-empty-icon">
+          <svg viewBox="0 0 1024 1024" fill="#ccc" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <path d="M800.8 952c-31.2 0-56-24.8-56-56s24.8-56 56-56 56 24.8 56 56-25.6 56-56 56z m-448 0c-31.2 0-56-24.8-56-56s24.8-56 56-56 56 24.8 56 56-25.6 56-56 56zM344 792c-42.4 0-79.2-33.6-84-76l-54.4-382.4-31.2-178.4c-2.4-19.2-19.2-35.2-37.6-35.2H96c-13.6 0-24-10.4-24-24s10.4-24 24-24h40.8c42.4 0 80 33.6 85.6 76l31.2 178.4 54.4 383.2C309.6 728 326.4 744 344 744h520c13.6 0 24 10.4 24 24s-10.4 24-24 24H344z m40-128c-12.8 0-23.2-9.6-24-22.4-0.8-6.4 1.6-12.8 5.6-17.6s10.4-8 16-8l434.4-32c19.2 0 36-15.2 38.4-33.6l50.4-288c1.6-13.6-2.4-28-10.4-36.8-5.6-6.4-12.8-9.6-21.6-9.6H320c-13.6 0-24-10.4-24-24s10.4-24 24-24h554.4c22.4 0 42.4 9.6 57.6 25.6 16.8 19.2 24.8 47.2 21.6 75.2l-50.4 288c-4.8 41.6-42.4 74.4-84 74.4l-432 32c-1.6 0.8-2.4 0.8-3.2 0.8z"></path>
+          </svg>
+        </div>
+        <p>העגלה שלך ריקה</p>
+        <a href="/collections" class="cart-empty-btn">המשך קניות</a>
+      </div>
+    </div>
+  </div>
+</cart-drawer>
+
+
+<script>
+class CartDrawer {
+  constructor() {
+    this.drawer = document.getElementById('cart-drawer');
+    this.overlay = document.getElementById('cart-overlay');
+    this.content = document.getElementById('cart-content');
+    
+    this.isOpen = false;
+    this.isLoading = false;
+    this.currentCart = null;
+    this.debounceTimeout = null;
+    
+    this.init();
+  }
+
+  init() {
+    this.bindEvents();
+    this.loadCart();
+  }
+
+  bindEvents() {
+    // Cart open triggers
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('[data-cart-open]')) {
+        e.preventDefault();
+        this.open();
+      }
+    });
+
+    // Close events
+    const closeBtn = document.getElementById('cart-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => this.close());
+    }
+    
+    if (this.overlay) {
+      this.overlay.addEventListener('click', () => this.close());
+    }
+    
+    // ESC key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.isOpen) {
+        this.close();
+      }
+    });
+
+    // Cart item interactions
+    this.content.addEventListener('click', (e) => {
+      const target = e.target.closest('button');
+      if (!target) return;
+
+      if (target.classList.contains('quantity-btn')) {
+        e.preventDefault();
+        this.handleQuantityButton(target);
+      } else if (target.classList.contains('remove-item')) {
+        e.preventDefault();
+        this.handleRemoveItem(target);
+      }
+    });
+
+    // Quantity input changes
+    this.content.addEventListener('input', (e) => {
+      if (e.target.classList.contains('quantity-input')) {
+        this.handleQuantityInput(e.target);
+      }
+    });
+
+    // Form submissions for add to cart
+    document.addEventListener('submit', (e) => {
+      if (e.target.matches('[data-cart-form]')) {
+        e.preventDefault();
+        this.handleAddToCart(e.target);
+      }
+    });
+  }
+
+  async handleAddToCart(form) {
+    const formData = new FormData(form);
+    const variantId = formData.get('id');
+    const quantity = parseInt(formData.get('quantity')) || 1;
+    
+    if (!variantId) {
+      console.error('No variant ID found');
+      return;
+    }
+
+    const success = await this.addItem(variantId, quantity);
+    if (success) {
+      this.open();
+    }
+  }
+
+  handleQuantityButton(button) {
+    if (this.isLoading) return;
+    
+    const cartItem = button.closest('.cart-item');
+    if (!cartItem) return;
+
+    const key = cartItem.dataset.key;
+    const quantityInput = cartItem.querySelector('.quantity-input');
+    const currentQty = parseInt(quantityInput.value) || 0;
+    
+    let newQty = currentQty;
+    if (button.dataset.action === 'increase') {
+      newQty = currentQty + 1;
+    } else if (button.dataset.action === 'decrease') {
+      newQty = Math.max(0, currentQty - 1);
+    }
+
+    if (newQty !== currentQty) {
+      quantityInput.value = newQty;
+      this.updateQuantityDebounced(key, newQty);
+    }
+  }
+
+  handleQuantityInput(input) {
+    if (this.isLoading) return;
+    
+    const cartItem = input.closest('.cart-item');
+    if (!cartItem) return;
+
+    const key = cartItem.dataset.key;
+    const newQty = Math.max(0, parseInt(input.value) || 0);
+    
+    this.updateQuantityDebounced(key, newQty);
+  }
+
+  handleRemoveItem(button) {
+    if (this.isLoading) return;
+    
+    const cartItem = button.closest('.cart-item');
+    if (!cartItem) return;
+
+    const key = cartItem.dataset.key;
+    this.updateQuantity(key, 0);
+  }
+
+  updateQuantityDebounced(key, quantity) {
+    clearTimeout(this.debounceTimeout);
+    this.debounceTimeout = setTimeout(() => {
+      this.updateQuantity(key, quantity);
+    }, 500);
+  }
+
+  open() {
+    if (this.drawer && this.overlay) {
+      this.drawer.classList.add('active');
+      this.overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      this.isOpen = true;
+      
+      // Refresh cart when opening
+      this.loadCart();
+    }
+  }
+
+  close() {
+    if (this.drawer && this.overlay) {
+      this.drawer.classList.remove('active');
+      this.overlay.classList.remove('active');
+      document.body.style.overflow = '';
+      this.isOpen = false;
+    }
+  }
+
+  async loadCart() {
+    try {
+      const response = await fetch('/cart.js', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const cart = await response.json();
+      this.currentCart = cart;
+      this.updateUI(cart);
+    } catch (error) {
+      console.error('Error loading cart:', error);
+    }
+  }
+
+  updateUI(cart) {
+    this.updateCartBadge(cart.item_count);
+    this.updateCartContent(cart);
+    this.dispatchCartUpdate(cart);
+  }
+
+  updateCartBadge(itemCount) {
+    document.querySelectorAll('[data-cart-open]').forEach(icon => {
+      let badge = icon.querySelector('.cart-badge');
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'cart-badge';
+        icon.style.position = 'relative';
+        icon.appendChild(badge);
+      }
+      badge.textContent = itemCount;
+      badge.style.display = itemCount > 0 ? 'flex' : 'none';
+    });
+  }
+
+  updateCartContent(cart) {
+    if (!this.content) return;
+    
+    if (cart.item_count === 0) {
+      this.renderEmptyCart();
+    } else {
+      this.renderCartItems(cart);
+    }
+  }
+
+  renderEmptyCart() {
+    this.content.innerHTML = `
+      <div class="cart-empty">
+        <div class="cart-empty-icon">
+          <svg viewBox="0 0 1024 1024" fill="#ccc" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <path d="M800.8 952c-31.2 0-56-24.8-56-56s24.8-56 56-56 56 24.8 56 56-25.6 56-56 56z m-448 0c-31.2 0-56-24.8-56-56s24.8-56 56-56 56 24.8 56 56-25.6 56-56 56zM344 792c-42.4 0-79.2-33.6-84-76l-54.4-382.4-31.2-178.4c-2.4-19.2-19.2-35.2-37.6-35.2H96c-13.6 0-24-10.4-24-24s10.4-24 24-24h40.8c42.4 0 80 33.6 85.6 76l31.2 178.4 54.4 383.2C309.6 728 326.4 744 344 744h520c13.6 0 24 10.4 24 24s-10.4 24-24 24H344z m40-128c-12.8 0-23.2-9.6-24-22.4-0.8-6.4 1.6-12.8 5.6-17.6s10.4-8 16-8l434.4-32c19.2 0 36-15.2 38.4-33.6l50.4-288c1.6-13.6-2.4-28-10.4-36.8-5.6-6.4-12.8-9.6-21.6-9.6H320c-13.6 0-24-10.4-24-24s10.4-24 24-24h554.4c22.4 0 42.4 9.6 57.6 25.6 16.8 19.2 24.8 47.2 21.6 75.2l-50.4 288c-4.8 41.6-42.4 74.4-84 74.4l-432 32c-1.6 0.8-2.4 0.8-3.2 0.8z"></path>
+          </svg>
+        </div>
+        <p>העגלה שלך ריקה</p>
+        <a href="/collections" class="cart-empty-btn" onclick="cartDrawer.close()">המשך קניות</a>
+      </div>
+    `;
+  }
+
+  renderCartItems(cart) {
+    const itemsHtml = cart.items.map(item => this.renderCartItem(item)).join('');
+    
+    this.content.innerHTML = `
+      <div class="cart-items">
+        ${itemsHtml}
+      </div>
+      <div class="cart-footer">
+        <div class="cart-subtotal">
+          <span class="cart-subtotal-label">סה"כ:</span>
+          <span class="cart-subtotal-price">₪${(cart.total_price / 100).toFixed(2)}</span>
+        </div>
+        <button class="checkout-btn" onclick="window.location.href='/checkout'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+           <span>לתשלום</span>
+        </button>
+      </div>
+    `;
+  }
+
+  renderCartItem(item) {
+    const imageHtml = item.image ? 
+      `<img src="${item.image}" alt="${item.title}" loading="lazy">` :
+      `<div style="width: 100%; height: 100%; background: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 12px;">No Image</div>`;
+
+    return `
+      <div class="cart-item" data-key="${item.key}" data-variant-id="${item.variant_id}">
+        <div class="cart-item-image">
+          ${imageHtml}
+        </div>
+        <div class="cart-item-details">
+          <div class="cart-item-header">
+            <h4 class="cart-item-title">${item.product_title}</h4>
+            <button type="button" class="remove-item" aria-label="Remove ${item.product_title}">
+              <svg fill="#000000" height="200px" width="200px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <g> <path d="M136.546,412.175c1.51,12.018,11.774,21.082,23.876,21.082c1.007,0,2.026-0.064,3.022-0.189 c6.384-0.802,12.072-4.041,16.018-9.122c3.945-5.08,5.678-11.394,4.876-17.776l-22.133-176.139 c-0.803-6.383-4.04-12.072-9.116-16.018c-5.083-3.952-11.403-5.684-17.781-4.875c-6.384,0.802-12.072,4.041-16.018,9.122 c-3.947,5.081-5.678,11.394-4.876,17.776L136.546,412.175z M131.968,228.11c1.316-1.693,3.211-2.773,5.347-3.042 c0.341-0.043,0.683-0.064,1.022-0.064c1.768,0,3.477,0.582,4.896,1.686c1.692,1.315,2.772,3.214,3.04,5.344l22.133,176.139 c0.268,2.127-0.309,4.231-1.626,5.925c-1.315,1.693-3.211,2.773-5.342,3.041c-0.336,0.042-0.679,0.064-1.017,0.064 c-4.027,0-7.441-3.022-7.945-7.028l-22.133-176.139C130.076,231.907,130.653,229.803,131.968,228.11z"></path> <path d="M466.999,69.889h-98.296v-3.355C368.704,29.847,338.856,0,302.169,0h-92.34c-36.686,0-66.534,29.847-66.534,66.533v3.355 H45.001c-16.647,0-30.189,13.542-30.189,30.189v43.52c0,16.647,13.543,30.189,30.189,30.189h5.964l37.56,298.488 c2.85,22.647,22.214,39.726,45.04,39.726h244.872c22.826,0,42.189-17.079,45.04-39.726l37.56-298.488h5.964 c16.647,0,30.189-13.542,30.189-30.189v-43.519C497.189,83.431,483.645,69.889,466.999,69.889z M159.349,66.533h0.003 c0-27.833,22.644-50.477,50.478-50.477h92.339c27.834,0,50.478,22.644,50.478,50.477v3.355h-16.521v-3.355 c0-18.724-15.233-33.957-33.958-33.957h-92.34c-18.724,0-33.958,15.233-33.958,33.957v3.355h-16.521V66.533z M320.071,66.533 v3.355H191.928v-3.355c0-9.87,8.031-17.901,17.902-17.901h92.339C312.04,48.633,320.071,56.663,320.071,66.533z M407.545,470.269 c-1.842,14.638-14.357,25.675-29.109,25.675H133.564c-14.752,0-27.268-11.038-29.109-25.675L67.147,173.785h377.705 L407.545,470.269z M481.133,143.597c0,7.792-6.34,14.133-14.133,14.133H45.001c-7.793,0-14.133-6.34-14.133-14.133v-43.52 c0-7.793,6.34-14.133,14.133-14.133h421.999c7.793,0,14.133,6.34,14.133,14.133V143.597z"></path> <path d="M256,433.256c13.279,0,24.084-10.803,24.084-24.084V233.033c0-13.28-10.804-24.084-24.084-24.084 c-13.279,0-24.084,10.803-24.084,24.084v176.138C231.916,422.452,242.72,433.256,256,433.256z M247.972,233.033 c0-4.427,3.601-8.028,8.028-8.028c4.427,0,8.028,3.601,8.028,8.028v176.138c0,4.427-3.601,8.028-8.028,8.028 c-4.427,0-8.028-3.601-8.028-8.028V233.033z"></path> <path d="M348.551,433.067c1.001,0.126,2.019,0.191,3.026,0.191c12.102,0,22.366-9.064,23.876-21.082l22.133-176.138 c0.803-6.383-0.929-12.696-4.876-17.777c-3.947-5.081-9.635-8.32-16.016-9.122c-6.385-0.8-12.692,0.929-17.772,4.875 c-5.083,3.948-8.325,9.636-9.127,16.018l-22.133,176.138c-0.803,6.383,0.929,12.696,4.876,17.777 C336.483,429.026,342.171,432.266,348.551,433.067z M343.593,408.172l22.133-176.138c0.268-2.126,1.349-4.023,3.044-5.338 c1.424-1.106,3.136-1.69,4.907-1.69c0.336,0,0.677,0.021,1.016,0.063c2.127,0.268,4.024,1.348,5.338,3.041 c1.315,1.693,1.893,3.798,1.626,5.926l-22.133,176.138c-0.547,4.345-4.575,7.515-8.967,6.964 c-2.127-0.268-4.024-1.348-5.338-3.041C343.902,412.403,343.325,410.299,343.593,408.172z"></path> </g> </g> </g> </g></svg>
+            </button>
+          </div>
+          ${item.variant_title && item.variant_title !== 'Default Title' ? 
+            `<p class="cart-item-variant">${item.variant_title}</p>` : ''
+          }
+          <div class="cart-item-footer">
+            <div class="quantity-controls">
+              <button type="button" class="quantity-btn" data-action="decrease" ${item.quantity <= 1 ? 'disabled' : ''}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+              <input type="number" class="quantity-input" value="${item.quantity}" min="0" max="99">
+              <button type="button" class="quantity-btn" data-action="increase">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+            <div class="cart-item-price">₪${(item.line_price / 100).toFixed(2)}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  async addItem(variantId, quantity = 1) {
+    if (this.isLoading) return false;
+    
+    this.setLoading(true);
+    
+    try {
+      const response = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ 
+          id: parseInt(variantId), 
+          quantity: parseInt(quantity) 
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Add to cart failed: ${response.status}`);
+      }
+
+      // Reload cart after successful addition
+      await this.loadCart();
+      return true;
+      
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      this.showError('Не вдалося додати товар до кошика');
+      return false;
+    } finally {
+      this.setLoading(false);
+    }
+  }
+
+  async updateQuantity(key, quantity) {
+    if (this.isLoading) return;
+    
+    const cartItem = document.querySelector(`[data-key="${key}"]`);
+    if (cartItem) {
+      cartItem.classList.add('updating');
+    }
+    
+    this.setLoading(true);
+    
+    try {
+      const response = await fetch('/cart/change.js', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ 
+          id: key.toString(),
+          quantity: parseInt(quantity) 
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Update quantity failed: ${response.status}`);
+      }
+
+      const cart = await response.json();
+      this.currentCart = cart;
+      this.updateUI(cart);
+      
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      
+      // Reload cart on error to reset state
+      await this.loadCart();
+    } finally {
+      this.setLoading(false);
+      if (cartItem) {
+        cartItem.classList.remove('updating');
+      }
+    }
+  }
+
+  setLoading(loading) {
+    this.isLoading = loading;
+    if (this.drawer) {
+      this.drawer.classList.toggle('cart-loading', loading);
+    }
+  }
+
+  showError(message) {
+    console.error(message);
+    
+    // Create a simple error notification
+    const errorDiv = document.createElement('div');
+    errorDiv.textContent = message;
+    errorDiv.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #DD2D4A;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      z-index: 10000;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(221, 45, 74, 0.3);
+      animation: slideIn 0.3s ease;
+    `;
+    
+    // Add animation keyframes
+    if (!document.getElementById('error-animation-styles')) {
+      const style = document.createElement('style');
+      style.id = 'error-animation-styles';
+      style.textContent = `
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(errorDiv);
+    
+    setTimeout(() => {
+      errorDiv.remove();
+    }, 4000);
+  }
+
+  dispatchCartUpdate(cart) {
+    const event = new CustomEvent('cart:updated', {
+      detail: { cart },
+      bubbles: true
+    });
+    document.dispatchEvent(event);
+  }
+}
+
+// Initialize cart drawer when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  window.cartDrawer = new CartDrawer();
+});
+
+// Global function for external access
+window.addToCart = async function(variantId, quantity = 1) {
+  if (window.cartDrawer) {
+    const success = await window.cartDrawer.addItem(variantId, quantity);
+    if (success) {
+      window.cartDrawer.open();
+    }
+    return success;
+  }
+  return false;
+};
+
+// Alternative method for adding to cart with properties
+window.addToCartWithProperties = async function(variantId, quantity = 1, properties = {}) {
+  if (!window.cartDrawer) return false;
+  
+  if (window.cartDrawer.isLoading) return false;
+  
+  window.cartDrawer.setLoading(true);
+  
+  try {
+    const requestBody = { 
+      id: parseInt(variantId), 
+      quantity: parseInt(quantity) 
+    };
+    
+    // Add properties if provided
+    if (properties && Object.keys(properties).length > 0) {
+      requestBody.properties = properties;
+    }
+    
+    const response = await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Add to cart failed: ${response.status}`);
+    }
+
+    await window.cartDrawer.loadCart();
+    window.cartDrawer.open();
+    return true;
+    
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    return false;
+  } finally {
+    window.cartDrawer.setLoading(false);
+  }
+};
+</script>

@@ -1,0 +1,281 @@
+.price-table-block {
+  width: 100%;
+  margin-top: 22px;
+}
+.price-table-container {
+  width: 100%;
+}
+.price-columns {
+  display: flex;
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 90px;
+  align-items: center;
+}
+.price-column {
+  width: 170px;
+  height: 90px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.column-divider {
+  width: 1px;
+  height: 74px;
+  background: #D1D5DD;
+  flex-shrink: 0;
+}
+.column-header {
+  font-size: 14px;
+  font-weight: 400;
+  color: #89898C;
+  margin-bottom: 6px;
+}
+.header-line {
+  width: 93px;
+  height: 1px;
+  background: #F1F2F5;
+  margin-bottom: 8px;
+}
+.current-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #DD2D4A;
+}
+.shipping-info-badge-pdp {
+  background-color: #FFEEF1;
+  color: #DD2D4A;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 17px;
+  width: 100%;
+  height: 39px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0;
+  direction: rtl;
+}
+.shipping-info-badge-pdp svg:first-child {
+  margin-right: 95px;
+  flex-shrink: 0;
+  order: 5;
+}
+.shipping-text-pdp {
+  color: #DD2D4A;
+  margin-right: 8px;
+  white-space: nowrap;
+  order: 4;
+  font-size: 14px;
+  font-weight: 400;
+}
+.shipping-info-badge-pdp svg:nth-child(3) {
+  margin-right: 11px;
+  flex-shrink: 0;
+  order: 3;
+}
+.shipping-divider-pdp {
+  width: 1px;
+  height: 18px;
+  background-color: #FBD7DD;
+  margin-right: 11px;
+  flex-shrink: 0;
+  order: 2;
+}
+.discount-text-pdp {
+  color: #DD2D4A;
+  margin-right: 12px;
+  white-space: nowrap;
+  order: 1;
+  font-size: 14px;
+  font-weight: 400;
+}
+.shipping-text {
+  color: #DD2D4A;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.shipping-divider {
+  width: 1px;
+  height: 18px;
+  background-color: #DD2D4A;
+  flex-shrink: 0;
+}
+.discount-text {
+  color: #DD2D4A;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+}
+
+/* Additional elements for mobile */
+.mobile-installments-text {
+  display: none;
+  color: #DD2D4A;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+  margin-top: 8px;
+  direction: rtl;
+}
+
+.mobile-discount-text {
+  display: none;
+  color: #DD2D4A;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.mobile-discount-icon {
+  display: none;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .price-table-block {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .price-table-container {
+    width: 328px;
+  }
+  
+  .price-columns {
+    flex-direction: row;
+    height: 78px;
+    width: 328px;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+  }
+  
+  .price-column {
+    width: auto;
+    height: 68px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  .column-divider {
+    width: 1px;
+    height: 68px;
+    background: #D1D5DD;
+    flex-shrink: 0;
+  }
+  
+  .column-header {
+    font-size: 14px;
+    font-weight: 400;
+    color: #89898C;
+    margin-bottom: 5px;
+  }
+  
+  .header-line {
+    width: 50px;
+    height: 1px;
+    background: #F1F2F5;
+    margin-bottom: 5px;
+  }
+  
+  .current-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #DD2D4A;
+  }
+  
+  .shipping-info-badge-pdp {
+    background-color: #FFEEF1;
+    color: #DD2D4A;
+    font-size: 14px;
+    font-weight: 400;
+    border-radius: 17px;
+    width: 328px;
+    height: 35px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 16px;
+    direction: ltr;
+    justify-content: space-between;
+  }
+  
+  .shipping-info-badge-pdp svg:first-child {
+    margin-right: 34px;
+    flex-shrink: 0;
+    order: 1;
+    width: 16px;
+    height: 16px;
+  }
+  
+  .shipping-text-pdp {
+    color: #DD2D4A;
+    margin-right: 8px;
+    white-space: nowrap;
+    order: 2;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  
+  .shipping-info-badge-pdp svg:nth-child(3) {
+    margin-right: 5.5px;
+    flex-shrink: 0;
+    order: 3;
+    width: 16px;
+    height: 16px;
+  }
+  
+  .shipping-divider-pdp {
+    width: 1px;
+    height: 18px;
+    background-color: #FBD7DD;
+    margin-right: 5.5px;
+    flex-shrink: 0;
+    order: 4;
+  }
+  
+  .discount-text-pdp {
+    display: none;
+  }
+  
+  .mobile-discount-text {
+    display: flex;
+    align-items: center;
+    color: #DD2D4A;
+    font-size: 14px;
+    font-weight: 400;
+    white-space: nowrap;
+    order: 5;
+  }
+  
+  .mobile-discount-icon {
+    display: block;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-left: 10px;
+  }
+  
+  .mobile-installments-text {
+    display: block;
+    max-width: 328px;
+    text-align: right;
+    margin-right: 10px;
+  }
+}

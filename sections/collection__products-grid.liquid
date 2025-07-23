@@ -1,0 +1,98 @@
+{{ 'collection-products-grid.css' | asset_url | stylesheet_tag }}
+{{ 'custom-image.css' | asset_url | stylesheet_tag }}
+<section class="collection-products-grid">
+  <!-- Filter Tabs -->
+  <h2 class="visually-hidden">Products list</h2>
+  <div class="filter-tabs">
+    <div class="tabs-wrapper">
+      <button class="tab-button active" data-filter="all">הכל</button>
+      <button class="tab-button" data-filter="modern">מודרני</button>
+      <button class="tab-button" data-filter="classic">קלאסי</button>
+      <button class="tab-button" data-filter="luxury">יוקרתי</button>
+      <button class="tab-button" data-filter="sale">במבצע</button>
+    </div>
+  </div>
+
+  <!-- Products Grid -->
+
+  {% assign index = 0 %}
+
+  <div class="products-grid">
+    <!-- to debug -->
+    {% for i in (1..3) %}
+      {% for product in collection.products %}
+        {% assign index = index | plus: 1 %}
+        {% render 'product-card', product: product %}
+
+        {% if index == 3 %}
+          <div class="banner banner-mobile">
+            {% render 'custom-image' %}
+            {% comment %}remove old banner fromsection{% endcomment %}
+          </div>
+        {% endif %}
+
+        {% if index == 6 %}
+          <div class="banner banner-desktop">
+            {% render 'custom-image' %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Filter functionality
+    const filterButtons = document.querySelectorAll('.tab-button');
+    const productCards = document.querySelectorAll('.product-card');
+
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        const filter = this.dataset.filter;
+
+        // Update active button
+        filterButtons.forEach((btn) => btn.classList.remove('active'));
+        this.classList.add('active');
+
+        // Filter products
+        productCards.forEach((card) => {
+          if (filter === 'all') {
+            card.style.display = 'block';
+          } else {
+            const category = card.dataset.category;
+            if (category && category.includes(filter)) {
+              card.style.display = 'block';
+            } else {
+              card.style.display = 'none';
+            }
+          }
+        });
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Custom Image Picker",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Select Image"
+    },
+    {
+      "type": "url",
+      "id": "image_url",
+      "label": "Image Link URL",
+      "info": "Add a URL to make the image clickable"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Baner"
+    }
+  ]
+}
+{% endschema %}

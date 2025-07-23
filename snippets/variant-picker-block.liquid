@@ -1,0 +1,392 @@
+{{ 'variant-picker-block.css' | asset_url | stylesheet_tag }}
+{{ 'store-locator.css' | asset_url | stylesheet_tag }}
+
+{% assign color_option = blank %}
+{% assign size_option = blank %}
+
+{% for option in product.options_with_values %}
+  {% assign option_name = option.name | downcase %}
+  {% if option_name == 'color' or option_name == 'colour' or option_name == 'צבע' or option_name == 'גוון' %}
+    {% assign color_option = option %}
+  {% elsif option_name == 'size' or option_name == 'גודל' or option_name == 'מידה' %}
+    {% assign size_option = option %}
+  {% endif %}
+{% endfor %}
+
+{% assign unique_id = block.id | default: 'variant-picker-' | append: 'random' %}
+
+<div class="variant-picker-block" data-block-id="{{ unique_id }}" {{ block.shopify_attributes }}>
+  
+  {% if color_option %}
+    <div class="color-picker-section">
+      <div class="color-header">
+        <span class="color-label">{{ block.settings.color_label | default: 'גוון' }}:</span>
+        <span class="color-value">{{ product.selected_or_first_available_variant.option1 | default: color_option.values.first }}</span>
+      </div>
+      
+      <div class="color-swatches-container">
+        <div class="color-swatches">
+          {% for value in color_option.values %}
+            {% assign variant_for_color = blank %}
+            {% assign featured_media_id = blank %}
+            {% for variant in product.variants %}
+              {% if variant.option1 == value %}
+                {% assign variant_for_color = variant %}
+                {% if variant.featured_media %}
+                  {% assign featured_media_id = variant.featured_media.id %}
+                {% endif %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+            
+            <button class="color-swatch {% if forloop.first %}active{% endif %}" 
+                    data-color="{{ value }}" 
+                    data-variant-id="{{ variant_for_color.id }}"
+                    data-featured-media="{{ featured_media_id }}"
+                    {% unless variant_for_color.available %}disabled{% endunless %}>
+              <div class="color-circle" data-color="{{ value | downcase }}"></div>
+            </button>
+          {% endfor %}
+        </div>
+        
+        {% render 'store-locator' %}
+      </div>
+    </div>
+  {% endif %}
+  
+  <div class="variant-controls-section">
+    <div class="variant-controls-header">
+      <span class="controls-label">{{ block.settings.size_label | default: 'בחר גודל מיטה' }}</span>
+    </div>
+    
+    <div class="variant-controls">
+      {% if size_option %}
+        <div class="size-selector">
+          <div class="custom-select" data-select-id="{{ unique_id }}-size">
+            <button type="button" class="select-trigger" aria-expanded="false">
+              <span class="select-value">מידה {{ size_option.values.first }}</span>
+              <svg class="select-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M4 6L8 10L12 6" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <ul class="select-dropdown" role="listbox">
+              {% for value in size_option.values %}
+                <li class="select-option {% if forloop.first %}selected{% endif %}" 
+                    data-value="{{ value }}" 
+                    role="option"
+                    tabindex="0">
+                  מידה {{ value }}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+      
+    <div class="quantity-selector">
+    <button class="quantity-btn quantity-plus" type="button">
+    <svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11 5.07056V17.9039" stroke="#1A1A1B" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M4.5835 11.4873H17.4168" stroke="#1A1A1B" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <input type="number" class="quantity-input" value="1" min="1" max="99">
+      <button class="quantity-btn quantity-minus" type="button">
+    <svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4.5835 11.4873H17.4168" stroke="#1A1A1B" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</div>
+    </div>
+  </div>
+  
+</div>
+
+<script>
+(function() {
+  'use strict';
+  
+  function initVariantPicker() {
+    const allVariantPickers = document.querySelectorAll('.variant-picker-block');
+    
+    allVariantPickers.forEach((variantPicker, blockIndex) => {
+      const blockId = variantPicker.dataset.blockId || `block-${blockIndex}`;
+
+      const colorSwatches = variantPicker.querySelectorAll('.color-swatch');
+      const colorValue = variantPicker.querySelector('.color-value');
+      const quantityInput = variantPicker.querySelector('.quantity-input');
+      const quantityMinus = variantPicker.querySelector('.quantity-minus');
+      const quantityPlus = variantPicker.querySelector('.quantity-plus');
+      const customSelect = variantPicker.querySelector('.custom-select');
+      const selectTrigger = variantPicker.querySelector('.select-trigger');
+      const selectValue = variantPicker.querySelector('.select-value');
+      const selectDropdown = variantPicker.querySelector('.select-dropdown');
+      const selectOptions = variantPicker.querySelectorAll('.select-option');
+
+      let currentVariant = {{ product.selected_or_first_available_variant | json }};
+      let selectedColor = '{{ product.selected_or_first_available_variant.option1 | default: color_option.values.first }}';
+      let selectedSize = '{{ product.selected_or_first_available_variant.option2 | default: size_option.values.first }}';
+
+      function closeAllDropdowns() {
+        document.querySelectorAll('.custom-select').forEach(select => {
+          select.classList.remove('open');
+          const trigger = select.querySelector('.select-trigger');
+          if (trigger) {
+            trigger.setAttribute('aria-expanded', 'false');
+            trigger.classList.remove('active');
+          }
+        });
+      }
+
+      function toggleDropdown(selectElement) {
+        const isOpen = selectElement.classList.contains('open');
+        
+        closeAllDropdowns();
+        
+        if (!isOpen) {
+          selectElement.classList.add('open');
+          const trigger = selectElement.querySelector('.select-trigger');
+          if (trigger) {
+            trigger.setAttribute('aria-expanded', 'true');
+            trigger.classList.add('active');
+          }
+        }
+      }
+
+      if (selectTrigger && customSelect) {
+        selectTrigger.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          
+          setTimeout(() => {
+            toggleDropdown(customSelect);
+          }, 0);
+        });
+
+        selectTrigger.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleDropdown(customSelect);
+          }
+        });
+      }
+
+      if (selectOptions.length > 0) {
+        selectOptions.forEach((option, optionIndex) => {
+          option.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            selectOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            if (selectValue) {
+              selectValue.textContent = this.textContent;
+            }
+            
+            selectedSize = this.dataset.value;
+            
+            closeAllDropdowns();
+            updateVariantByOptions();
+          });
+
+          option.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              this.click();
+            }
+          });
+        });
+      }
+
+      function findVariantByOptions(color, size) {
+        const variants = {{ product.variants | json }};
+        for (let variant of variants) {
+          const matchesColor = !color || variant.option1 === color;
+          const matchesSize = !size || variant.option2 === size;
+          if (matchesColor && matchesSize) {
+            return variant;
+          }
+        }
+        return variants[0];
+      }
+
+      function updateVariantByOptions() {
+        const variant = findVariantByOptions(selectedColor, selectedSize);
+        if (variant) {
+          currentVariant = variant;
+          updatePricing();
+          dispatchVariantChange(variant);
+        }
+      }
+
+      function dispatchVariantChange(variant) {
+        const event = new CustomEvent('variant:changed', {
+          detail: { variant },
+          bubbles: true
+        });
+        document.dispatchEvent(event);
+      }
+
+      function dispatchQuantityChange(quantity) {
+        const event = new CustomEvent('quantity:changed', {
+          detail: { quantity },
+          bubbles: true
+        });
+        document.dispatchEvent(event);
+      }
+
+      function updatePricing() {
+        if (!currentVariant) return;
+        
+        const quantity = parseInt(quantityInput.value) || 1;
+        const price = currentVariant.price;
+        const compareAtPrice = currentVariant.compare_at_price;
+        
+        const priceTable = document.querySelector('.price-table-block');
+        if (priceTable) {
+          updatePriceTable(price, compareAtPrice, quantity);
+        }
+      }
+
+      function updatePriceTable(price, compareAtPrice, quantity) {
+        const formatPrice = (priceInCents) => {
+          const priceNum = Math.floor(priceInCents / 100) * quantity;
+          if (priceNum >= 1000) {
+            const thousands = Math.floor(priceNum / 1000);
+            const remainder = String(priceNum % 1000).padStart(3, '0');
+            return `₪${thousands},${remainder}`;
+          }
+          return `₪${priceNum}`;
+        };
+
+        const currentPriceElements = document.querySelectorAll('.price-column .current-price');
+        const deliveryPrice = parseInt(document.querySelector('[data-delivery-price]')?.dataset.deliveryPrice) || 550;
+        
+        if (currentPriceElements[0]) {
+          currentPriceElements[0].textContent = formatPrice(price);
+        }
+        
+        if (currentPriceElements[2]) {
+          const totalPrice = Math.floor(price / 100) * quantity + deliveryPrice;
+          if (totalPrice >= 1000) {
+            const thousands = Math.floor(totalPrice / 1000);
+            const remainder = String(totalPrice % 1000).padStart(3, '0');
+            currentPriceElements[2].textContent = `₪${thousands},${remainder}`;
+          } else {
+            currentPriceElements[2].textContent = `₪${totalPrice}`;
+          }
+        }
+        
+        const installmentText = document.querySelector('.discount-text-pdp');
+        if (installmentText) {
+          const totalPrice = Math.floor(price / 100) * quantity + deliveryPrice;
+          const monthlyPayment = Math.ceil(totalPrice / 12);
+          installmentText.textContent = `החל מ-${monthlyPayment} ₪ לחודש • 12 תשלומים`;
+        }
+      }
+
+      colorSwatches.forEach((swatch, swatchIndex) => {
+        swatch.addEventListener('click', function() {
+          if (this.disabled) return;
+          
+          colorSwatches.forEach(s => s.classList.remove('active'));
+          this.classList.add('active');
+          
+          selectedColor = this.dataset.color;
+          if (colorValue) {
+            colorValue.textContent = selectedColor;
+          }
+          
+          const featuredMediaId = this.dataset.featuredMedia;
+          if (featuredMediaId && window.updateGalleryByMediaId) {
+            window.updateGalleryByMediaId(featuredMediaId);
+          }
+          
+          updateVariantByOptions();
+        });
+      });
+
+      if (quantityInput) {
+        quantityInput.addEventListener('change', function() {
+          updatePricing();
+          dispatchQuantityChange(this.value);
+        });
+      }
+
+      if (quantityMinus) {
+        quantityMinus.addEventListener('click', function() {
+          const currentValue = parseInt(quantityInput.value);
+          if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+            updatePricing();
+            dispatchQuantityChange(quantityInput.value);
+          }
+        });
+      }
+
+      if (quantityPlus) {
+        quantityPlus.addEventListener('click', function() {
+          const currentValue = parseInt(quantityInput.value);
+          if (currentValue < 99) {
+            quantityInput.value = currentValue + 1;
+            updatePricing();
+            dispatchQuantityChange(quantityInput.value);
+          }
+        });
+      }
+
+      if (currentVariant) {
+        updatePricing();
+      }
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.custom-select')) {
+        document.querySelectorAll('.custom-select').forEach(select => {
+          select.classList.remove('open');
+          const trigger = select.querySelector('.select-trigger');
+          if (trigger) {
+            trigger.setAttribute('aria-expanded', 'false');
+            trigger.classList.remove('active');
+          }
+        });
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.custom-select').forEach(select => {
+          select.classList.remove('open');
+          const trigger = select.querySelector('.select-trigger');
+          if (trigger) {
+            trigger.setAttribute('aria-expanded', 'false');
+            trigger.classList.remove('active');
+          }
+        });
+      }
+    });
+
+    setTimeout(function() {
+      const allPickers = document.querySelectorAll('.variant-picker-block');
+      allPickers.forEach((picker, index) => {
+        const quantityInput = picker.querySelector('.quantity-input');
+        if (quantityInput) {
+          const event = new CustomEvent('quantity:changed', {
+            detail: { quantity: quantityInput.value },
+            bubbles: true
+          });
+          document.dispatchEvent(event);
+        }
+      });
+    }, 100);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVariantPicker);
+  } else {
+    initVariantPicker();
+  }
+})();
+</script>

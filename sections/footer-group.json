@@ -1,0 +1,232 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "Footer group",
+  "type": "footer",
+  "sections": {
+    "footer_contact_Q6zFay": {
+      "type": "footer-contact",
+      "blocks": {
+        "contact_department_JHqYcT": {
+          "type": "contact_department",
+          "settings": {
+            "department_title": "שירות לקוחות",
+            "phone_number": "077-9966249",
+            "whatsapp_number": "972779966249",
+            "whatsapp_text": "לצ'אט עם נציג"
+          }
+        },
+        "contact_department_bDACqQ": {
+          "type": "contact_department",
+          "settings": {
+            "department_title": "תיאום אספקה",
+            "phone_number": "077-8052650",
+            "whatsapp_number": "972778052650",
+            "whatsapp_text": "לצ'אט עם נציג"
+          }
+        }
+      },
+      "block_order": [
+        "contact_department_JHqYcT",
+        "contact_department_bDACqQ"
+      ],
+      "name": "Contact Info",
+      "settings": {
+        "title": "תמיד פה בשבילכם",
+        "subtitle": "שעות פעילות מוקד שירות לקוחות ושירות האספקות",
+        "working_hours": "א-ה: 8:30-16:30",
+        "background_color": "#f4efec",
+        "title_color": "#1a1a1b",
+        "subtitle_color": "#1a1a1b",
+        "hours_color": "#1a1a1b",
+        "divider_color": "#b6b8c1",
+        "department_title_color": "#1a1a1b",
+        "link_color": "#1a1a1b",
+        "phone_icon_color": "#1a1a1b",
+        "whatsapp_color": "#25d366"
+      }
+    },
+    "footer_eqpVHM": {
+      "type": "footer",
+      "blocks": {
+        "menu_HQATC6": {
+          "type": "menu",
+          "settings": {
+            "menu_title": "אודות",
+            "menu": "footer-block2"
+          }
+        },
+        "menu_6f3xyY": {
+          "type": "menu",
+          "settings": {
+            "menu_title": "תחומי התמחות",
+            "menu": "footer-block3"
+          }
+        },
+        "menu_hi6kit": {
+          "type": "menu",
+          "settings": {
+            "menu_title": "תחומי התמחות",
+            "menu": "footer-block1"
+          }
+        }
+      },
+      "block_order": [
+        "menu_HQATC6",
+        "menu_6f3xyY",
+        "menu_hi6kit"
+      ],
+      "name": "Footer",
+      "settings": {
+        "social_title": "מומלץ לקנות",
+        "social_description": "המומלץ ביותר למוכרים האמינים והמהירים המובילים בישראל",
+        "cta_text": "למחו להרשמה מהירה",
+        "cta_link": "",
+        "social_icons_title": "עקבו אחרינו",
+        "tiktok_url": "#",
+        "instagram_url": "#",
+        "youtube_url": "#",
+        "facebook_url": "#",
+        "copyright_text": "© 2025 כל הזכויות שמורות להולנדיה"
+      }
+    },
+    "navigation": {
+      "type": "footer__navigation",
+      "blocks": {
+        "social_fPRRhg": {
+          "type": "social",
+          "settings": {
+            "url": "https:\/\/www.tiktok.com\/@sealy_israel"
+          }
+        },
+        "ad445fe9-cf00-4a0c-9dc4-d67ba049aae2": {
+          "type": "social",
+          "settings": {
+            "url": "https:\/\/www.youtube.com\/channel\/UCGlJSck7tw_JNCEWulRz_6Q"
+          }
+        },
+        "social_KqVTiY": {
+          "type": "social",
+          "settings": {
+            "url": "https:\/\/www.instagram.com\/sealy_israel\/"
+          }
+        },
+        "8302052c-e295-4c60-81ae-cf3ac8c80f30": {
+          "type": "social",
+          "settings": {
+            "url": "https:\/\/www.facebook.com\/sealyil"
+          }
+        },
+        "navigation_988TMG": {
+          "type": "navigation",
+          "settings": {
+            "heading": "קטגוריות",
+            "navigation": ""
+          }
+        },
+        "navigation_irWGpD": {
+          "type": "navigation",
+          "settings": {
+            "heading": "אודות",
+            "navigation": ""
+          }
+        },
+        "navigation_FUxDi3": {
+          "type": "navigation",
+          "settings": {
+            "heading": "משפטי",
+            "navigation": "footer"
+          }
+        },
+        "navigation_KwzMyc": {
+          "type": "navigation",
+          "settings": {
+            "heading": "סניפים",
+            "navigation": ""
+          }
+        },
+        "social_EA3GPr": {
+          "type": "custom",
+          "settings": {
+            "url": "https:\/\/cdn.shopify.com\/s\/files\/1\/0852\/5653\/6367\/files\/20231205090907572.pdf?v=1720342449"
+          }
+        },
+        "social_nwftYG": {
+          "type": "custom",
+          "settings": {
+            "url": "https:\/\/cdn.shopify.com\/s\/files\/1\/0852\/5653\/6367\/files\/2024.pdf?v=1715251078"
+          }
+        }
+      },
+      "block_order": [
+        "social_fPRRhg",
+        "ad445fe9-cf00-4a0c-9dc4-d67ba049aae2",
+        "social_KqVTiY",
+        "8302052c-e295-4c60-81ae-cf3ac8c80f30",
+        "navigation_988TMG",
+        "navigation_irWGpD",
+        "navigation_FUxDi3",
+        "navigation_KwzMyc",
+        "social_EA3GPr",
+        "social_nwftYG"
+      ],
+      "disabled": true,
+      "settings": {
+        "social_heading": "עקבו אחרינו"
+      }
+    },
+    "social": {
+      "type": "footer__social_and_copy",
+      "blocks": {
+        "ad445fe9-cf00-4a0c-9dc4-d67ba049aae2": {
+          "type": "social",
+          "settings": {
+            "url": "https:\/\/youtube.com"
+          }
+        },
+        "8302052c-e295-4c60-81ae-cf3ac8c80f30": {
+          "type": "social",
+          "settings": {
+            "url": "https:\/\/facebook.com"
+          }
+        },
+        "b4870e78-cb47-4d79-a3a9-5632d5450689": {
+          "type": "social",
+          "settings": {
+            "url": "https:\/\/linkedin.com"
+          }
+        },
+        "afaffbbc-b797-4595-b26b-181f5c53e2cf": {
+          "type": "social",
+          "settings": {
+            "url": "https:\/\/twitter.com"
+          }
+        }
+      },
+      "block_order": [
+        "ad445fe9-cf00-4a0c-9dc4-d67ba049aae2",
+        "8302052c-e295-4c60-81ae-cf3ac8c80f30",
+        "b4870e78-cb47-4d79-a3a9-5632d5450689",
+        "afaffbbc-b797-4595-b26b-181f5c53e2cf"
+      ],
+      "disabled": true,
+      "settings": {
+        "copy": "כל הזכויות שמורות לסילי ישראל",
+        "partner_url": "https:\/\/www.selected.co.il\/"
+      }
+    }
+  },
+  "order": [
+    "footer_contact_Q6zFay",
+    "footer_eqpVHM",
+    "navigation",
+    "social"
+  ]
+}

@@ -1,0 +1,139 @@
+<!-- store-locator.liquid -->
+<div class="store-locator-container">
+  <button class="store-locator-btn" data-store-locator-trigger>
+    <span class="store-locator-text">
+      <span class="additional-text">{{ section.settings.additional_text | default: '+ 100 נוספים' }}</span><span class="comma">, </span>
+       <span class="appointment-text">{{ section.settings.appointment_text | default: 'לתיאום פגישה' }}</span>
+    </span>
+    <svg class="store-locator-arrow" width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5.44904 9.58492C5.55248 9.58492 5.65602 9.54539 5.73499 9.46642C5.89303 9.30838 5.89303 9.05246 5.73499 8.89452L1.97642 5.13596L5.73499 1.3774C5.89303 1.21936 5.89303 0.963441 5.73499 0.805503C5.57695 0.647565 5.32103 0.647464 5.16309 0.805503L1.11858 4.85001C0.960542 5.00805 0.960542 5.26397 1.11858 5.42191L5.16309 9.46642C5.24206 9.54539 5.3456 9.58492 5.44904 9.58492Z" fill="#DD2D4A" stroke="#DD2D4A" stroke-width="0.3"/>
+</svg>
+  </button>
+
+  <!-- Desktop Popup -->
+  <div class="store-locator-popup desktop-only" data-store-locator-popup>
+    <div class="popup-overlay" data-store-locator-close></div>
+    <div class="popup-content">
+      <div class="popup-header-ss">
+      <button class="popup-close" data-store-locator-close>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6L18 18" stroke="#666" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      
+      <h3 class="popup-title">{{ section.settings.popup_title | default: 'מגזן רהב של צבעים מחכים לכם בסניפים' }}</h3>
+      </div>
+      <div class="stores-list">
+        {% for i in (1..10) %}
+          {% assign store_name = 'store_' | append: i | append: '_name' %}
+          {% assign store_address = 'store_' | append: i | append: '_address' %}
+          {% assign store_link = 'store_' | append: i | append: '_link' %}
+          
+          {% if section.settings[store_name] != blank %}
+            <div class="store-item">
+              <div class="store-info">
+                <h4 class="store-name">{{ section.settings[store_name] }}</h4>
+                <p class="store-address">{{ section.settings[store_address] }}</p>
+              </div>
+              {% if section.settings[store_link] != blank %}
+                <a href="{{ section.settings[store_link] }}" class="store-btn">{{ section.settings.button_text | default: 'לתיאום פגישה' }}</a>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Popup (замінює drawer) -->
+  <div class="store-locator-popup mobile-only" data-store-locator-mobile-popup>
+    <div class="mobile-popup-overlay" data-store-locator-close></div>
+    <div class="mobile-popup-content">
+      <button class="mobile-popup-close" data-store-locator-close>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6L18 18" stroke="#666" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      
+      <h3 class="mobile-popup-title">{{ section.settings.popup_title | default: 'מגזן רהב של צבעים מחכים לכם בסניפים' }}</h3>
+      
+      <div class="stores-list">
+        {% for i in (1..10) %}
+          {% assign store_name = 'store_' | append: i | append: '_name' %}
+          {% assign store_address = 'store_' | append: i | append: '_address' %}
+          {% assign store_link = 'store_' | append: i | append: '_link' %}
+          
+          {% if section.settings[store_name] != blank %}
+            <div class="store-item">
+              <div class="store-info">
+                <h4 class="store-name">{{ section.settings[store_name] }}</h4>
+                <p class="store-address">{{ section.settings[store_address] }}</p>
+              </div>
+              {% if section.settings[store_link] != blank %}
+                <a href="{{ section.settings[store_link] }}" class="store-btn">{{ section.settings.button_text | default: 'לתיאום פגישה' }}</a>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const trigger = document.querySelector('[data-store-locator-trigger]');
+  const desktopPopup = document.querySelector('[data-store-locator-popup]');
+  const mobilePopup = document.querySelector('[data-store-locator-mobile-popup]');
+  const closeButtons = document.querySelectorAll('[data-store-locator-close]');
+  
+  if (!trigger) return;
+  
+  function isMobile() {
+    return window.innerWidth <= 768;
+  }
+  
+  trigger.addEventListener('click', function() {
+    if (isMobile()) {
+      if (mobilePopup) {
+        mobilePopup.classList.add('active');
+        document.body.classList.add('modal-open');
+      }
+    } else {
+      if (desktopPopup) {
+        desktopPopup.classList.add('active');
+      }
+    }
+  });
+  
+  closeButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      if (desktopPopup) desktopPopup.classList.remove('active');
+      if (mobilePopup) {
+        mobilePopup.classList.remove('active');
+        document.body.classList.remove('modal-open');
+      }
+    });
+  });
+  
+  // Close on escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      if (desktopPopup) desktopPopup.classList.remove('active');
+      if (mobilePopup) {
+        mobilePopup.classList.remove('active');
+        document.body.classList.remove('modal-open');
+      }
+    }
+  });
+  
+  // Handle window resize
+  window.addEventListener('resize', function() {
+    if (desktopPopup) desktopPopup.classList.remove('active');
+    if (mobilePopup) {
+      mobilePopup.classList.remove('active');
+      document.body.classList.remove('modal-open');
+    }
+  });
+});
+</script>
