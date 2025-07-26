@@ -122,7 +122,7 @@
 }
 
 .hero-button:hover {
-  background-color: #6B4C42;
+  background-color: #6b4c42;
   border-color: #f0f0f0;
   color: white;
 }
@@ -207,7 +207,7 @@
   height: 10px;
   border-radius: 50%;
   border: none;
-  background-color: #6D574B;
+  background-color: #6d574b;
   cursor: pointer;
   transition: background-color 0.3s ease;
   position: relative;
@@ -215,18 +215,18 @@
 }
 
 .pagination-dot.active {
-  background-color: #DD2D4A;
+  background-color: #dd2d4a;
 }
 
 .pagination-dot:hover {
-  background-color: #DD2D4A;
+  background-color: #dd2d4a;
 }
 
 @media (max-width: 768px) {
   .hero-banner-wrapper {
     height: 406px;
   }
-  
+
   .hero-overlay {
     position: absolute;
     top: 0;
@@ -245,21 +245,21 @@
       rgba(79, 59, 50, 0) 100%
     );
   }
-  
+
   .hero-banner-content {
     flex-direction: column;
   }
-  
+
   .hero-text-section {
     position: absolute;
-    top: 24px;
+    top: 26px;
     left: 0;
     width: 100%;
     height: auto;
     margin-left: 0;
     z-index: 5;
   }
-  
+
   .hero-text-content {
     position: relative;
     width: 100%;
@@ -269,7 +269,7 @@
     padding: 0 20px;
     contain: layout style;
   }
-  
+
   .hero-text-block {
     position: absolute;
     top: 0;
@@ -290,13 +290,13 @@
     pointer-events: none;
     will-change: opacity;
   }
-  
+
   .hero-text-block.active {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
   }
-  
+
   .hero-title {
     font-size: 26px;
     margin: 0 0 16px 0;
@@ -304,7 +304,7 @@
     position: relative;
     backface-visibility: hidden;
   }
-  
+
   .hero-description {
     font-size: 12px;
     margin: 0 0 20px 0;
@@ -314,7 +314,7 @@
     position: relative;
     backface-visibility: hidden;
   }
-  
+
   .hero-button {
     width: 204px;
     height: 40px;
@@ -324,105 +324,106 @@
     position: relative;
     backface-visibility: hidden;
   }
-  
+
   .hero-product-section {
     flex: 1;
     padding-right: 0;
     padding-bottom: 20px;
     align-items: center;
   }
-  
+
   .hero-product-container {
     height: 60%;
     max-width: 400px;
   }
-  
+
   .hero-product-slide {
     transform: translateX(100%);
     opacity: 0;
     transition: all 0.6s ease;
   }
-  
+
   .hero-product-slide.active {
     transform: translateX(0);
     opacity: 1;
   }
-  
+
   .hero-product-slide.leaving {
     transform: translateX(-100%);
     opacity: 0;
   }
-  
+
   .desktop-pagination {
     display: none;
   }
-  
+
   .mobile-pagination {
     display: block;
   }
-  
+
   .mobile-pagination .pagination-dot {
     width: 8px;
     height: 8px;
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     opacity: 0.6;
   }
-  
+
   .mobile-pagination .pagination-dot.active {
-    background-color: #DD2D4A;
+    background-color: #dd2d4a;
     opacity: 1;
   }
 }
 
 @media (max-width: 480px) {
   .hero-pagination {
-  gap: 6px;
-}
-  .hero-banner-wrapper {
-    height: 380px;
+    gap: 6px;
   }
-  
+  .hero-banner-wrapper {
+    height: 406px;
+  }
+
   .hero-text-content {
     height: 180px;
     padding: 0 15px;
   }
-  
+
   .hero-text-block {
     height: 180px;
     padding: 0 15px;
     will-change: opacity;
   }
-  
+
   .hero-title {
     font-size: 26px;
-    margin: 0 0 3px 0;
+    margin: 0 0 5px 0;
     backface-visibility: hidden;
   }
-  
+
   .hero-description {
     font-size: 12px;
-    margin: 0 0 14px 0;
-    line-height: 1.2;
+    margin: 0 0 12px 0;
+    line-height: 1.6;
     backface-visibility: hidden;
   }
-  
+
   .hero-button {
-    width: 180px;
-    height: 36px;
-    font-size: 14px;
+    /*width: 180px;*/
+    height: 40px;
+    padding: 0 20px;
+    font-size: 16px;
     margin: 0 auto 15px auto;
     backface-visibility: hidden;
   }
-  
+
   .hero-product-container {
     max-width: 300px;
     height: 55%;
   }
-  
+
   .mobile-pagination {
     bottom: 13px;
   }
-  
+
   .mobile-pagination .pagination-dot {
     width: 8px;
     height: 8px;

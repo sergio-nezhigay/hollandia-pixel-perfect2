@@ -10,6 +10,10 @@
 {
   "wrapper": "div.collection-wrapper",
   "sections": {
+    "breadcrumbs": {
+      "type": "product__breadcrumbs",
+      "settings": {}
+    },
     "top": {
       "type": "collection__top",
       "settings": {}
@@ -78,6 +82,7 @@
     }
   },
   "order": [
+    "breadcrumbs",
     "top",
     "products-grid",
     "collection-showcase",

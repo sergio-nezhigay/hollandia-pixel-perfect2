@@ -2,6 +2,7 @@
   display: block;
   width: 100%;
   height: 100%;
+  padding-bottom: 3px;
 }
 
 .product-card-link {
@@ -21,20 +22,20 @@
 }
 
 .product-card-link:focus-visible {
-  outline: 2px solid #DD2D4A;
+  outline: 2px solid #dd2d4a;
   outline-offset: 2px;
   border-radius: 8px;
 }
 
 .product-image-container {
   position: relative;
-  margin-bottom: 16px;
+  margin-bottom: 19px;
 }
 
 .product-image {
   width: 285px;
   height: 285px;
-  background-color: #F3F4F6;
+  background-color: #f3f4f6;
   border-radius: 20px;
   overflow: hidden;
   display: flex;
@@ -62,14 +63,14 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  color: #9CA3AF;
+  color: #9ca3af;
 }
 
 .discount-badge {
   position: absolute;
   top: 12px;
   left: 12px;
-  background-color: #DD2D4A;
+  background-color: #dd2d4a;
   color: white;
   font-size: 14px;
   font-weight: 600;
@@ -98,7 +99,7 @@
   font-size: 16px;
   font-weight: 400;
   color: #333;
-  margin: 0 0 8px 0;
+  margin: 0 0 -12px 0;
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -119,13 +120,13 @@
 .price-current {
   font-size: 20px;
   font-weight: 600;
-  color: #DD2D4A;
+  color: #dd2d4a;
   line-height: 1.2;
 }
 
 .price-original {
   font-size: 14px;
-  color: #B6B8C1;
+  color: #b6b8c1;
   text-decoration: line-through;
   line-height: 1.2;
 }
@@ -137,7 +138,7 @@
 }
 
 .product-card.loading .product-image {
-  background: linear-gradient(90deg, #F3F4F6 25%, #E5E7EB 50%, #F3F4F6 75%);
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
 }
@@ -152,7 +153,7 @@
 }
 
 /* RTL Support */
-[dir="rtl"] .discount-badge {
+[dir='rtl'] .discount-badge {
   left: auto;
   right: 12px;
 }
@@ -185,9 +186,9 @@
     padding: 4px 8px;
   }
 
-  [dir="rtl"] .discount-badge {
+  [dir='rtl'] .discount-badge {
     left: auto;
-    right: 12px;
+    right: 21px;
   }
 }
 
@@ -249,7 +250,7 @@
 }
 
 .product-card-link:focus-visible {
-  outline: 2px solid #DD2D4A;
+  outline: 2px solid #dd2d4a;
   outline-offset: 2px;
   border-radius: 8px;
 }
@@ -260,7 +261,7 @@
     break-inside: avoid;
     page-break-inside: avoid;
   }
-  
+
   .discount-badge {
     background-color: #000 !important;
     color: #fff !important;

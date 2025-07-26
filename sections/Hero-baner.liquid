@@ -1,18 +1,27 @@
 <div class="dual-banner-section">
-  <div class="main-banner" 
-       style="background-image: url('{{ section.settings.main_banner_image | img_url: '1920x' }}');">
-  </div>
+  <div
+    class="main-banner"
+    style="background-image: url('{{ section.settings.main_banner_image | img_url: '1920x' }}');"
+  ></div>
 
-  <div class="secondary-banner" 
-       style="background-color: {{ section.settings.secondary_banner_bg_color }};">
-    <div class="banner-overlay" 
-         style="background-color: {{ section.settings.overlay_color }}; opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+  <div
+    class="secondary-banner"
+    style="background-color: {{ section.settings.secondary_banner_bg_color }};"
+  >
+    <div
+      class="banner-overlay"
+      style="background-color: {{ section.settings.overlay_color }}; opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"
+    ></div>
     <div class="banner-content">
       {% if section.settings.secondary_banner_title != blank %}
-        <h3 class="secondary-banner-title" style="color: {{ section.settings.secondary_title_color }};">{{ section.settings.secondary_banner_title }}</h3>
+        <h3 class="secondary-banner-title" style="color: {{ section.settings.secondary_title_color }};">
+          {{ section.settings.secondary_banner_title }}
+        </h3>
       {% endif %}
       {% if section.settings.secondary_banner_subtitle != blank %}
-        <p class="secondary-banner-subtitle" style="color: {{ section.settings.secondary_subtitle_color }};">{{ section.settings.secondary_banner_subtitle }}</p>
+        <p class="secondary-banner-subtitle" style="color: {{ section.settings.secondary_subtitle_color }};">
+          {{ section.settings.secondary_banner_subtitle }}
+        </p>
       {% endif %}
     </div>
     <div class="logo-container">
@@ -22,136 +31,136 @@
 </div>
 
 <style>
-.dual-banner-section {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.main-banner,
-.secondary-banner {
-  position: relative;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.main-banner {
-  height: 545px;
-}
-
-.secondary-banner {
-  height: 232px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  position: relative;
-}
-
-.banner-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-}
-
-.banner-content {
-  position: relative;
-  z-index: 3;
-  max-width: 800px;
-  padding: 0 20px;
-}
-
-.logo-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-}
-
-.hollandia-logo {
-  width: 1005px;
-  height: 166px;
-  max-width: 100%;
-  object-fit: contain;
-  opacity: 0.1;
-}
-
-.text-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.secondary-banner-title {
-  font-size: 56px;
-  font-weight: bold;
-  margin: 0 0 16px 0;
-  line-height: 1.2;
-}
-
-.secondary-banner-subtitle {
-  font-size: 30px;
-  font-weight: normal;
-  margin: 0;
-  line-height: 1.4;
-}
-
-@media (max-width: 768px) {
-  .main-banner {
-    height: 380px;
-    background-image: url('{{ section.settings.main_banner_mobile_image | default: section.settings.main_banner_image | img_url: '800x' }}') !important;
+  .dual-banner-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
   }
-  
+
+  .main-banner,
   .secondary-banner {
-    height: 78px;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
-  
-  .secondary-content {
-    gap: 8px;
-  }
-  
-  .hollandia-logo {
-    width: 349px;
-    height: 58px;
-  }
-  
-  .secondary-banner-title {
-    font-size: 22px;
-    margin: 0 0 4px 0;
-  }
-  
-  .secondary-banner-subtitle {
-    font-size: 14px;
-  }
-  
-  .banner-content {
-    padding: 0 15px;
-  }
-}
 
-@media (max-width: 1024px) and (min-width: 769px) {
+  .main-banner {
+    height: 545px;
+  }
+
+  .secondary-banner {
+    height: 232px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+  }
+
+  .banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+  }
+
+  .banner-content {
+    position: relative;
+    z-index: 3;
+    max-width: 800px;
+    padding: 0 20px;
+  }
+
+  .logo-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+
   .hollandia-logo {
-    width: 600px;
-    height: 100px;
+    width: 1005px;
+    height: 166px;
+    max-width: 100%;
+    object-fit: contain;
+    opacity: 0.1;
   }
-  
+
+  .text-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   .secondary-banner-title {
-    font-size: 42px;
+    font-size: 56px;
+    font-weight: bold;
+    margin: 0 0 7px 0;
+    line-height: 1.2;
   }
-  
+
   .secondary-banner-subtitle {
-    font-size: 24px;
+    font-size: 30px;
+    font-weight: normal;
+    margin: 0;
+    line-height: 1.4;
   }
-}
+
+  @media (max-width: 768px) {
+    .main-banner {
+      height: 380px;
+      background-image: url('{{ section.settings.main_banner_mobile_image | default: section.settings.main_banner_image | img_url: '800x' }}') !important;
+    }
+
+    .secondary-banner {
+      height: 78px;
+    }
+
+    .secondary-content {
+      gap: 8px;
+    }
+
+    .hollandia-logo {
+      width: 349px;
+      height: 58px;
+    }
+
+    .secondary-banner-title {
+      font-size: 22px;
+      margin: 0px 0 2px 0;
+    }
+
+    .secondary-banner-subtitle {
+      font-size: 14px;
+    }
+
+    .banner-content {
+      padding: 0 15px;
+    }
+  }
+
+  @media (max-width: 1024px) and (min-width: 769px) {
+    .hollandia-logo {
+      width: 600px;
+      height: 100px;
+    }
+
+    .secondary-banner-title {
+      font-size: 42px;
+    }
+
+    .secondary-banner-subtitle {
+      font-size: 24px;
+    }
+  }
 </style>
 
 {% schema %}

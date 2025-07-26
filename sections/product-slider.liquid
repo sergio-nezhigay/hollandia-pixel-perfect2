@@ -1,10 +1,10 @@
 {{ 'product-slider.css' | asset_url | stylesheet_tag }}
 <style>
-  #shopify-section-{{ section.id }} .section-title {
-  text-align: center;
-  margin-bottom: 32px !important;
-  position: relative;
-}
+    #shopify-section-{{ section.id }} .section-title {
+    text-align: center;
+    margin-bottom: 28px !important;
+    position: relative;
+  }
 </style>
 <div class="product-slider-section" id="product-slider-{{ section.id }}">
   <div class="product-slider-container">
@@ -18,26 +18,29 @@
         {% endif %}
       </div>
     {% endif %}
-    
+
     <div class="product-slider-wrapper">
       <div class="product-slider-prev" data-slider="{{ section.id }}">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      
+
       <div class="product-slider-next" data-slider="{{ section.id }}">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      
+
       <div class="swiper product-slider-swiper" id="swiper-{{ section.id }}">
         <div class="swiper-wrapper">
           {% assign collection = collections[section.settings.collection] %}
           {% for product in collection.products limit: section.settings.products_to_show %}
             <div class="swiper-slide">
-              {% render 'custom-product-card', product: product, show_discount_badge: section.settings.show_discount_badge %}
+              {% render 'custom-product-card',
+                product: product,
+                show_discount_badge: section.settings.show_discount_badge
+              %}
             </div>
           {% endfor %}
         </div>
@@ -46,14 +49,12 @@
   </div>
 </div>
 
-
-
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     // Ініціалізуємо слайдер для конкретної секції
     const sectionId = '{{ section.id }}';
     const swiperElement = document.getElementById('swiper-' + sectionId);
-    
+
     if (swiperElement) {
       const productSlider = new Swiper('#swiper-' + sectionId, {
         slidesPerView: 1,
@@ -73,14 +74,14 @@
           },
         },
         on: {
-          init: function() {
+          init: function () {
             this.update();
             updateNavigation(this, sectionId);
           },
-          slideChange: function() {
+          slideChange: function () {
             updateNavigation(this, sectionId);
-          }
-        }
+          },
+        },
       });
     }
 
@@ -88,14 +89,14 @@
     function updateNavigation(swiper, sectionId) {
       const prevBtn = document.querySelector('[data-slider="' + sectionId + '"].product-slider-prev');
       const nextBtn = document.querySelector('[data-slider="' + sectionId + '"].product-slider-next');
-      
+
       if (prevBtn && nextBtn) {
         if (swiper.isBeginning) {
           prevBtn.classList.add('swiper-button-disabled');
         } else {
           prevBtn.classList.remove('swiper-button-disabled');
         }
-        
+
         if (swiper.isEnd) {
           nextBtn.classList.add('swiper-button-disabled');
         } else {

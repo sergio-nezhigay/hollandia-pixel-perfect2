@@ -15,12 +15,13 @@
   font-size: 42px;
   color: #dd2d4a;
   font-weight: 700;
+  margin-bottom: 4px;
 }
 
 .collection-description {
   font-size: 18px;
   color: #5f626a;
-  line-height: 1.6;
+  line-height: 1.4;
   max-width: 580px;
 }
 

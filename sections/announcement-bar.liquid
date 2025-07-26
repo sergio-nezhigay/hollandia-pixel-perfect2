@@ -1,12 +1,12 @@
 <style>
   .announcement-bar {
     height: 32px;
-    background-color: #DD2D4A;
+    background-color: #dd2d4a;
     display: flex;
     align-items: center;
     position: relative;
     overflow: hidden;
-    padding: 0 48px; 
+    padding: 0 48px;
   }
 
   .announcement-bar .swiper {
@@ -38,7 +38,7 @@
 
   .announcement-prev {
     left: 450px;
-    padding-left: 8px; 
+    padding-left: 8px;
   }
 
   .announcement-next {
@@ -60,18 +60,18 @@
     .announcement-bar .swiper-slide {
       font-size: 10px;
     }
-   .announcement-swiper .swiper-slide:last-child {
-        margin-right: 0px !important;
+    .announcement-swiper .swiper-slide:last-child {
+      margin-right: 0px !important;
     }
     .announcement-prev {
-    left: 5px;
-    scale:  .8;
-  }
+      left: 18px;
+      scale: 0.8;
+    }
 
-  .announcement-next {
-    right: 5px;
-    scale: .8;
-  }
+    .announcement-next {
+      right: 18px;
+      scale: 0.8;
+    }
     .announcement-arrows {
       top: 43%;
     }
@@ -103,7 +103,7 @@
   </div>
 </div>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const announcementSwiper = new Swiper('.announcement-swiper', {
       loop: true,
       autoplay: {
@@ -117,7 +117,7 @@
       slidesPerView: 1,
       centeredSlides: true,
       effect: 'slide',
-      speed: 500
+      speed: 500,
     });
   });
 </script>

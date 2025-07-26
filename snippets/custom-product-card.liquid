@@ -4,24 +4,28 @@
 {% assign discount_percentage = 0 %}
 {% if product.compare_at_price > product.price %}
   {% assign on_sale = true %}
-  {% assign discount_percentage = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price | round %}
+  {% assign discount_percentage = product.compare_at_price
+    | minus: product.price
+    | times: 100
+    | divided_by: product.compare_at_price
+    | round
+  %}
 {% endif %}
 
 <div class="product-card">
   <a href="{{ product.url }}" class="product-card-link">
     <div class="product-image-container">
       {% if show_discount_badge and on_sale %}
-        <div class="discount-badge">
-           OFF {{ discount_percentage }}%
-        </div>
+        <div class="discount-badge">{{ discount_percentage }}% OFF</div>
       {% endif %}
-      
+
       <div class="product-image">
         {% if product.featured_media %}
-          {{ product.featured_media | image_url: width: 570 | image_tag: 
-             alt: product.featured_media.alt | default: product.title,
-             loading: 'lazy',
-             sizes: '(max-width: 767px) 304px, 285px'
+          {{
+            product.featured_media
+            | image_url: width: 570
+            | image_tag: alt: product.featured_media.alt
+            | default: product.title, loading: 'lazy', sizes: '(max-width: 767px) 304px, 285px'
           }}
         {% else %}
           <div class="product-image-placeholder">
@@ -33,10 +37,10 @@
         {% endif %}
       </div>
     </div>
-    
+
     <div class="product-info">
       <h3 class="product-title">{{ product.title }}</h3>
-      
+
       <div class="product-price">
         {% if on_sale %}
           <span class="price-current">₪{{ product.price | divided_by: 100 }}</span>
@@ -48,4 +52,3 @@
     </div>
   </a>
 </div>
-

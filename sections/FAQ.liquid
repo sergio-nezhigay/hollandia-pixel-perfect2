@@ -5,10 +5,12 @@
   <div class="stores-accordion__list">
     {% for block in section.blocks %}
       <div class="accordion-item" data-accordion-index="{{ forloop.index0 }}">
-        <button type="button"
-                class="accordion-trigger"
-                style="color: {{ section.settings.item_color }}"
-                aria-expanded="false">
+        <button
+          type="button"
+          class="accordion-trigger"
+          style="color: {{ section.settings.item_color }}"
+          aria-expanded="false"
+        >
           <span class="accordion-trigger__label">{{ block.settings.store_name }}</span>
           <svg class="accordion-trigger__icon" width="24" height="24" viewBox="0 0 24 24">
             <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none" fill-rule="evenodd"/>
@@ -21,7 +23,6 @@
 </div>
 
 <style>
-  
   .accordion-trigger__icon path {
     stroke: #888888;
   }
@@ -39,22 +40,27 @@
   }
   .stores-accordion__title {
     font-family: 'Inter', sans-serif;
-    color: #B6B8C1 !important;
+    color: #b6b8c1 !important;
     font-size: 42px;
     text-align: center;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
+    line-height: 1.2;
   }
   .accordion-item {
     border: 1px solid #e1e1e1;
     border-radius: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    font-weight: 600;
     overflow: hidden;
+  }
+  .accordion-item:last-child {
+    margin-bottom: 0;
   }
   .accordion-trigger {
     width: 100%;
-    padding: 16px;
+    height: 60px;
+    padding: 0 24px;
     background: #fff;
-    border: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -78,28 +84,26 @@
     display: block;
   }
   .accordion-trigger {
-  font-size: 18px;
-}
-
-@media (max-width: 480px) {
-  .stores-accordion__title {
-    font-size: 26px;
-  }
-  .accordion-trigger {
-    font-size: 16px;
+    font-size: 18px;
   }
 
-}
-
+  @media (max-width: 480px) {
+    .stores-accordion__title {
+      font-size: 26px;
+    }
+    .accordion-trigger {
+      font-size: 16px;
+    }
+  }
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const items = document.querySelectorAll('.stores-accordion .accordion-item');
-    items.forEach(item => {
+    items.forEach((item) => {
       item.querySelector('.accordion-trigger').addEventListener('click', () => {
         const isOpen = item.classList.contains('open');
-        items.forEach(i => i.classList.remove('open'));
+        items.forEach((i) => i.classList.remove('open'));
         if (!isOpen) item.classList.add('open');
       });
     });
@@ -137,12 +141,12 @@
         {
           "type": "text",
           "id": "store_name",
-          "label": "Store name",
+          "label": "Store name"
         },
         {
           "type": "richtext",
           "id": "store_content",
-          "label": "Store content",
+          "label": "Store content"
         }
       ]
     }

@@ -68,6 +68,7 @@
   border-radius: 18px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  outline: 1px dotted red;
 }
 .product-card-link {
   display: block;
@@ -141,7 +142,7 @@
 
 /* Product Info */
 .product-info {
-  padding: 18px 16px 22px;
+  padding: 22px 16px 18px;
   background-color: #f4f4f4;
   text-align: center;
 }

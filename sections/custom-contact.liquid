@@ -107,10 +107,10 @@
   .contact-form-wrapper .form-button {
     background: #DD2D4A;
     color: white;
-    padding: 1rem 2rem;
+    padding: 0 2rem;
     border: none;
     border-radius: 50px;
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 600;
     cursor: pointer;
     width: 380px;
@@ -143,7 +143,7 @@
   .contact-hero-content h1 {
     font-size: 48px;
     font-weight: 400;
-    margin: 0 0 1rem 0;
+    margin: 0 0 18px 0;
     letter-spacing: 2px;
     color: rgba(255, 255, 255, 0.4);
     white-space: nowrap;
@@ -157,7 +157,8 @@
   .contact-hero-content h2 {
     font-size: 32px;
     font-weight: 400;
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 16px 0;
+    /*margin: 0 0 0.5rem 0;*/
     line-height: 1.4;
     color: white;
     text-align: right;
@@ -177,7 +178,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-top: 6px;
+    margin-top: -2px;
     margin-bottom: 14px;
     direction: rtl;
   }
@@ -293,7 +294,8 @@
   @media screen and (min-width: 1200px) {
     .contact-hero-content {
       position: relative;
-      top: -92px;
+      /*top: 0;*/
+      top: -60px;
       padding-left: 120px;
     }
 
@@ -316,12 +318,27 @@
   {% if section.settings.background_image_desktop and section.settings.background_image %}
     <picture class="contact-hero-bg">
       <source media="(min-width: 750px)" srcset="{{ section.settings.background_image_desktop | img_url: 'master' }}">
-      <img src="{{ section.settings.background_image | img_url: 'master' }}" alt="{{ section.settings.heading | default: 'Contact Us' }}" class="contact-hero-bg-img" loading="eager">
+      <img
+        src="{{ section.settings.background_image | img_url: 'master' }}"
+        alt="{{ section.settings.heading | default: 'Contact Us' }}"
+        class="contact-hero-bg-img"
+        loading="eager"
+      >
     </picture>
   {% elsif section.settings.background_image_desktop %}
-    <img src="{{ section.settings.background_image_desktop | img_url: 'master' }}" alt="{{ section.settings.heading | default: 'Contact Us' }}" class="contact-hero-bg-img" loading="eager">
+    <img
+      src="{{ section.settings.background_image_desktop | img_url: 'master' }}"
+      alt="{{ section.settings.heading | default: 'Contact Us' }}"
+      class="contact-hero-bg-img"
+      loading="eager"
+    >
   {% elsif section.settings.background_image %}
-    <img src="{{ section.settings.background_image | img_url: 'master' }}" alt="{{ section.settings.heading | default: 'Contact Us' }}" class="contact-hero-bg-img" loading="eager">
+    <img
+      src="{{ section.settings.background_image | img_url: 'master' }}"
+      alt="{{ section.settings.heading | default: 'Contact Us' }}"
+      class="contact-hero-bg-img"
+      loading="eager"
+    >
   {% endif %}
 
   <div class="contact-hero-content">
@@ -341,7 +358,7 @@
           placeholder="שם"
           required
           class="form-input"
-        />
+        >
       </div>
 
       <div class="form-group">
@@ -352,7 +369,7 @@
           placeholder="טלפון"
           required
           class="form-input"
-        />
+        >
       </div>
 
       <div class="form-group">
@@ -362,7 +379,7 @@
           placeholder="מייל"
           required
           class="form-input"
-        />
+        >
       </div>
 
       <div class="form-group">
@@ -379,8 +396,10 @@
           type="checkbox"
           name="contact[accepts_marketing]"
           id="accepts_marketing"
-          {% if section.settings.require_checkbox %}required{% endif %}
-        />
+          {% if section.settings.require_checkbox %}
+            required
+          {% endif %}
+        >
         <label for="accepts_marketing">
           {{ section.settings.checkbox_text | default: 'מאשר קבלת הודעות על הטבות ומבצעים בדוא"ל / מסרונים' }}
         </label>
