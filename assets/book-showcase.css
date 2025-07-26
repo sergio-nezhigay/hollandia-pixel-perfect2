@@ -28,6 +28,7 @@
   justify-content: center;
   overflow: hidden;
   order: 2;
+
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
 }
@@ -200,12 +201,16 @@
 
 /* Mobile Styles */
 @media (max-width: 767px) {
+  .author-books-section-out-wrapper {
+    padding-bottom: 13px;
+  }
   .author-books-section-wrapper {
     overflow: hidden !important;
     flex-direction: column;
     height: auto;
     max-width: calc(100% - 32px);
     margin: 0 16px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
   }
 
   .author-books-section-wrapper .author-books-text-block {
@@ -215,6 +220,7 @@
     order: 1;
     align-items: center;
     text-align: center;
+    border-bottom-right-radius: 0px;
   }
 
   .author-books-section-wrapper .author-books-text-content {
@@ -227,6 +233,9 @@
     max-height: 330px;
     padding: 40px 20px;
     order: 2;
+
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
     background-image: url('https://cdn.shopify.com/s/files/1/0929/7009/0802/files/mob.png?v=1751647741');
   }
 
@@ -249,7 +258,7 @@
 
   .author-books-section-wrapper .author-books-section-description {
     font-size: 12px;
-    margin-bottom: 22px;
+    margin-bottom: 12px;
     text-align: center;
     max-width: 304px;
   }
@@ -265,7 +274,7 @@
   .author-books-section-wrapper .author-books-mobile-swiper {
     display: block;
     width: 100%;
-    padding: 20px 0;
+    padding: 20px 0 28px;
     overflow: visible;
   }
 

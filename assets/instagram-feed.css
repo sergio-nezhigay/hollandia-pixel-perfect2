@@ -87,17 +87,18 @@
 
 @media (max-width: 768px) {
   .instagram-feed {
-    padding: 20px 10px;
+    padding: 20px 10px 10px;
   }
 
   .instagram-feed__header {
     margin-bottom: 12px;
-    gap: 20px;
+    gap: 10px;
     justify-content: center;
   }
 
   .instagram-feed__title {
     font-size: 16px;
+    font-weight: 600;
   }
 
   .instagram-feed__divider {
@@ -105,7 +106,7 @@
   }
 
   .instagram-feed__badge {
-    padding: 8px 12px;
+    padding: 6px 7px;
     border-radius: 5px;
   }
 
@@ -135,7 +136,8 @@
   .instagram-feed__item {
     width: 82px !important;
     height: 82px !important;
-    border-radius: 4px;
+    border-radius: 4px !important;
+    overflow: hidden;
     flex-shrink: 0;
   }
 

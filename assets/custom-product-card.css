@@ -29,7 +29,7 @@
 
 .product-image-container {
   position: relative;
-  margin-bottom: 19px;
+  margin-bottom: 18px;
 }
 
 .product-image {
@@ -189,6 +189,8 @@
   [dir='rtl'] .discount-badge {
     left: auto;
     right: 21px;
+    direction: ltr;
+    unicode-bidi: embed;
   }
 }
 
@@ -216,7 +218,7 @@
   }
 
   .product-title {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .price-current {

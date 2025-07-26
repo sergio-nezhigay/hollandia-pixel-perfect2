@@ -300,6 +300,7 @@
   .section-button {
     width: 140px;
     height: 42px;
+    min-height: 42px;
     align-self: center;
     font-size: 16px;
     border-radius: 32px;
@@ -320,7 +321,7 @@
   }
 
   .section-title {
-    font-size: 22px;
+    font-size: 26px;
   }
 
   .section-subtitle {
