@@ -85,6 +85,8 @@
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  direction: ltr;
+  unicode-bidi: embed;
 }
 
 .product-info {

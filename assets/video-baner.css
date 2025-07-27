@@ -262,10 +262,10 @@
     top: -20px;
     left: 0;
     width: 100%;
-    height: 30%;
+    height: 50%;
     background: linear-gradient(
       180deg,
-      rgba(214, 183, 165, 0.8) 30%,
+      rgba(214, 183, 165, 1) 30%,
       rgba(214, 183, 165, 0) 90%
     );
   }
@@ -281,7 +281,7 @@
 
   .section-title {
     font-size: 24px;
-    margin: 0 0 3px 0;
+    margin: 0 0 7px 0;
     white-space: normal;
   }
 
@@ -294,7 +294,10 @@
   .section-text {
     text-align: center;
     font-size: 14px;
-    margin: 0 0 15px 0;
+    margin: 0 auto 15px auto;
+  }
+  .section-text p {
+    margin: 0 auto;
   }
 
   .section-button {
@@ -330,7 +333,8 @@
 
   .text-content-inner {
     padding: 0;
-    padding-top: 35px !important;
+    width: 100%;
+    padding-top: 39px !important;
   }
 
   .media-content {

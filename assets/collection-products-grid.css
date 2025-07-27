@@ -68,7 +68,6 @@
   border-radius: 18px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  outline: 1px dotted red;
 }
 .product-card-link {
   display: block;
@@ -315,6 +314,8 @@
 @media (max-width: 767px) {
   .banner-mobile {
     display: block;
+    margin-top: -8px;
+    margin-bottom: -8px;
   }
 }
 

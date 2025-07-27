@@ -1,14 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
 .shopify-section-group-footer-group .contact-info-section {
-  padding-top: 26px;
+  padding-top: 55px;
   padding-bottom: 24px;
   direction: rtl;
   text-align: center;
-}
-
-.contact-info-section {
-  margin-top: -30px;
 }
 
 .contact-info-section .container {
@@ -135,7 +131,7 @@
   .contact-title {
     font-size: 26px;
     margin: 0;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
 
   .contact-subtitle {
@@ -145,7 +141,7 @@
 
   .working-hours {
     font-size: 16px;
-    margin: 4px 0 0 0;
+    margin: 1px 0 0 0;
   }
 
   .divider-line {
@@ -195,7 +191,7 @@
 
   .contact-links {
     justify-content: center;
-    gap: 6px;
+    gap: 9px;
     flex-direction: column;
   }
 

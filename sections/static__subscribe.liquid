@@ -67,7 +67,7 @@
   <style>
     /* Layout containers */
     .subscribe-section {
-      max-width: 1440px;
+      max-width: 1200px;
       margin: 0 auto;
       background: #fff;
       padding: 70px 120px;
@@ -207,7 +207,18 @@
     /* Responsive */
     @media (max-width: 768px) {
       .subscribe-section {
-        padding: 30px 16px;
+        padding: 35px 0 30px;
+        position: relative;
+      }
+      .subscribe-section::before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0px;
+        left: -16px;
+        height: 4px;
+        background-color: #f9f6f4;
+        width: 100vw;
       }
       .subscribe-header {
         margin-bottom: 10px;
@@ -215,10 +226,10 @@
       .subscribe-title {
         font-size: 20px;
         line-height: 1.2;
-        margin-bottom: 0px;
+        margin-bottom: 2px;
       }
       .subscribe-subtitle {
-        font-size: 20px;
+        font-size: 14px;
         line-height: 1.2;
       }
       .subscribe-btn {
@@ -235,6 +246,18 @@
       .subscribe-checkbox-label {
         font-size: 12px;
         margin: 5px 0;
+      }
+      .subscribe-checkbox-custom {
+        width: 13px;
+        height: 13px;
+      }
+      .subscribe-checkbox:checked + .subscribe-checkbox-custom:after {
+        left: 3px;
+        top: 0px;
+        width: 4px;
+        height: 7px;
+        border: solid #fff;
+        border-width: 0 2px 2px 0;
       }
     }
   </style>
