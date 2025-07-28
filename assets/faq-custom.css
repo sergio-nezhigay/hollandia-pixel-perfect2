@@ -1,5 +1,5 @@
 .faq-section {
-  padding: 70px 20px;
+  padding: 60px 20px 70px;
   background-color: #ffffff;
   direction: rtl;
 }
@@ -13,16 +13,16 @@
   font-size: 34px;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   color: #333;
 }
 
 .faq-item {
-  border-bottom: 1px solid #D1D5DD;
+  border-bottom: 1px solid #d1d5dd;
 }
 
 .faq-question {
-  padding: 20px 0;
+  padding: 14px 0;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -79,17 +79,17 @@
   .faq-section {
     padding: 40px 15px;
   }
-  
+
   .faq-title {
     font-size: 26px;
     margin-bottom: 18px;
   }
-  
+
   .faq-question {
     padding: 12px 0 !important;
     font-size: 16px;
   }
-  
+
   .faq-answer-content {
     font-size: 14px;
   }

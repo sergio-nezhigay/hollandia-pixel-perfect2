@@ -1,5 +1,5 @@
 .product-features-section {
-  padding: 70px 0;
+  padding: 70px 0 77px;
 }
 
 .product-features-section .container {
@@ -20,7 +20,7 @@
 .section-subtitle {
   font-size: 20px;
   text-align: center;
-  margin: 0 0 36px 0;
+  margin: -35px 0 36px 0;
   color: #38383a;
   line-height: 1.4;
 }
@@ -29,7 +29,7 @@
   display: flex;
   align-items: center;
   gap: 60px;
-  min-height: 440px;
+  min-height: 347px;
 }
 
 .features-content.reverse {
@@ -58,7 +58,7 @@
 .features-items {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 23px;
 }
 
 .feature-item {
@@ -80,7 +80,7 @@
   font-size: 14px;
   color: #38383a;
   line-height: 1.4;
-  margin-top: 8px;
+  margin-top: 0px;
   margin-right: 50px;
   width: 488px;
 }

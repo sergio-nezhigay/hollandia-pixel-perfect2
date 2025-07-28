@@ -9,10 +9,12 @@
               {% if block.settings.custom_svg != blank %}
                 {{ block.settings.custom_svg }}
               {% elsif block.settings.icon_image != blank %}
-                <img src="{{ block.settings.icon_image | image_url: width: 80 }}" 
-                     alt="{{ block.settings.text }}"
-                     width="40" 
-                     height="40">
+                <img
+                  src="{{ block.settings.icon_image | image_url: width: 80 }}"
+                  alt="{{ block.settings.text }}"
+                  width="40"
+                  height="40"
+                >
               {% endif %}
             </div>
             {% if block.settings.text != blank %}
@@ -26,79 +28,83 @@
 </div>
 
 <style>
-.icon-features-section {
-  padding: 40px 0;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.icon-features-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 48px;
-}
-
-.icon-feature-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  flex: 0 0 auto;
-}
-
-.icon-wrapper {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-
-.icon-wrapper img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.icon-wrapper svg {
-  width: 40px;
-  height: 40px;
-}
-
-.icon-text {
-  font-size: 12px;
-  margin: 0;
-  line-height: 1.4;
-}
-
-.icon-feature-item {
-  min-width: 200px;
-}
-@media (max-width: 768px) {
-  .icon-feature-item {
-  min-width: 0px !important;
-}
-  .icon-features-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    justify-items: center;
+  .icon-features-section {
+    padding: 36px 0 40px;
   }
-  
-  /* Center single item in row */
-  .icon-features-grid .icon-feature-item:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-  }
-  
+
   .container {
-    padding: 0 15px;
+    max-width: 1200px;
+    margin: 0 auto;
   }
-}
+
+  .icon-features-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 48px;
+    padding: 0 0 30px;
+    border-bottom: 1px solid #e0e0e0;
+    position: relative;
+  }
+
+  .icon-feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 0 0 auto;
+  }
+
+  .icon-wrapper {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .icon-wrapper img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .icon-wrapper svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .icon-text {
+    font-size: 12px;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .icon-feature-item {
+    min-width: 200px;
+  }
+
+  @media (max-width: 768px) {
+    .icon-feature-item {
+      min-width: 0px !important;
+    }
+    .icon-features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      justify-items: center;
+    }
+
+    /* Center single item in row */
+    .icon-features-grid .icon-feature-item:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+
+    .container {
+      padding: 0 15px;
+    }
+  }
 </style>
 
 {% schema %}

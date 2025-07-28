@@ -1,7 +1,8 @@
 .main-product {
-  padding: 0 40px;
+  padding: 10px 40px 34px;
   max-width: 1440px;
   margin: 0 auto;
+  border-bottom: 2px solid #f1f2f5;
 }
 
 .main-product-container {
@@ -15,7 +16,7 @@
 }
 
 .product-info-content {
-  padding-top: 20px;
+  padding-top: 4px;
 }
 
 .product-title-block {
@@ -23,38 +24,39 @@
 }
 
 .product-title {
-  font-size: 24px;
-  font-weight: 400;
+  font-size: 26px;
+  font-weight: 600;
   line-height: 1.2;
   margin: 0;
   color: #1a1a1a;
 }
 
 .product-reviews-block {
-  margin-bottom: 22px;
+  margin-bottom: 12px;
 }
 
 .product-reviews {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .rating-stars {
   display: flex;
-  gap: 2px;
+  gap: 5px;
 }
 
 .rating-number {
-  font-size: 13px;
-  font-weight: semi-bold;
-  color: #5F626A;
+  font-size: 16px;
+  font-weight: 600;
+  color: #5f626a;
   font-family: 'Inter';
 }
 
 .reviews-count {
-  font-size: 13px;
-  color: #5F626A;
+  font-size: 16px;
+  font-weight: 500;
+  color: #5f626a;
   font-family: 'Inter';
 }
 
@@ -70,7 +72,7 @@
   display: flex;
   gap: 0;
   border-bottom: 1px solid #e0e0e0;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   max-width: fit-content;
 }
 
@@ -80,19 +82,19 @@
   border: none;
   font-size: 16px;
   font-weight: 500;
-  color: #89898C;
+  color: #89898c;
   cursor: pointer;
   border-bottom: 2px solid transparent;
   transition: all 0.3s ease;
 }
 
 .tab-button.active {
-  color: #DD2D4A;
-  border-bottom-color: #DD2D4A;
+  color: #dd2d4a;
+  border-bottom-color: #dd2d4a;
 }
 
 .tab-button:hover {
-  color: #DD2D4A;
+  color: #dd2d4a;
 }
 
 .tabs-content {
@@ -110,8 +112,8 @@
 
 .tab-text {
   font-size: 12px;
-  line-height: 1.6;
-  color: #38383A;
+  line-height: 1.5;
+  color: #38383a;
 }
 
 @keyframes fadeIn {
@@ -130,8 +132,8 @@
 }
 
 .package-details-trigger {
-  margin-top: 22px;
-  margin-right: 10px;
+  margin-top: 25px;
+  margin-right: 0px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -225,7 +227,7 @@
 .add-to-cart-button {
   width: 517px;
   height: 50px;
-  background: #DD2D4A;
+  background: #dd2d4a;
   color: white;
   font-size: 16px;
   font-weight: 700;
@@ -251,9 +253,9 @@
 .support-block {
   width: 517px;
   height: 138px;
-  background-color: #F9F9FA;
+  background-color: #f9f9fa;
   border-radius: 12px;
-  padding: 24px 16px;
+  padding: 22px 16px 24px;
   box-sizing: border-box;
 }
 
@@ -276,16 +278,16 @@
 }
 
 .support-heading {
-  font-size: 14px !important;
+  font-size: 16px !important;
   line-height: 1.2;
-  color: #38383A;
+  color: #38383a;
   margin: 0 0 4px;
 }
 
 .support-subheading {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.2;
-  color: #5F626A;
+  color: #5f626a;
   margin: 0;
 }
 
@@ -306,10 +308,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #FFFFFF;
-  border: 1px solid #EE5B73;
+  background-color: #ffffff;
+  border: 1px solid #ee5b73;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   text-decoration: none;
 }
@@ -336,8 +338,8 @@
 .support-heading {
   font-size: 16px;
   font-weight: bold;
-  color: #38383A;
-  margin: 0 0 4px;
+  color: #38383a;
+  margin: 0 0 7px;
 }
 
 /* Адаптація для маленьких десктопів (1200px - 1399px) */
@@ -345,20 +347,20 @@
   .main-product {
     padding: 0 20px;
   }
-  
+
   .main-product-container {
     gap: 60px;
   }
-  
+
   .product-info {
     flex: 0 0 450px;
   }
-  
+
   .add-to-cart-button {
     width: 100%;
     max-width: 450px;
   }
-  
+
   .support-block {
     width: 100%;
     max-width: 450px;
@@ -369,15 +371,15 @@
   .main-product-container {
     gap: 40px;
   }
-  
+
   .product-info {
     flex: 0 0 400px;
   }
-  
+
   .add-to-cart-button {
     max-width: 400px;
   }
-  
+
   .support-block {
     max-width: 400px;
   }
@@ -387,24 +389,24 @@
   .main-product-container {
     gap: 30px;
   }
-  
+
   .product-info {
     flex: 0 0 360px;
   }
-  
+
   .add-to-cart-button {
     max-width: 360px;
   }
-  
+
   .support-block {
     max-width: 360px;
   }
-  
+
   .tab-button {
     padding: 6px 20px;
     font-size: 15px;
   }
-  
+
   .support-buttons {
     margin-right: 50px;
   }
@@ -414,20 +416,20 @@
   .main-product {
     padding: 0 20px;
   }
-  
+
   .main-product-container {
     gap: 40px;
   }
-  
+
   .product-info {
     flex: 0 0 45%;
   }
-  
+
   .add-to-cart-button {
     width: 100%;
     max-width: none;
   }
-  
+
   .support-block {
     width: 100%;
     max-width: none;
@@ -438,92 +440,92 @@
   .main-product {
     padding: 0;
   }
-  
+
   .main-product-container {
     flex-direction: column;
     gap: 24px;
   }
-  
+
   .product-info {
     flex: none;
     width: 100%;
     order: 2;
     padding: 0 16px;
   }
-  
+
   .product-info-content {
     padding-top: 0px;
   }
-  
+
   .product-title {
     font-size: 24px;
   }
-  
+
   .product-title-block {
     margin-bottom: 8px;
   }
-  
+
   .product-reviews-block {
     margin-bottom: 20px;
   }
-  
+
   .tabs-navigation {
     margin-bottom: 12px;
   }
-  
+
   .tab-button {
     padding: 12px 16px;
     font-size: 14px;
   }
-  
+
   .tab-text {
     font-size: 12px;
   }
-  
+
   .package-details-block {
     margin-bottom: 20px;
   }
-  
+
   .package-details-text {
     font-size: 14px;
   }
-  
+
   .package-details-inner {
     padding: 12px;
   }
-  
+
   .package-details-inner p,
   .package-details-inner li {
     font-size: 13px;
   }
-  
+
   .add-to-cart-button {
     width: 100%;
     height: 48px;
     font-size: 15px;
   }
-  
+
   .support-block {
     width: 100%;
     height: auto;
     padding: 14px;
   }
-  
+
   .support-inner {
     flex-direction: column;
     justify-content: flex-start;
   }
-  
+
   .support-header {
     flex-direction: row;
     justify-content: space-between;
   }
-  
+
   .support-image img {
     width: 51px;
     height: 44px;
   }
-  
+
   .support-buttons {
     margin-top: 12px;
     justify-content: flex-start;
@@ -534,17 +536,17 @@
   .product-title {
     font-size: 22px;
   }
-  
+
   .tab-button {
     padding: 7px 16px;
     font-size: 14px;
   }
-  
+
   .add-to-cart-button {
     height: 46px;
     font-size: 14px;
   }
-  
+
   .support-btn svg {
     width: 15px !important;
     height: 15px !important;

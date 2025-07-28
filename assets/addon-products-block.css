@@ -1,7 +1,7 @@
 .addon-products-container {
   width: 100%;
   max-width: 517px;
-  margin: 32px auto 0;
+  margin: 22px auto 0;
   padding: 0;
   box-sizing: border-box;
 }
@@ -17,7 +17,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 7px;
   width: 100%;
   max-width: 100%;
 }
@@ -29,7 +29,7 @@
 }
 
 .addon-products-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
@@ -43,7 +43,7 @@
   width: 23px;
   height: 23px;
   background: white;
-  border: 1px solid #D1D5DD;
+  border: 1px solid #d1d5dd;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -56,8 +56,8 @@
 
 .addon-slider-prev:hover:not(:disabled),
 .addon-slider-next:hover:not(:disabled) {
-  border-color: #DD2D4A;
-  color: #DD2D4A;
+  border-color: #dd2d4a;
+  color: #dd2d4a;
 }
 
 .addon-slider-prev:disabled,
@@ -93,25 +93,25 @@
   width: 100%;
   max-width: 100%;
   height: 77px;
-  border: 1px solid #D1D5DD;
+  border: 1px solid #d1d5dd;
   border-radius: 8px;
   display: flex;
   align-items: center;
-  padding: 14px 16px;
+  padding: 14px 14px;
   background: white;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
 }
 
 .addon-product-item:hover {
-  border-color: #DD2D4A;
+  border-color: #dd2d4a;
 }
 
 .addon-product-image {
   width: 48px;
   height: 48px;
   flex-shrink: 0;
-  border-radius: 4px;
+  border-radius: 7px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -176,7 +176,7 @@
 }
 
 .addon-product-title:hover {
-  color: #DD2D4A;
+  color: #dd2d4a;
 }
 
 .addon-product-pricing {
@@ -189,7 +189,7 @@
 }
 
 .addon-discount-badge {
-  background: #DD2D4A;
+  background: #dd2d4a;
   color: white;
   font-size: 12px;
   font-weight: 400;
@@ -213,14 +213,14 @@
 .addon-current-price {
   font-size: 16px;
   font-weight: 700;
-  color: #DD2D4A;
+  color: #dd2d4a;
   white-space: nowrap;
   order: 2;
 }
 
 .addon-compare-price {
   font-size: 14px;
-  color: #89898C;
+  color: #89898c;
   text-decoration: line-through;
   white-space: nowrap;
   order: 1;
@@ -229,10 +229,10 @@
 .addon-product-btn {
   width: 91px;
   height: 40px;
-  background: #FBD7DD;
-  border: 1px solid #DD2D4A;
+  background: #fbd7dd;
+  border: 1px solid #dd2d4a;
   border-radius: 20px;
-  color: #DD2D4A;
+  color: #dd2d4a;
   font-size: 16px;
   font-weight: 500;
   display: flex;
@@ -245,7 +245,7 @@
 }
 
 .addon-product-btn:hover {
-  background: #DD2D4A;
+  background: #dd2d4a;
   color: white;
 }
 
@@ -287,7 +287,7 @@
 }
 
 .addon-popup-content {
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 14px;
   padding: 24px;
   width: 422px;
@@ -319,7 +319,7 @@
 }
 
 .addon-popup-close:hover {
-  color: #DD2D4A;
+  color: #dd2d4a;
 }
 
 .addon-popup-header {
@@ -382,7 +382,7 @@
 }
 
 .addon-popup-discount-badge {
-  background: #DD2D4A;
+  background: #dd2d4a;
   color: white;
   font-size: 12px;
   font-weight: 400;
@@ -406,14 +406,14 @@
 .addon-popup-current-price {
   font-size: 16px;
   font-weight: 700;
-  color: #DD2D4A;
+  color: #dd2d4a;
   white-space: nowrap;
   order: 2;
 }
 
 .addon-popup-compare-price {
   font-size: 14px;
-  color: #89898C;
+  color: #89898c;
   text-decoration: line-through;
   white-space: nowrap;
   order: 1;
@@ -433,14 +433,14 @@
   display: block;
   width: 378px;
   height: 1px;
-  background: #D1D5DD;
+  background: #d1d5dd;
   margin: 16px 0 0 0;
 }
 
 .addon-variant-label {
   font-size: 16px;
   font-weight: 600;
-  color: #1A1A1B;
+  color: #1a1a1b;
   margin: 16px 0 12px 0;
   text-align: right;
 }
@@ -454,12 +454,12 @@
 
 .addon-size-option {
   padding: 8px 16px;
-  border: 1px solid #E5E8EF;
+  border: 1px solid #e5e8ef;
   border-radius: 26px;
   background: white;
   font-size: 14px;
   font-weight: 500;
-  color: #1A1A1B;
+  color: #1a1a1b;
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: center;
@@ -469,11 +469,11 @@
 }
 
 .addon-size-option:hover {
-  border-color: #DD2D4A;
+  border-color: #dd2d4a;
 }
 
 .addon-size-option.active {
-  border-color: #DD2D4A;
+  border-color: #dd2d4a;
 }
 
 .addon-color-section {
@@ -499,7 +499,7 @@
 }
 
 .addon-color-option.active {
-  border-color: #DD2D4A;
+  border-color: #dd2d4a;
 }
 
 .color-circle {
@@ -509,24 +509,50 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.color-circle[data-color="beige"] { background: #F5F5DC; }
-.color-circle[data-color="blue"] { background: #4A90A4; }
-.color-circle[data-color="gray"] { background: #808080; }
-.color-circle[data-color="grey"] { background: #808080; }
-.color-circle[data-color="black"] { background: #000000; }
-.color-circle[data-color="white"] { background: #FFFFFF; }
-.color-circle[data-color="brown"] { background: #8B4513; }
-.color-circle[data-color="green"] { background: #228B22; }
-.color-circle[data-color="red"] { background: #DC143C; }
-.color-circle[data-color="pink"] { background: #FFC0CB; }
-.color-circle[data-color="purple"] { background: #800080; }
-.color-circle[data-color="yellow"] { background: #FFD700; }
-.color-circle[data-color="orange"] { background: #FF8C00; }
+.color-circle[data-color='beige'] {
+  background: #f5f5dc;
+}
+.color-circle[data-color='blue'] {
+  background: #4a90a4;
+}
+.color-circle[data-color='gray'] {
+  background: #808080;
+}
+.color-circle[data-color='grey'] {
+  background: #808080;
+}
+.color-circle[data-color='black'] {
+  background: #000000;
+}
+.color-circle[data-color='white'] {
+  background: #ffffff;
+}
+.color-circle[data-color='brown'] {
+  background: #8b4513;
+}
+.color-circle[data-color='green'] {
+  background: #228b22;
+}
+.color-circle[data-color='red'] {
+  background: #dc143c;
+}
+.color-circle[data-color='pink'] {
+  background: #ffc0cb;
+}
+.color-circle[data-color='purple'] {
+  background: #800080;
+}
+.color-circle[data-color='yellow'] {
+  background: #ffd700;
+}
+.color-circle[data-color='orange'] {
+  background: #ff8c00;
+}
 
 .addon-popup-add-btn {
   width: 100%;
   height: 48px;
-  background: #DD2D4A;
+  background: #dd2d4a;
   color: white;
   border: none;
   border-radius: 8px;
@@ -539,7 +565,7 @@
 }
 
 .addon-popup-add-btn:hover {
-  background: #C02847;
+  background: #c02847;
 }
 
 /* Hide desktop navigation on mobile */
@@ -547,47 +573,47 @@
   .desktop-only {
     display: none !important;
   }
-  
+
   .addon-products-container {
     max-width: 100%;
     margin-top: 24px;
     padding: 0 16px;
     overflow: hidden;
   }
-  
+
   .addon-products-block {
     padding: 0;
   }
-  
+
   .addon-products-header {
     gap: 6px;
     margin-bottom: 12px;
   }
-  
+
   .addon-products-title {
     font-size: 16px;
   }
-  
+
   .addon-products-slider {
     margin: 0 -16px;
     padding: 0 16px;
     overflow: visible;
   }
-  
+
   .addon-products-swiper {
     overflow: visible;
   }
-  
+
   .addon-products-swiper .swiper-wrapper {
     overflow: visible;
   }
-  
+
   .addon-products-swiper .swiper-slide {
     width: 318px !important;
     max-width: 318px !important;
     flex-shrink: 0;
   }
-  
+
   .addon-product-item {
     height: auto;
     min-height: 77px;
@@ -595,44 +621,44 @@
     width: 328px;
     box-sizing: border-box;
   }
-  
+
   .addon-product-info {
     gap: 8px;
   }
-  
+
   .addon-product-btn {
     width: 75px;
     height: 36px;
     font-size: 14px;
   }
-  
+
   .addon-product-pricing {
     flex-wrap: wrap;
     gap: 4px;
   }
-  
+
   .addon-discount-badge {
     font-size: 9px;
     width: 50px;
     height: 18px;
     padding: 1px 4px;
   }
-  
+
   .addon-current-price {
     font-size: 14px;
   }
-  
+
   .addon-compare-price {
     font-size: 12px;
   }
-  
+
   /* Mobile popup styles - exact match to design */
   .addon-variant-popup {
     align-items: flex-end;
     justify-content: center;
     padding: 0;
   }
-  
+
   .addon-popup-content {
     max-width: 100%;
     width: 100%;
@@ -644,11 +670,11 @@
     position: relative;
     transform: translateY(100%);
   }
-  
+
   .addon-variant-popup.active .addon-popup-content {
     transform: translateY(0);
   }
-  
+
   .addon-popup-close {
     position: absolute;
     top: 12px;
@@ -658,7 +684,7 @@
     color: #666;
     z-index: 10;
   }
-  
+
   .addon-popup-header {
     flex-direction: row;
     text-align: right;
@@ -668,13 +694,13 @@
     margin-bottom: 16px;
     margin-top: 8px;
   }
-  
+
   .addon-popup-product-image {
     width: 60px;
     height: 60px;
     order: 1;
   }
-  
+
   .addon-popup-product-info {
     flex: 1;
     width: auto;
@@ -682,19 +708,19 @@
     align-items: flex-end;
     order: 2;
   }
-  
+
   .addon-popup-product-title {
     font-size: 16px;
     font-weight: 600;
     text-align: right;
     margin-bottom: 8px;
   }
-  
+
   .addon-popup-product-pricing {
     justify-content: flex-start;
     width: 100%;
   }
-  
+
   .addon-popup-description {
     text-align: right;
     font-size: 14px;
@@ -702,12 +728,11 @@
     color: #666;
     margin-bottom: 20px;
   }
-  
+
   .addon-popup-description::after {
     width: 100%;
     margin: 20px 0 0 0;
   }
-  
 
   .addon-variant-label {
     font-size: 16px;
@@ -716,23 +741,22 @@
     margin: 24px 0 16px 0;
     text-align: right;
   }
-  
+
   .addon-size-options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     width: 100%;
-
   }
-  
+
   .addon-size-option {
     padding: 12px 8px;
-    border: 1px solid #E5E8EF;
+    border: 1px solid #e5e8ef;
     border-radius: 8px;
     background: white;
     font-size: 14px;
     font-weight: 500;
-    color: #1A1A1B;
+    color: #1a1a1b;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
@@ -742,26 +766,26 @@
     align-items: center;
     justify-content: center;
   }
-  
+
   .addon-size-option:hover {
-    border-color: #DD2D4A;
+    border-color: #dd2d4a;
   }
-  
+
   .addon-size-option.active {
-    border-color: #DD2D4A;
-    background: #FFF5F6;
-    color: #DD2D4A;
+    border-color: #dd2d4a;
+    background: #fff5f6;
+    color: #dd2d4a;
   }
-  
+
   .addon-color-options {
     justify-content: flex-start;
   }
-  
+
   /* Add to cart button */
   .addon-popup-add-btn {
     width: 100%;
     height: 48px;
-    background: #DD2D4A;
+    background: #dd2d4a;
     color: white;
     border: none;
     border-radius: 8px;
@@ -780,17 +804,17 @@
     padding: 0 16px;
     padding-right: 0;
   }
-  
+
   .addon-products-slider {
     margin: 0 -16px;
     padding: 0 16px;
   }
-  
+
   .addon-products-swiper .swiper-slide {
     width: 318px !important;
     max-width: 318px !important;
   }
-  
+
   .addon-product-item {
     width: 318px;
   }
@@ -801,22 +825,22 @@
   .addon-products-container {
     padding: 0 12px;
   }
-  
+
   .addon-products-slider {
     margin: 0 -12px;
     padding: 0 12px;
   }
-  
+
   .addon-products-swiper .swiper-slide {
     width: 300px !important;
     max-width: 300px !important;
   }
-  
+
   .addon-product-item {
     width: 300px;
     padding: 10px;
   }
-  
+
   .addon-product-btn {
     width: 65px;
     height: 32px;
@@ -831,7 +855,7 @@
     justify-content: center;
     padding: 0 0 20px 0; /* 20px bottom padding */
   }
-  
+
   .addon-popup-content {
     max-width: 345px;
     width: 345px; /* Fixed 345px width */
@@ -845,11 +869,11 @@
     transform: translateY(100%);
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
   }
-  
+
   .addon-variant-popup.active .addon-popup-content {
     transform: translateY(0);
   }
-  
+
   .addon-popup-close {
     position: absolute;
     top: 8px;
@@ -862,12 +886,12 @@
     border: none;
     cursor: pointer;
   }
-  
+
   .addon-popup-close svg {
     width: 20px;
     height: 20px;
   }
-  
+
   .addon-popup-header {
     flex-direction: row;
     text-align: right;
@@ -877,14 +901,14 @@
     margin-bottom: 14px;
     margin-top: 0px;
   }
-  
+
   .addon-popup-product-image {
     width: 48px;
     height: 48px;
     order: 1;
     border-radius: 6px;
   }
-  
+
   .addon-popup-product-info {
     flex: 1;
     width: auto;
@@ -892,7 +916,7 @@
     align-items: flex-end;
     order: 2;
   }
-  
+
   .addon-popup-product-title {
     font-size: 14px;
     font-weight: 600;
@@ -901,14 +925,14 @@
     color: #000;
     line-height: 1.3;
   }
-  
+
   .addon-popup-product-pricing {
     justify-content: flex-start;
     width: 100%;
   }
-  
+
   .addon-popup-discount-badge {
-    background: #DD2D4A;
+    background: #dd2d4a;
     color: white;
     font-size: 10px;
     font-weight: 400;
@@ -920,7 +944,7 @@
     flex-shrink: 0;
     height: 16px;
   }
-  
+
   .addon-popup-prices {
     display: flex;
     align-items: baseline;
@@ -929,15 +953,15 @@
     order: -1;
     flex-direction: row-reverse;
   }
-  
+
   .addon-popup-current-price {
     font-size: 14px;
     font-weight: 700;
-    color: #DD2D4A;
+    color: #dd2d4a;
     white-space: nowrap;
     order: 2;
   }
-  
+
   .addon-popup-compare-price {
     font-size: 12px;
     color: #999;
@@ -945,7 +969,7 @@
     white-space: nowrap;
     order: 1;
   }
-  
+
   .addon-popup-description {
     text-align: right;
     font-size: 12px;
@@ -953,37 +977,37 @@
     color: #666;
     margin-bottom: 16px;
     padding-bottom: 16px;
-    border-bottom: 1px solid #E5E8EF;
+    border-bottom: 1px solid #e5e8ef;
   }
-  
+
   .addon-popup-description::after {
     display: none; /* Remove the pseudo element */
   }
-  
+
   /* Size selection exactly matching the desktop design */
   .addon-variant-label {
     font-size: 16px;
     font-weight: 600;
-    color: #1A1A1B;
+    color: #1a1a1b;
     margin: 16px 0 12px 0;
     text-align: right;
   }
-  
+
   .addon-size-options {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 columns instead of 3 */
     gap: 8px;
     width: fit-content;
   }
-  
+
   .addon-size-option {
     padding: 8px 16px; /* Same as desktop */
-    border: 1px solid #E5E8EF;
+    border: 1px solid #e5e8ef;
     border-radius: 26px; /* Same as desktop */
     background: white;
     font-size: 14px;
     font-weight: 500;
-    color: #1A1A1B;
+    color: #1a1a1b;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
@@ -991,24 +1015,23 @@
     max-width: 110px;
     max-height: 39px;
   }
-  
+
   .addon-size-option:hover {
-    border-color: #DD2D4A;
+    border-color: #dd2d4a;
   }
-  
+
   .addon-size-option.active {
-    border-color: #DD2D4A; /* Same as desktop - no background change */
+    border-color: #dd2d4a; /* Same as desktop - no background change */
   }
-  
+
   .addon-color-options {
     justify-content: flex-start;
   }
-  
 
   .addon-popup-add-btn {
     width: 100%;
     height: 46px;
-    background: #DD2D4A;
+    background: #dd2d4a;
     color: white;
     border: none;
     border-radius: 8px;
@@ -1019,8 +1042,8 @@
     box-sizing: border-box;
     margin-top: 20px;
   }
-  
+
   .addon-popup-add-btn:hover {
-    background: #C02847;
+    background: #c02847;
   }
 }
