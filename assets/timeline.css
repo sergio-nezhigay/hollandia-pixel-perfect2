@@ -1,7 +1,6 @@
 .timeline-section {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
-
 
 .timeline-header {
   position: relative;
@@ -10,16 +9,11 @@
   left: 50%;
   right: 50%;
   width: 100vw;
-  background: linear-gradient(
-    to bottom,
-    #F4EFEC 0%,
-    #FFFFFF 100%
-  );
+  background: linear-gradient(to bottom, #f4efec 0%, #ffffff 100%);
   padding: 50px 0;
   margin-bottom: 40px;
   padding-bottom: 0;
 }
-
 
 .timeline-header-content {
   max-width: 1200px;
@@ -36,8 +30,8 @@
 .timeline-title {
   font-size: 56px;
   font-weight: bold;
-  margin-bottom: 8px;
-  line-height: 1.2;
+  margin-bottom: -5px;
+  line-height: 1.46;
 }
 
 .timeline-meta {
@@ -45,7 +39,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  margin-bottom: 53px;
+  margin-bottom: 57px;
 }
 
 .timeline-since {
@@ -64,10 +58,10 @@
 
 .timeline-subtitle {
   font-size: 34px;
-  color: #1A1A1B;
-  margin-bottom: 30px;
+  color: #1a1a1b;
+  margin-bottom: -8px;
   font-weight: 700;
-  letter-spacing: -1px;
+  letter-spacing: -0.5px;
 }
 
 .timeline-description {
@@ -86,14 +80,14 @@
   position: absolute;
   left: 50%;
   top: 5px;
-  bottom: 64px;
+  bottom: 76px;
   width: 1px;
   transform: translateX(-50%);
 }
 
 .timeline-item {
   position: relative;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   display: flex;
   align-items: flex-start;
 }
@@ -116,7 +110,6 @@
   }
 }
 
-
 .timeline-content-wrapper {
   width: calc(50% - 30px);
   position: relative;
@@ -129,7 +122,7 @@
 }
 
 .timeline-item:nth-child(odd) .timeline-content-wrapper {
-  text-align: right;  
+  text-align: right;
   margin-left: 10px;
 }
 
@@ -146,25 +139,24 @@
   height: 17px;
   border-radius: 50%;
   margin-top: 5px;
-  border: 4px solid #FBD7DD !important;
+  border: 4px solid #fbd7dd !important;
 }
 
 .timeline-year {
   font-size: 26px;
   font-weight: 600;
-  margin-bottom: 1px;
+  margin-bottom: 4px;
   line-height: 1.2;
 }
 
 .timeline-text {
-  color: #38383A !important;
+  color: #38383a !important;
   font-size: 14px;
   line-height: 1.5;
   text-align: left;
   word-wrap: break-word;
   width: 100%;
   font-weight: 400;
-  
 }
 
 .timeline-item:nth-child(even) .timeline-text {
@@ -183,59 +175,59 @@
     padding: 20px 0;
     margin-bottom: 20px;
   }
-  
+
   .timeline-header-content {
     padding: 0 15px;
   }
-  
+
   .timeline-subtitle {
     margin-bottom: -17px !important;
   }
-  
+
   .timeline-section {
-    padding: 20px 0 20px !important;
+    padding: 20px 0 40px !important;
     padding-top: 0 !important;
   }
-  
+
   .timeline-container {
     padding: 0 15px;
     text-align: center;
   }
-  
+
   .timeline-title {
     margin-bottom: 0;
     font-size: 30px;
     text-align: center;
   }
-  
+
   .timeline-since {
     font-size: 16px;
   }
-  
+
   .timeline-subtitle {
     font-size: 28px;
     color: #000000;
     text-align: center;
   }
-  
+
   .timeline-meta {
     flex-direction: row;
     gap: 6px;
   }
-  
+
   .timeline-list {
     max-width: 100%;
     padding: 0;
     margin: 0;
     position: relative;
   }
-  
+
   .timeline-list::before {
     right: 2px;
     left: auto;
     transform: none;
   }
-  
+
   .timeline-item {
     flex-direction: row !important;
     margin-bottom: 14px;
@@ -245,7 +237,7 @@
     margin-right: 0 !important;
     position: relative;
   }
-  
+
   .timeline-center {
     position: absolute;
     right: 5.5px;
@@ -253,34 +245,34 @@
     width: auto;
     z-index: 2;
   }
-  
+
   .timeline-dot {
     width: 13px;
     height: 13px;
     margin-top: 0;
-    border: 4px solid #FBD7DD !important;
+    border: 4px solid #fbd7dd !important;
   }
-  
+
   .timeline-content-wrapper {
     width: 100%;
-    min-width: 304px; 
+    min-width: 304px;
     text-align: right !important;
     padding: 0 !important;
     margin-right: 28px;
     position: relative;
   }
-  
+
   .timeline-item .timeline-content-wrapper:last-child {
     display: none;
   }
-  
+
   .timeline-text {
     text-align: right !important;
     font-size: 12px;
     min-width: 304px;
     width: 100%;
   }
-  
+
   .timeline-year {
     font-size: 20px;
     text-align: right;
@@ -293,53 +285,58 @@
     margin-right: 22px !important;
   }
   .timeline-header {
-    padding: 15px 0;
+    padding: 20px 0 14px;
   }
-  
+
   .timeline-header-content {
     padding: 0 10px;
   }
-  
+
   .timeline-meta {
     margin-bottom: 20px !important;
   }
-  
+
   .timeline-badge svg {
     width: 14px;
     height: 14px;
   }
-  
+
   .timeline-dot {
     width: 13px;
     height: 13px;
   }
-  
+
   .timeline-title {
     font-size: 30px;
+    line-height: 1.2;
   }
-  
+
   .timeline-since {
     font-size: 16px;
   }
-  
+
   .timeline-subtitle {
     font-size: 22px;
   }
-  
+
   .timeline-year {
     font-size: 20px;
   }
-  
+
   .timeline-text {
     font-size: 12px;
   }
-  
+
   .timeline-center {
     right: -3.5px;
   }
-  
+
   .timeline-content-wrapper {
     margin-right: 33px;
     max-width: 280px;
   }
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
 }

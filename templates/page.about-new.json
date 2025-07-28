@@ -145,8 +145,8 @@
     "custom_image_with_text_cf33bL": {
       "type": "custom-image-with-text",
       "custom_css": [
-        "@media (min-width: 769px) {.hero-section {padding-top: 75px; padding-bottom: 0; }}",
-        "@media (max-width: 768px) {.hero-section {padding-top: 35px; padding-bottom: 40px; }}"
+        "@media (min-width: 769px) {.hero-section {padding-top: 90px; padding-bottom: 0; }}",
+        "@media (max-width: 768px) {.hero-section {padding-top: 29px; padding-bottom: 40px; }}"
       ],
       "name": "Custom Image With Text",
       "settings": {
