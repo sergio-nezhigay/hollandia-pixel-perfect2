@@ -68,9 +68,41 @@
     <div class="container">
       <ul class="nav-menu">
         {%- for link in linklists[main_menu].links -%}
+          {%- assign has_mega = false -%}
+          {%- assign mega_block = null -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'mega_menu' and block.settings.menu_trigger == link.title -%}
+              {%- assign has_mega = true -%}
+              {%- assign mega_block = block -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+          <script>
+            console.log('Menu item URL:', '{{ link.url }}');
+            {% if has_mega %}
+              console.log('Menu item "{{ link.url }}" has a mega menu.');
+              {% if mega_block.settings.mega_item_1_link != blank %}
+                console.log('Mega menu item URL:', '{{ mega_block.settings.mega_item_1_link }}');
+              {% endif %}
+              {% if mega_block.settings.mega_item_2_link != blank %}
+                console.log('Mega menu item URL:', '{{ mega_block.settings.mega_item_2_link }}');
+              {% endif %}
+              {% if mega_block.settings.mega_item_3_link != blank %}
+                console.log('Mega menu item URL:', '{{ mega_block.settings.mega_item_3_link }}');
+              {% endif %}
+              {% if mega_block.settings.mega_item_4_link != blank %}
+                console.log('Mega menu item URL:', '{{ mega_block.settings.mega_item_4_link }}');
+              {% endif %}
+            {% endif %}
+            {% if link.links.size > 0 %}
+              console.log('Menu item "{{ link.url }}" has a submenu (child links).');
+              {% for sublink in link.links %}
+                console.log('Submenu item URL:', '{{ sublink.url }}');
+              {% endfor %}
+            {% endif %}
+          </script>
           <li>
             <a href="{{ link.url }}">{{ link.title }}</a>
-
             {%- for block in section.blocks -%}
               {%- if block.type == 'mega_menu' and block.settings.menu_trigger == link.title -%}
                 <div class="mega-menu">
