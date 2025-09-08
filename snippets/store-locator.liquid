@@ -1,4 +1,10 @@
-<!-- store-locator.liquid -->
+{% if template contains 'product' %}
+  {% assign show_button = product.metafields.custom.meeting_button.value %}
+{% else %}
+  {% assign show_button = true %}
+{% endif %}
+
+{% if show_button %}
 <div class="store-locator-container">
   <button class="store-locator-btn" data-store-locator-trigger>
     <span class="store-locator-text">
@@ -45,7 +51,7 @@
     </div>
   </div>
 
-  <!-- Mobile Popup (замінює drawer) -->
+  <!-- Mobile Popup -->
   <div class="store-locator-popup mobile-only" data-store-locator-mobile-popup>
     <div class="mobile-popup-overlay" data-store-locator-close></div>
     <div class="mobile-popup-content">
@@ -137,3 +143,4 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+{% endif %}

@@ -1,5 +1,5 @@
 .faq-section {
-  padding: 60px 20px 70px;
+  padding: 60px 20px 62px;
   background-color: #ffffff;
   direction: rtl;
 }
@@ -71,13 +71,17 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
+  .faq-question span {
+    line-height: 1.45;
+  }
   .faq-icon {
     width: 10px;
     height: 10px;
-    margin-left: 5px !important;
+    margin-left: 0px !important;
   }
   .faq-section {
     padding: 40px 15px;
+    padding-top: 30px;
   }
 
   .faq-title {
@@ -89,6 +93,11 @@
     padding: 12px 0 !important;
     font-size: 16px;
   }
+
+.faq-item:first-of-type .faq-question {
+  padding-top: 0 !important;
+}
+
 
   .faq-answer-content {
     font-size: 14px;

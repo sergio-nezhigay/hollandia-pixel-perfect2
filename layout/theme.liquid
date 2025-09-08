@@ -141,5 +141,10 @@
     })(document, document.head, document.body);
     </script>{% endcomment %}
     {{ 'swiper-bundle.min.js' | asset_url | script_tag }}
+    <style>
+      html, body {
+  overflow-x: hidden !important;
+}
+    </style>
   </body>
 </html>

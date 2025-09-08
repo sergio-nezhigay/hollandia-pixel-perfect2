@@ -1,5 +1,6 @@
 {{ 'main-product.css' | asset_url | stylesheet_tag }}
 {{ 'store-locator.css' | asset_url | stylesheet_tag }}
+{{ 'sticky-add-to-cart.css' | asset_url | stylesheet_tag }}
 
 <script>
 window.productData = {
@@ -103,7 +104,7 @@ window.productData = {
                   
                   <div class="tabs-content">
                     <div class="tab-content active" data-tab="tab1">
-                      <div class="tab-text">
+                      <div class="tab-text text-truncatable" data-max-words="36" data-expand-text="קיראו עוד" data-collapse-text="כיווץ">
                         {{ block.settings.tab1_content | default: product.description }}
                       </div>
                     </div>
@@ -174,6 +175,63 @@ window.productData = {
                 </div>
               </div>
 
+     {% when 'sticky_add_to_cart' %}
+<div class="sticky-add-to-cart-block"
+     {{ block.shopify_attributes }}
+    data-show-desktop="{{ block.settings.show_desktop }}"
+    data-show-mobile="{{ block.settings.show_mobile }}">
+                  
+  <div class="sticky-add-to-cart" id="sticky-add-to-cart">
+   <div class="sticky-cart-container">
+     <div class="sticky-cart-actions">
+       <div class="sticky-buttons-container">
+         <form data-sticky-buy-now-form class="sticky-buy-now-form">
+           <input type="hidden" name="id" class="sticky-buy-now-variant-id" value="{{ product.selected_or_first_available_variant.id }}">
+           <input type="hidden" name="quantity" class="sticky-buy-now-quantity" value="1">
+                         {% if block.settings.whatsapp_link %}
+           <a href="{{ block.settings.whatsapp_link }}" class="whatsapp-block" target="_blank" rel="noopener">
+             {% render 'whatsapp-icon-thin' %}
+           </a>
+         {% else %}
+           <div class="whatsapp-block">
+             {% render 'whatsapp-icon-thin' %}
+           </div>
+         {% endif %}
+           <button type="submit" class="sticky-buy-now-btn" data-sticky-buy-now>
+             <span class="btn-text">{{ block.settings.buy_now_text | default: 'עכשיו' }}</span>
+             <span class="btn-loading" style="display: none;">
+               <svg class="spinner" width="16" height="16" viewBox="0 0 16 16">
+                 <circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="30" stroke-dashoffset="30">
+                   <animateTransform attributeName="transform" type="rotate" values="0 8 8;360 8 8" dur="1s" repeatCount="indefinite"/>
+                 </circle>
+               </svg>
+             </span>
+           </button>
+         </form>
+          
+         <form data-sticky-cart-form class="sticky-cart-form">
+           <input type="hidden" name="id" class="sticky-variant-id" value="{{ product.selected_or_first_available_variant.id }}">
+           <input type="hidden" name="quantity" class="sticky-quantity" value="1">
+                          
+           <button type="submit" class="sticky-add-to-cart-btn" data-sticky-add-to-cart>
+             <span class="btn-text">{{ block.settings.add_to_cart_text | default: 'הוסיפו לעגלה' }}</span>
+             <span class="btn-loading" style="display: none;">
+               <svg class="spinner" width="16" height="16" viewBox="0 0 16 16">
+                 <circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="30" stroke-dashoffset="30">
+                   <animateTransform attributeName="transform" type="rotate" values="0 8 8;360 8 8" dur="1s" repeatCount="indefinite"/>
+                 </circle>
+               </svg>
+             </span>
+           </button>
+         </form>
+
+
+       </div>
+     </div>
+   </div>
+ </div>
+</div>
+
           {% endcase %}
         {% endfor %}
       </div>
@@ -182,11 +240,65 @@ window.productData = {
   </div>
 </div>
 
+<style>
+.text-truncatable {
+  position: relative;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out;
+}
+
+.text-truncatable.truncated {
+  max-height: 6em;
+  line-height: 1.5;
+}
+
+.text-truncatable.expanded {
+  max-height: none;
+}
+
+.text-truncatable .expand-trigger {
+  color: #DD2D4A;
+  cursor: pointer;
+  font-weight: inherit;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  display: inline;
+  margin-right: 5px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.text-truncatable .expand-trigger:hover,
+.text-truncatable .expand-trigger:active {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .text-truncatable.truncated {
+    max-height: 6em;
+    line-height: 1.4;
+  }
+  
+  .text-truncatable .expand-trigger {
+    font-size: 14px;
+    padding: 2px 0;
+    min-height: 24px;
+    display: inline-block;
+  }
+}
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   initProductTabs();
   initPackageDetails();
   initStoreLocator();
+  initTextTruncation();
+  initStickyAddToCart();
 
   const picker = document.querySelector('.variant-picker-block');
   const form = document.querySelector('.product-form');
@@ -210,6 +322,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       form.querySelector('input[name="id"]').value = variant.id;
       form.querySelector('input[name="quantity"]').value = quantity;
+      
+      document.dispatchEvent(new CustomEvent('variant:changed', {
+        detail: { variant, quantity }
+      }));
     }
 
     swatches.forEach(swatch => {
@@ -276,6 +392,10 @@ function initProductTabs() {
         tabs.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         btn.classList.add('active');
         tabs.querySelector(`.tab-content[data-tab="${name}"]`).classList.add('active');
+        
+        setTimeout(() => {
+          initTextTruncation();
+        }, 50);
       });
     });
   });
@@ -289,6 +409,54 @@ function initPackageDetails() {
       trigger.classList.toggle('active');
       content.classList.toggle('active');
     });
+  });
+}
+
+function initTextTruncation() {
+  document.querySelectorAll('.text-truncatable').forEach(element => {
+    if (element.dataset.processed) return;
+    element.dataset.processed = 'true';
+    
+    const maxWords = parseInt(element.dataset.maxWords) || 36;
+    const expandText = element.dataset.expandText || 'קיראו עוד';
+    const collapseText = element.dataset.collapseText || 'כיווץ';
+    const originalContent = element.innerHTML.trim();
+    
+    const words = originalContent.split(' ');
+    
+    if (words.length > maxWords) {
+      const truncatedContent = words.slice(0, maxWords).join(' ');
+      let isExpanded = false;
+      
+      function updateContent() {
+        if (isExpanded) {
+          element.innerHTML = originalContent + ' <span class="expand-trigger">' + collapseText + '</span>';
+          element.classList.remove('truncated');
+          element.classList.add('expanded');
+        } else {
+          element.innerHTML = truncatedContent + '... <span class="expand-trigger">' + expandText + '</span>';
+          element.classList.add('truncated');
+          element.classList.remove('expanded');
+        }
+        
+        const expandTrigger = element.querySelector('.expand-trigger');
+        if (expandTrigger) {
+          expandTrigger.addEventListener('click', handleToggle);
+          expandTrigger.addEventListener('touchstart', handleToggle);
+        }
+        
+        function handleToggle(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          isExpanded = !isExpanded;
+          expandTrigger.removeEventListener('click', handleToggle);
+          expandTrigger.removeEventListener('touchstart', handleToggle);
+          updateContent();
+        }
+      }
+      
+      updateContent();
+    }
   });
 }
 
@@ -416,6 +584,201 @@ function initStoreLocator() {
     document.body.style.overflow = '';
   }
 }
+
+function initStickyAddToCart() {
+  const stickyBlock = document.querySelector('.sticky-add-to-cart-block');
+  const stickyCart = document.querySelector('.sticky-add-to-cart');
+  const mainAddToCartBlock = document.querySelector('.add-to-cart-block');
+  
+  if (!stickyBlock || !stickyCart) return;
+  
+  const showDesktop = stickyBlock.dataset.showDesktop === 'true';
+  const showMobile = stickyBlock.dataset.showMobile === 'true';
+  
+  function checkVisibility() {
+    const isMobile = window.innerWidth <= 768;
+    const shouldShow = isMobile ? showMobile : showDesktop;
+    
+    if (!shouldShow) {
+      stickyCart.classList.remove('visible');
+      return false;
+    }
+    return true;
+  }
+  
+  function handleScroll() {
+    if (!checkVisibility()) return;
+    
+    if (!mainAddToCartBlock) {
+      return;
+    }
+    
+    const rect = mainAddToCartBlock.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    
+    if (rect.bottom < windowHeight * 0.3) {
+      stickyCart.classList.add('visible');
+    } else {
+      stickyCart.classList.remove('visible');
+    }
+  }
+  
+  const qtyInput = stickyCart.querySelector('[data-sticky-qty-input]');
+  const qtyPlus = stickyCart.querySelector('[data-sticky-qty-plus]');
+  const qtyMinus = stickyCart.querySelector('[data-sticky-qty-minus]');
+  
+  function syncWithMainPicker() {
+    const mainForm = document.querySelector('.product-form');
+    if (!mainForm) return;
+    
+    const mainVariantId = mainForm.querySelector('input[name="id"]')?.value;
+    
+    if (mainVariantId) {
+      const stickyVariantInputs = stickyCart.querySelectorAll('.sticky-variant-id, .sticky-buy-now-variant-id');
+      stickyVariantInputs.forEach(input => input.value = mainVariantId);
+    }
+  }
+  
+  const observer = new MutationObserver(() => {
+    setTimeout(syncWithMainPicker, 100);
+  });
+  
+  const mainForm = document.querySelector('.product-form');
+  if (mainForm) {
+    observer.observe(mainForm, { 
+      childList: true, 
+      subtree: true, 
+      attributes: true,
+      attributeFilter: ['value']
+    });
+  }
+  
+  const addToCartForm = stickyCart.querySelector('[data-sticky-cart-form]');
+  const addToCartBtn = stickyCart.querySelector('[data-sticky-add-to-cart]');
+  
+  if (addToCartForm && addToCartBtn) {
+    addToCartForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const btnText = addToCartBtn.querySelector('.btn-text');
+      const btnLoading = addToCartBtn.querySelector('.btn-loading');
+      
+      try {
+        addToCartBtn.disabled = true;
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'flex';
+        
+        const formData = new FormData(addToCartForm);
+        
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (response.ok) {
+          document.dispatchEvent(new CustomEvent('cart:updated'));
+          
+          btnText.textContent = 'נוסף לעגלה!';
+          btnText.style.display = 'block';
+          btnLoading.style.display = 'none';
+          addToCartBtn.style.background = '#E8F5E8';
+          addToCartBtn.style.color = '#2D5A2D';
+          addToCartBtn.style.borderColor = '#4CAF50';
+          
+          setTimeout(() => {
+            btnText.textContent = addToCartBtn.dataset.originalText || 'הוסף לעגלה';
+            addToCartBtn.style.background = '';
+            addToCartBtn.style.color = '';
+            addToCartBtn.style.borderColor = '';
+            addToCartBtn.disabled = false;
+          }, 2000);
+        } else {
+          throw new Error('Failed to add to cart');
+        }
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        btnText.textContent = 'שגיאה, נסה שוב';
+        btnText.style.display = 'block';
+        btnLoading.style.display = 'none';
+        addToCartBtn.style.background = '#FDF2F2';
+        addToCartBtn.style.color = '#B91C1C';
+        addToCartBtn.style.borderColor = '#EF4444';
+        
+        setTimeout(() => {
+          btnText.textContent = addToCartBtn.dataset.originalText || 'הוסף לעגלה';
+          addToCartBtn.style.background = '';
+          addToCartBtn.style.color = '';
+          addToCartBtn.style.borderColor = '';
+          addToCartBtn.disabled = false;
+        }, 3000);
+      }
+    });
+    
+    if (addToCartBtn) {
+      addToCartBtn.dataset.originalText = addToCartBtn.querySelector('.btn-text').textContent;
+    }
+  }
+  
+  const buyNowForm = stickyCart.querySelector('[data-sticky-buy-now-form]');
+  const buyNowBtn = stickyCart.querySelector('[data-sticky-buy-now]');
+  
+  if (buyNowForm && buyNowBtn) {
+    buyNowForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const btnText = buyNowBtn.querySelector('.btn-text');
+      const btnLoading = buyNowBtn.querySelector('.btn-loading');
+      
+      try {
+        buyNowBtn.disabled = true;
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'flex';
+        
+        const formData = new FormData(buyNowForm);
+        
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (response.ok) {
+          window.location.href = '/checkout';
+        } else {
+          throw new Error('Failed to add to cart');
+        }
+      } catch (error) {
+        console.error('Error with buy now:', error);
+        btnText.textContent = 'שגיאה, נסה שוב';
+        btnText.style.display = 'block';
+        btnLoading.style.display = 'none';
+        buyNowBtn.style.background = '#FDF2F2';
+        buyNowBtn.style.color = '#B91C1C';
+        
+        setTimeout(() => {
+          btnText.textContent = buyNowBtn.dataset.originalText || 'עכשיו';
+          buyNowBtn.style.background = '';
+          buyNowBtn.style.color = '';
+          buyNowBtn.disabled = false;
+        }, 3000);
+      }
+    });
+    
+    if (buyNowBtn) {
+      buyNowBtn.dataset.originalText = buyNowBtn.querySelector('.btn-text').textContent;
+    }
+  }
+  
+  syncWithMainPicker();
+  checkVisibility();
+  
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('resize', () => {
+    checkVisibility();
+    handleScroll();
+  });
+  
+  document.addEventListener('variant:changed', syncWithMainPicker);
+}
 </script>
 
 {% schema %}
@@ -510,11 +873,6 @@ function initStoreLocator() {
     {
       "type": "header",
       "content": "Store 4"
-    },
-    {
-      "type": "text",
-      "id": "store_4_name",
-      "label": "Store 4 Name"
     },
     {
       "type": "text",
@@ -853,6 +1211,51 @@ function initStoreLocator() {
           "label": "Employee's photo"
         }
       ]
+    },
+    {
+      "type": "sticky_add_to_cart",
+      "name": "Sticky Add to Cart",
+      "limit": 1,
+      "settings": [
+        {
+  "type": "url",
+  "id": "whatsapp_link",
+  "label": "WhatsApp Link",
+  "info": "Add WhatsApp link (e.g., https://wa.me/1234567890)"
+},
+        {
+          "type": "header",
+          "content": "Visibility Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_desktop",
+          "label": "Show on Desktop",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_mobile",
+          "label": "Show on Mobile",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Button Settings"
+        },
+        {
+          "type": "text",
+          "id": "add_to_cart_text",
+          "label": "Add to Cart Button Text",
+          "default": "הוסף לעגלה"
+        },
+        {
+          "type": "text",
+          "id": "buy_now_text",
+          "label": "Buy Now Button Text",
+          "default": "עכשיו"
+        }
+      ]
     }
   ],
   "presets": [
@@ -893,6 +1296,9 @@ function initStoreLocator() {
         },
         {
           "type": "support_block"
+        },
+        {
+          "type": "sticky_add_to_cart"
         }
       ]
     }

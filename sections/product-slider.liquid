@@ -5,6 +5,12 @@
     margin-bottom: 32px !important;
     position: relative;
   }
+  @media (max-width: 767px) {
+  #shopify-section-{{ section.id }} .section-title {
+    margin-bottom: 22px !important;
+  }
+}
+
 </style>
 <div class="product-slider-section" id="product-slider-{{ section.id }}">
   <div class="product-slider-container">
@@ -50,62 +56,44 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Ініціалізуємо слайдер для конкретної секції
-    const sectionId = '{{ section.id }}';
-    const swiperElement = document.getElementById('swiper-' + sectionId);
+document.addEventListener('DOMContentLoaded', function () {
+  const sectionId = '{{ section.id }}';
+  const el = document.getElementById('swiper-' + sectionId);
+  if (!el) return;
 
-    if (swiperElement) {
-      const productSlider = new Swiper('#swiper-' + sectionId, {
-        slidesPerView: 1,
-        spaceBetween: 0,
-        loop: false,
-        centeredSlides: true,
-        navigation: {
-          nextEl: '[data-slider="' + sectionId + '"].product-slider-next',
-          prevEl: '[data-slider="' + sectionId + '"].product-slider-prev',
-        },
-        breakpoints: {
-          768: {
-            slidesPerView: 4,
-            spaceBetween: 20,
-            centeredSlides: false,
-            allowTouchMove: false,
-          },
-        },
-        on: {
-          init: function () {
-            this.update();
-            updateNavigation(this, sectionId);
-          },
-          slideChange: function () {
-            updateNavigation(this, sectionId);
-          },
-        },
-      });
-    }
-
-    // Функція оновлення навігації для конкретного слайдера
-    function updateNavigation(swiper, sectionId) {
-      const prevBtn = document.querySelector('[data-slider="' + sectionId + '"].product-slider-prev');
-      const nextBtn = document.querySelector('[data-slider="' + sectionId + '"].product-slider-next');
-
-      if (prevBtn && nextBtn) {
-        if (swiper.isBeginning) {
-          prevBtn.classList.add('swiper-button-disabled');
-        } else {
-          prevBtn.classList.remove('swiper-button-disabled');
-        }
-
-        if (swiper.isEnd) {
-          nextBtn.classList.add('swiper-button-disabled');
-        } else {
-          nextBtn.classList.remove('swiper-button-disabled');
-        }
-      }
-    }
+  const slider = new Swiper('#swiper-' + sectionId, {
+    slidesPerView: 'auto',
+    centeredSlides: true,
+    spaceBetween: 8,
+    loop: false,
+    speed: 350,
+    roundLengths: true,
+    navigation: {
+      nextEl: '[data-slider="' + sectionId + '"].product-slider-next',
+      prevEl: '[data-slider="' + sectionId + '"].product-slider-prev',
+    },
+    breakpoints: {
+      768:  { slidesPerView: 4, spaceBetween: 20, centeredSlides: false, allowTouchMove: false },
+      992:  { slidesPerView: 3, spaceBetween: 20, centeredSlides: false, allowTouchMove: false },
+      1200: { slidesPerView: 4, spaceBetween: 20, centeredSlides: false, allowTouchMove: false },
+    },
+    on: {
+      init() { this.update(); updateNavigation(this, sectionId); },
+      slideChange() { updateNavigation(this, sectionId); },
+    },
   });
+
+  function updateNavigation(swiper, sectionId) {
+    const prevBtn = document.querySelector('[data-slider="' + sectionId + '"].product-slider-prev');
+    const nextBtn = document.querySelector('[data-slider="' + sectionId + '"].product-slider-next');
+    if (!prevBtn || !nextBtn) return;
+    prevBtn.classList.toggle('swiper-button-disabled', swiper.isBeginning);
+    nextBtn.classList.toggle('swiper-button-disabled', swiper.isEnd);
+  }
+});
 </script>
+
+
 
 {% schema %}
 {

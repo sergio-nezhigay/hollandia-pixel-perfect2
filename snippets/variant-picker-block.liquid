@@ -26,27 +26,42 @@
       
       <div class="color-swatches-container">
         <div class="color-swatches">
-          {% for value in color_option.values %}
-            {% assign variant_for_color = blank %}
-            {% assign featured_media_id = blank %}
-            {% for variant in product.variants %}
-              {% if variant.option1 == value %}
-                {% assign variant_for_color = variant %}
-                {% if variant.featured_media %}
-                  {% assign featured_media_id = variant.featured_media.id %}
-                {% endif %}
-                {% break %}
-              {% endif %}
-            {% endfor %}
-            
-            <button class="color-swatch {% if forloop.first %}active{% endif %}" 
-                    data-color="{{ value }}" 
-                    data-variant-id="{{ variant_for_color.id }}"
-                    data-featured-media="{{ featured_media_id }}"
-                    {% unless variant_for_color.available %}disabled{% endunless %}>
-              <div class="color-circle" data-color="{{ value | downcase }}"></div>
-            </button>
-          {% endfor %}
+          {% assign color_objects = product.metafields.color %} 
+{% for value in color_option.values %}
+  {% assign variant_for_color = blank %}
+  {% assign featured_media_id = blank %}
+  {% for variant in product.variants %}
+    {% if variant.option1 == value %}
+      {% assign variant_for_color = variant %}
+      {% if variant.featured_media %}
+        {% assign featured_media_id = variant.featured_media.id %}
+      {% endif %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  {% assign matched_color = '' %}
+  {% assign color_entries = product.metafields.shopify['color-pattern'].value %}
+  {% for color_obj in color_entries %}
+    {% if color_obj.label == value %}
+      {% assign matched_color = color_obj.color %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  <button class="color-swatch {% if forloop.first %}active{% endif %}" 
+          data-color="{{ value }}" 
+          data-variant-id="{{ variant_for_color.id }}"
+          data-featured-media="{{ featured_media_id }}"
+          {% unless variant_for_color.available %}disabled{% endunless %}>
+    <div class="color-circle"
+         style="background-color: {{ matched_color }};"
+         title="{{ value }}"></div>
+  </button>
+{% endfor %}
+
+
+
         </div>
         
         {% render 'store-locator' %}

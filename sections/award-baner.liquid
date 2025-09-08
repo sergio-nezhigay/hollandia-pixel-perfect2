@@ -1,3 +1,18 @@
+{% assign has_content = false %}
+
+{% if section.settings.title != blank %}
+  {% assign has_content = true %}
+{% endif %}
+
+{% if section.settings.text != blank %}
+  {% assign has_content = true %}
+{% endif %}
+
+{% if section.settings.image %}
+  {% assign has_content = true %}
+{% endif %}
+
+{% if has_content %}
 <style>
   .award-section {
     background-color: #f4efec;
@@ -31,7 +46,7 @@
   .award-content {
     flex: 1;
     max-width: 590px;
-    padding: 70px 0;
+    padding: 79px 0;
     order: 2;
   }
 
@@ -59,14 +74,13 @@
   }
 
   .award-text p {
-    margin: 0 0 16px 0;
+    margin: 0 0 18px 0;
   }
 
   .award-text p:last-child {
     margin-bottom: 0;
   }
 
-  /* Mobile Styles */
   @media (max-width: 768px) {
     .award-section {
       max-height: fit-content;
@@ -79,6 +93,7 @@
       min-height: 534px;
       padding: 30px 16px;
       justify-content: center;
+      padding-top: 23px;
     }
 
     .award-image {
@@ -98,11 +113,12 @@
     .award-title {
       font-size: 26px;
       margin: 0 0 14px 0;
+      min-height: 38px;
     }
 
     .award-divider {
       width: 132px;
-      margin: 0 auto 20px auto;
+      margin: 0 auto 14px auto;
     }
 
     .award-text {
@@ -119,15 +135,22 @@
       </div>
     {% endif %}
 
-    <div class="award-content">
-      <h2 class="award-title">{{ section.settings.title }}</h2>
-      <div class="award-divider"></div>
-      <div class="award-text">
-        {{ section.settings.text }}
+    {% if section.settings.title != blank or section.settings.text != blank %}
+      <div class="award-content">
+        {% if section.settings.title != blank %}
+          <h2 class="award-title">{{ section.settings.title }}</h2>
+          <div class="award-divider"></div>
+        {% endif %}
+        {% if section.settings.text != blank %}
+          <div class="award-text">
+            {{ section.settings.text }}
+          </div>
+        {% endif %}
       </div>
-    </div>
+    {% endif %}
   </div>
 </section>
+{% endif %}
 
 {% schema %}
 {

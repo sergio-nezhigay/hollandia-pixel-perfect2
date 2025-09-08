@@ -10,7 +10,7 @@
   background: #FFFFFF;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  height: 90px;
+  height: 85px;
   align-items: center;
 }
 .price-column {
@@ -62,7 +62,7 @@
   direction: rtl;
 }
 .shipping-info-badge-pdp svg:first-child {
-  margin-right: 95px;
+  margin-right: 84px;
   flex-shrink: 0;
   order: 5;
 }
@@ -78,6 +78,7 @@
   margin-right: 11px;
   flex-shrink: 0;
   order: 3;
+  scale: 1.1;
 }
 .shipping-divider-pdp {
   width: 1px;
@@ -149,13 +150,13 @@
   }
   
   .price-table-container {
-    width: 328px;
+    width: 100%;
   }
   
   .price-columns {
     flex-direction: row;
     height: 78px;
-    width: 328px;
+    width: 100%;
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
@@ -205,9 +206,9 @@
     font-size: 14px;
     font-weight: 400;
     border-radius: 17px;
-    width: 328px;
+    width: 100%;
     height: 35px;
-    margin-top: 8px;
+    margin-top: 12px;
     display: flex;
     align-items: center;
     box-sizing: border-box;

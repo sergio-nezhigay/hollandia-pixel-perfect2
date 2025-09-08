@@ -75,6 +75,18 @@
   </div>
 </div>
 
+{% if template contains 'product' %}
+  <div class="footer-sticky-spacer mobile-only">
+    <div class="spacer-content">
+      <div class="spacer-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const menuTitles = document.querySelectorAll('.footer-menu-title');
@@ -103,6 +115,31 @@
         });
       }
     });
+
+    if (window.location.pathname.includes('/products/') && window.innerWidth <= 768) {
+      const stickyCart = document.querySelector('.sticky-add-to-cart');
+      const footerSpacer = document.querySelector('.footer-sticky-spacer');
+      
+      if (stickyCart && footerSpacer) {
+        const observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'class') {
+              if (stickyCart.classList.contains('visible')) {
+                footerSpacer.style.background = '#fff';
+                footerSpacer.style.borderTop = 'none';
+                footerSpacer.querySelector('.spacer-dots').style.opacity = '0';
+              } else {
+                footerSpacer.style.background = '';
+                footerSpacer.style.borderTop = '';
+                footerSpacer.querySelector('.spacer-dots').style.opacity = '';
+              }
+            }
+          });
+        });
+        
+        observer.observe(stickyCart, { attributes: true });
+      }
+    }
   });
 </script>
 

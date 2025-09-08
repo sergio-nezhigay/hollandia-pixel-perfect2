@@ -29,8 +29,14 @@
 
 <style>
   .icon-features-section {
-    padding: 36px 0 40px;
+    padding: 36px 0 30px;
   }
+  
+@media (max-width: 767px) {
+  .icon-features-section {
+    padding: 40px 0 34px;
+  }
+}
 
   .container {
     max-width: 1200px;
@@ -42,7 +48,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 48px;
-    padding: 0 0 30px;
+    padding: 0 0 34px;
     border-bottom: 1px solid #e0e0e0;
     position: relative;
   }
@@ -88,6 +94,7 @@
   @media (max-width: 768px) {
     .icon-feature-item {
       min-width: 0px !important;
+      min-height: 86px;
     }
     .icon-features-grid {
       display: grid;

@@ -9,7 +9,7 @@
 }
 
 .product-slider-pdp-section {
-  padding: 60px 0 52px;
+  padding: 60px 0 55px;
   background-color: #ffffff;
 }
 
@@ -136,6 +136,11 @@
 }
 
 @media (max-width: 767px) {
+
+  .section-title h2 {
+  margin: 0 0 14px 0;
+}
+
   .section-title {
     margin-bottom: 22px;
     text-align: center;
@@ -154,7 +159,7 @@
   .product-slider-pdp-next {
     width: 46px;
     height: 46px;
-    top: 53%;
+    top: 47%;
   }
 
   .product-slider-pdp-prev {
@@ -190,5 +195,60 @@
   [dir='rtl'] .product-slider-pdp-next {
     right: auto;
     left: 10px;
+  }
+}
+
+
+@media (max-width: 767px){
+  #shopify-section-{{ section.id }} .product-slider-pdp-container{padding:0 !important; overflow:hidden !important;}
+  #shopify-section-{{ section.id }} .product-slider-pdp-wrapper{overflow:hidden !important;}
+  #shopify-section-{{ section.id }} .product-slider-pdp-swiper{--peek:16px; width:100% !important; padding:0 var(--peek) !important; overflow:hidden !important;}
+  #shopify-section-{{ section.id }} .product-slider-pdp-swiper .swiper-wrapper{align-items:stretch !important; gap:0 !important;}
+  #shopify-section-{{ section.id }} .product-slider-pdp-swiper .swiper-slide{
+    width:calc(100% - (var(--peek) * 2)) !important;
+    flex:0 0 auto !important;
+    margin-right:8px !important;
+    box-sizing:border-box !important;
+    display:flex !important;
+    align-items:stretch !important;
+  }
+  #shopify-section-{{ section.id }} .product-slider-pdp-swiper .swiper-slide:last-child{margin-right:0 !important;}
+  #shopify-section-{{ section.id }} .product-slider-pdp-swiper .swiper-slide > *{width:100% !important;}
+}
+
+
+
+@media (min-width: 768px) and (max-width: 1249.98px) {
+
+.section-title h2 {
+    margin: 0 40px 16px 0;
+}
+
+[dir='rtl'] .product-slider-pdp-prev {
+  left: auto;
+  right: 135px;
+}
+
+[dir='rtl'] .product-slider-pdp-next {
+  right: auto;
+  left: 135px;
+}
+  #shopify-section-{{ section.id }} .product-slider-pdp-container { max-width: 1200px !important; }
+  #shopify-section-{{ section.id }} .product-slider-pdp-swiper {
+    width: calc(285px * 3 + 18px * 2) !important; 
+    margin: 0 auto !important;
+    overflow: hidden !important;
+  }
+  #shopify-section-{{ section.id }} .product-slider-pdp-swiper .swiper-slide {
+    width: 285px !important;  
+    flex-shrink: 0 !important;
+  }
+}
+
+
+@media (min-width: 1250px) {
+  #shopify-section-{{ section.id }} .product-slider-pdp-swiper {
+    width: calc(285px * 4 + 18px * 3) !important;
+    margin: 0 auto !important;
   }
 }

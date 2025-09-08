@@ -1,11 +1,24 @@
 {{ 'faq-custom.css' | asset_url | stylesheet_tag }}
 
+{% assign has_content = false %}
+
+{% for block in section.blocks %}
+  {% if block.settings.question != blank and block.settings.question != "" %}
+    {% assign has_content = true %}
+    {% break %}
+  {% elsif block.settings.answer != blank and block.settings.answer != "" %}
+    {% assign has_content = true %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% if has_content %}
 <section class="faq-section">
   <div class="faq-container">
     {% if section.settings.title != blank %}
       <h2 class="faq-title">{{ section.settings.title }}</h2>
     {% endif %}
-    
+             
     {% if section.blocks.size > 0 %}
       {% for block in section.blocks %}
         <div class="faq-item" {{ block.shopify_attributes }}>
@@ -31,8 +44,7 @@
     const faqItem = element.parentElement;
     const answer = faqItem.querySelector('.faq-answer');
     const icon = element.querySelector('.faq-icon');
-    
-    // Close all other FAQ items
+             
     const allFaqItems = document.querySelectorAll('.faq-item');
     allFaqItems.forEach(item => {
       if (item !== faqItem) {
@@ -42,12 +54,12 @@
         otherIcon.classList.remove('active');
       }
     });
-    
-    // Toggle current item
+             
     answer.classList.toggle('active');
     icon.classList.toggle('active');
   }
 </script>
+{% endif %}
 
 {% schema %}
 {
@@ -74,10 +86,10 @@
           "default": "הכנס שאלה כאן"
         },
         {
-          "type": "textarea",
+          "type": "richtext",
           "id": "answer",
           "label": "תשובה",
-          "default": "הכנס תשובה כאן"
+          "default": "<p>הכנס תשובה כאן</p>"
         }
       ]
     }
@@ -90,21 +102,21 @@
           "type": "faq_item",
           "settings": {
             "question": "זמן אספקה",
-            "answer": "זמן האספקה הוא 3-5 ימי עסקים בתוך הארץ. למשלוחים לחו\"ל, זמן האספקה עשוי להיות 7-14 ימי עסקים."
+            "answer": "<p>זמן האספקה הוא 3-5 ימי עסקים בתוך הארץ. למשלוחים לחו\"ל, זמן האספקה עשוי להיות 7-14 ימי עסקים.</p>"
           }
         },
         {
           "type": "faq_item",
           "settings": {
             "question": "מדיניות החזרות",
-            "answer": "ניתן להחזיר מוצרים תוך 30 יום מתאריך הרכישה. המוצרים חייבים להיות במצב מקורי ובאריזה המקורית."
+            "answer": "<p>ניתן להחזיר מוצרים תוך 30 יום מתאריך הרכישה. המוצרים חייבים להיות במצב מקורי ובאריזה המקורית.</p>"
           }
         },
         {
           "type": "faq_item",
           "settings": {
             "question": "אחריות",
-            "answer": "אנו מעניקים אחריות של שנה על כל המוצרים שלנו. האחריות כוללת תיקון או החלפה של מוצרים פגומים."
+            "answer": "<p>אנו מעניקים אחריות של שנה על כל המוצרים שלנו. האחריות כוללת תיקון או החלפה של מוצרים פגומים.</p>"
           }
         }
       ]

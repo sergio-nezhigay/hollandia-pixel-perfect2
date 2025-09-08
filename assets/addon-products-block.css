@@ -26,6 +26,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-left: 6px;
 }
 
 .addon-products-title {
@@ -101,6 +102,7 @@
   background: white;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
+  padding-left: 23px !important;
 }
 
 .addon-product-item:hover {
@@ -162,7 +164,7 @@
 
 .addon-product-title {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   color: #1a1a1a;
   margin: 0;
   text-align: right;
@@ -204,7 +206,7 @@
 .addon-prices {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: nowrap;
   order: -1;
   flex-direction: row-reverse;
@@ -224,6 +226,10 @@
   text-decoration: line-through;
   white-space: nowrap;
   order: 1;
+}
+
+.addon-current-price, .addon-compare-price{
+  letter-spacing: 0.4px;
 }
 
 .addon-product-btn {
@@ -289,8 +295,8 @@
 .addon-popup-content {
   background: #ffffff;
   border-radius: 14px;
-  padding: 24px;
-  width: 422px;
+  padding: 22px;
+  max-width: 422px;
   max-height: 70vh;
   overflow-y: auto;
   position: relative;
@@ -299,6 +305,9 @@
   box-sizing: border-box;
   margin-bottom: 0;
   margin-right: 0;
+  overflow: hidden;
+  bottom: 18px;
+  padding-top: 18px;
 }
 
 .addon-variant-popup.active .addon-popup-content {
@@ -570,14 +579,21 @@
 
 /* Hide desktop navigation on mobile */
 @media (max-width: 768px) {
+  .addon-product-details {
+    gap: 2px;
+  }
+
+  .addon-product-title {
+  font-size: 12px;
+  }
+
   .desktop-only {
     display: none !important;
   }
 
   .addon-products-container {
     max-width: 100%;
-    margin-top: 24px;
-    padding: 0 16px;
+    margin-top: 20px;
     overflow: hidden;
   }
 
@@ -587,7 +603,7 @@
 
   .addon-products-header {
     gap: 6px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
 
   .addon-products-title {
@@ -616,8 +632,8 @@
 
   .addon-product-item {
     height: auto;
-    min-height: 77px;
-    padding: 12px;
+    max-height: 64px;
+    padding: 13px 10px !important;
     width: 328px;
     box-sizing: border-box;
   }
@@ -627,19 +643,19 @@
   }
 
   .addon-product-btn {
-    width: 75px;
-    height: 36px;
+    width: 71px;
+    height: 33px;
     font-size: 14px;
   }
 
   .addon-product-pricing {
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 8px;
   }
 
   .addon-discount-badge {
-    font-size: 9px;
-    width: 50px;
+    font-size: 10px;
+    width: 56px;
     height: 18px;
     padding: 1px 4px;
   }
@@ -649,10 +665,9 @@
   }
 
   .addon-compare-price {
-    font-size: 12px;
+    font-size: 10px;
   }
 
-  /* Mobile popup styles - exact match to design */
   .addon-variant-popup {
     align-items: flex-end;
     justify-content: center;

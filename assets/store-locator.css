@@ -342,15 +342,17 @@ body.modal-open {
   }
   
   .store-locator-btn {
-    font-size: 11px;
+    font-size: 12px;
     padding: 6px 10px;
     white-space: nowrap;
+    min-width: 189px;
+    justify-content: center;
   }
   
   .appointment-text,
   .comma,
   .additional-text {
-    font-size: 11px;
+    font-size: 12px;
   }
   
   .store-item {

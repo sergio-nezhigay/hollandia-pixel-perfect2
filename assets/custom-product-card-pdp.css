@@ -45,6 +45,7 @@
   min-height: 29px;
   align-items: flex-start;
   justify-content: flex-start;
+  position: relative;
 }
 
 .trial-badge {
@@ -142,8 +143,8 @@
   max-width: none;
   white-space: nowrap;
   position: absolute;
-  top: 210px;
-  right: 12px;
+  top: 215px;
+  right: 7px;
 }
 
 .spec-value {
@@ -159,7 +160,7 @@
   width: 261px;
   height: 1px;
   background-color: #e6e5e5;
-  margin: 0 auto 22px auto;
+  margin: 0 auto 30px auto;
 }
 
 .product-info-pdp {
@@ -190,6 +191,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  margin-bottom: 3px;
 }
 
 .price-current-pdp {
@@ -280,6 +282,9 @@
 }
 
 @media (max-width: 767px) {
+  .product-price-pdp {
+    min-height: 29px;
+  }
   .product-image-pdp img {
     zoom: 1.5;
   }
@@ -307,11 +312,11 @@
   }
 
   .price-current-pdp {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .price-original-pdp {
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 

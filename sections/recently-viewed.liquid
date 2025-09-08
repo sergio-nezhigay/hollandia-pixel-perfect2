@@ -11,6 +11,12 @@
   #product-slider-pdp-{{ section.id }} .product-slider-pdp-next {
     display: none;
   }
+  @media (max-width: 767px) {
+  #shopify-section-{{ section.id }} .section-title {
+    margin-bottom: 14px !important;
+  }
+}
+
 </style>
 
 <div class="product-slider-pdp-section" id="product-slider-pdp-{{ section.id }}">
@@ -55,168 +61,253 @@
 </div>
 
 <script>
-  ;(function() {
-    const handle = '{{ product.handle }}';
-    const id = {{ product.id }};
-    const data = {
-      handle,
-      id,
-      title: '{{ product.title | escape }}',
-      price: {{ product.price }},
-      compare_at_price: {{ product.compare_at_price | default: 0 }},
-      featured_image: '{{ product.featured_image | img_url: "300x300" }}',
-      metafields: {
-        custom: {
-          reviews_count: {{ product.metafields.custom.reviews_count | default: 0 }},
-          specification: '{{ product.metafields.custom.specification }}',
-          trial_period: '{{ product.metafields.custom.trial_period }}'
-        }
+/* Запис поточного продукту в recentlyViewed */
+;(function() {
+  const handle = '{{ product.handle }}';
+  const id = {{ product.id }};
+  const data = {
+    handle,
+    id,
+    title: '{{ product.title | escape }}',
+    price: {{ product.price }},
+    compare_at_price: {{ product.compare_at_price | default: 0 }},
+    featured_image: '{{ product.featured_image | img_url: "300x300" }}',
+    metafields: {
+      custom: {
+        reviews_count: {{ product.metafields.custom.reviews_count | default: 0 }},
+        specification: '{{ product.metafields.custom.specification }}',
+        trial_period: '{{ product.metafields.custom.trial_period }}'
       }
-    };
-    let arr = JSON.parse(localStorage.getItem('recentlyViewed') || '[]');
-    arr = arr.filter(x => (typeof x === 'string' ? x : x.handle) !== handle);
-    arr.unshift(data);
-    if (arr.length > 20) arr = arr.slice(0, 20);
-    localStorage.setItem('recentlyViewed', JSON.stringify(arr));
-  })();
+    }
+  };
+  let arr = JSON.parse(localStorage.getItem('recentlyViewed') || '[]');
+  arr = arr.filter(x => (typeof x === 'string' ? x : x.handle) !== handle);
+  arr.unshift(data);
+  if (arr.length > 20) arr = arr.slice(0, 20);
+  localStorage.setItem('recentlyViewed', JSON.stringify(arr));
+})();
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const sectionId = '{{ section.id }}';
-    const current = '{{ product.handle }}';
-    const max = {{ section.settings.products_to_show }};
-    const threshold = {{ section.settings.free_shipping_threshold | default: 1000 }};
-    const stored = JSON.parse(localStorage.getItem('recentlyViewed') || '[]');
-    const filtered = stored.filter(x => x.handle && x.handle !== current).slice(0, max);
+document.addEventListener('DOMContentLoaded', () => {
+  const sectionId = '{{ section.id }}';
+  const current = '{{ product.handle }}';
+  const max = {{ section.settings.products_to_show }};
+  const thresholdCents = {{ section.settings.free_shipping_threshold | default: 1000 }};
 
-    if (!filtered.length) {
-      const fallback = document.getElementById('fallback-products-' + sectionId);
-      const wrapper = document.querySelector('#swiper-pdp-' + sectionId + ' .swiper-wrapper');
-      if (fallback && wrapper) {
-        fallback.querySelectorAll('.swiper-slide').forEach(s => wrapper.appendChild(s.cloneNode(true)));
-        initSlider(sectionId);
-      }
+  const stored = JSON.parse(localStorage.getItem('recentlyViewed') || '[]');
+  const filtered = stored.filter(x => x.handle && x.handle !== current).slice(0, max);
+
+  if (!filtered.length) {
+    useFallback();
+    return;
+  }
+
+  const fetchOrUse = (item) =>
+    item.title
+      ? Promise.resolve(item)
+      : fetch(`/products/${item.handle}.js`)
+          .then(r => r.ok ? r.json() : null)
+          .catch(() => null);
+
+  Promise.all(filtered.map(fetchOrUse)).then(list => {
+    const normalized = (list || [])
+      .filter(Boolean)
+      .map(normalizeProduct);
+    if (!normalized.length) {
+      useFallback();
       return;
     }
-
-    const promises = filtered.map(item =>
-      item.title
-        ? Promise.resolve(item)
-        : fetch(`/products/${item.handle}.js`)
-            .then(r => r.ok ? r.json() : null)
-            .catch(() => null)
-    );
-
-    Promise.all(promises).then(products => {
-      const valid = products.filter(p => p);
-      if (!valid.length) {
-        const fallback = document.getElementById('fallback-products-' + sectionId);
-        const wrapper = document.querySelector('#swiper-pdp-' + sectionId + ' .swiper-wrapper');
-        if (fallback && wrapper) {
-          fallback.querySelectorAll('.swiper-slide').forEach(s => wrapper.appendChild(s.cloneNode(true)));
-          initSlider(sectionId);
-        }
-        return;
-      }
-      renderViews(valid, sectionId, threshold);
-    });
+    renderViews(normalized, sectionId);
   });
 
-  function renderViews(products, sectionId, threshold) {
+  function useFallback() {
+    const fallback = document.getElementById('fallback-products-' + sectionId);
     const wrapper = document.querySelector('#swiper-pdp-' + sectionId + ' .swiper-wrapper');
-    wrapper.innerHTML = '';
-    products.forEach(prod => {
-      const slide = document.createElement('div');
-      slide.className = 'swiper-slide';
-      slide.innerHTML = renderCard(prod, threshold);
-      wrapper.appendChild(slide);
-    });
-    initSlider(sectionId);
+    if (fallback && wrapper) {
+      fallback.querySelectorAll('.swiper-slide').forEach(s => wrapper.appendChild(s.cloneNode(true)));
+      initSlider(sectionId);
+    }
+  }
+
+  /* ===== Helpers ===== */
+  function toCents(val) {
+    if (val == null) return 0;
+    const str = String(val).trim();
+    const num = Number(str.replace(/[^0-9.]/g, ''));
+    if (!isFinite(num)) return 0;
+    return str.includes('.') ? Math.round(num * 100) : Math.round(num);
+  }
+
+  function normalizeProduct(p) {
+    const v = Array.isArray(p.variants) && p.variants.length ? p.variants[0] : null;
+    const priceCents   = p.price != null ? toCents(p.price) : (v ? toCents(v.price) : 0);
+    const compareCents = p.compare_at_price != null ? toCents(p.compare_at_price) : (v ? toCents(v.compare_at_price) : 0);
+    const img = p.featured_image || (Array.isArray(p.images) && p.images[0]) || (p.image && p.image.src) || '';
+    const meta = p.metafields && p.metafields.custom ? p.metafields : { custom: {} };
+    return {
+      id: p.id,
+      handle: p.handle,
+      title: p.title,
+      price: priceCents,
+      compare_at_price: compareCents,
+      featured_image: img,
+      metafields: meta
+    };
   }
 
   function calcRating(id, count) {
     if (!count) return 0;
-    let seed = id % 11;
+    const seed = Number(id) % 11;
     let r = 4 + seed * 0.1;
-    return r > 5 ? 5 : Math.round(r * 10) / 10;
+    if (r > 5) r = 5;
+    return Math.round(r * 10) / 10;
   }
 
   function renderStars(rating, pid) {
     let html = '';
     const filled = Math.floor(rating);
     for (let i = 1; i <= 5; i++) {
-      if (i <= filled) {
-        html += `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><g clip-path="url(#clip0_filled_${i}_${pid})"><path d="M8.33657 1.65918L10.2852 5.60692L14.6429 6.24386L11.4897 9.31502L12.2339 13.6538L8.33657 11.6042L4.43928 13.6538L5.18342 9.31502L2.03027 6.24386L6.38792 5.60692L8.33657 1.65918Z" fill="#FDB022" stroke="#FDB022" stroke-width="1.68168" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_filled_${i}_${pid}"><rect width="15.1351" height="15.1351" fill="white" transform="translate(0.769043 0.397949)"/></clipPath></defs></svg>`;
-      } else {
-        html += `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><g clip-path="url(#clip0_empty_${i}_${pid})"><path d="M7.83803 1.65918L9.78668 5.60692L14.1443 6.24386L10.9912 9.31502L11.7353 13.6538L7.83803 11.6042L3.94074 13.6538L4.68489 9.31502L1.53174 6.24386L5.88939 5.60692L7.83803 1.65918Z" stroke="#FDB022" stroke-width="1.68168" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_empty_${i}_${pid}"><rect width="15.1351" height="15.1351" fill="white" transform="translate(0.270508 0.397949)"/></clipPath></defs></svg>`;
-      }
+      html += (i <= filled)
+        ? `<svg width="16" height="16" viewBox="0 0 16 16" fill="#FDB022"><path d="M8 0l2.47 5.02L16 5.82l-4 3.9.94 5.46L8 12.9l-4.94 2.28.94-5.46-4-3.9 5.53-.8z"/></svg>`
+        : `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#FDB022"><path d="M8 0l2.47 5.02L16 5.82l-4 3.9.94 5.46L8 12.9l-4.94 2.28.94-5.46-4-3.9 5.53-.8z"/></svg>`;
     }
     return html;
   }
 
-  function renderCard(p, threshold) {
-    const onSale = p.compare_at_price > p.price;
-    const discount = onSale ? Math.round((p.compare_at_price - p.price) * 100 / p.compare_at_price) : 0;
-    const price = (p.price / 100).toFixed(0);
-    const original = onSale ? (p.compare_at_price / 100).toFixed(0) : '';
-    const count = p.metafields.custom.reviews_count || 0;
-    const spec = p.metafields.custom.specification || '';
-    const trial = p.metafields.custom.trial_period || '';
-    const rating = calcRating(p.id, count);
+  function percent(compareCents, priceCents){
+    if (!compareCents || compareCents <= priceCents) return 0;
+    return Math.round((compareCents - priceCents) * 100 / compareCents);
+  }
+
+  function renderCard(p){
+    const price   = toCents(p.price);
+    const compare = toCents(p.compare_at_price);
+    const onSale  = compare > price;
+    const discount_percentage = percent(compare, price);
+
+    const reviews_count = p.metafields?.custom?.reviews_count || 0;
+    const specification = p.metafields?.custom?.specification || '';
+    const trial_period  = p.metafields?.custom?.trial_period || '';
+    const rating = calcRating(p.id, reviews_count);
+
     return `
       <div class="product-card-pdp">
         <a href="/products/${p.handle}" class="product-card-pdp-link">
           <div class="product-card-pdp-badges-top">
-            ${onSale ? `<div class="discount-badge-pdp">${discount}% OFF</div>` : ''}
-            ${trial ? `<div class="trial-badge">${trial} לילות נסיון</div>` : ''}
+            ${onSale ? `<div class="discount-badge-pdp">${discount_percentage}% OFF</div>` : ``}
+            ${trial_period ? `<div class="trial-badge">${trial_period} לילות נסיון</div>` : ``}
           </div>
+
           <div class="product-image-pdp-container">
             <div class="product-image-pdp">
               <img src="${p.featured_image}" alt="${p.title}" loading="lazy">
             </div>
           </div>
-          ${spec ? `<div class="specification-badge"><span class="spec-value">${spec}</span><span class="height-text">גובה</span></div>` : ''}
+
+          ${specification ? `
+            <div class="specification-badge">
+              <span class="spec-value">${specification}</span>
+              <svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0.849954 1.71787C0.849954 1.41054 0.956427 1.1504 1.16937 0.937459C1.38232 0.724514 1.64245 0.618042 1.94978 0.618042L6.44265 0.618042C6.74998 0.618042 7.01012 0.724514 7.22306 0.937459C7.43601 1.1504 7.54248 1.41054 7.54248 1.71787L7.54248 11.0781C7.54248 11.3854 7.43601 11.6455 7.22306 11.8585C7.01012 12.0714 6.74998 12.1779 6.44265 12.1779L1.94978 12.1779C1.64245 12.1779 1.38232 12.0714 1.16937 11.8585C0.956426 11.6455 0.849954 11.3854 0.849954 11.0781L0.849954 1.71787ZM1.76256 1.71787L1.76256 11.0781C1.76256 11.1249 1.78206 11.1678 1.82106 11.2068C1.86007 11.2458 1.90298 11.2653 1.94978 11.2653L6.44265 11.2653C6.48946 11.2653 6.53236 11.2458 6.57137 11.2068C6.61037 11.1678 6.62987 11.1249 6.62987 11.0781L6.62987 9.28792L4.43024 9.28792L4.43024 8.37532L6.62987 8.37532L6.62987 6.85426L4.43024 6.85426L4.43024 5.94167L6.62987 5.94167L6.62987 4.4206L4.43024 4.4206L4.43024 3.50801L6.62987 3.50801L6.62987 1.71787C6.62987 1.67107 6.61037 1.62816 6.57137 1.58915C6.53237 1.55015 6.48946 1.53065 6.44265 1.53065L1.94978 1.53065C1.90298 1.53065 1.86007 1.55015 1.82106 1.58915C1.78206 1.62816 1.76256 1.67107 1.76256 1.71787Z" fill="#89898C"/>
+              </svg>
+              <span class="height-text">גובה</span>
+            </div>` : ``}
+
           <div class="product-divider-pdp"></div>
+
           <div class="product-info-pdp">
             <h3 class="product-title-pdp">${p.title}</h3>
+
             <div class="product-price-pdp">
-              <span class="price-current-pdp">₪${price}</span>
-              ${original ? `<span class="price-original-pdp">₪${original}</span>` : ''}
+              ${onSale
+                ? `<span class="price-current-pdp">₪${(price/100).toFixed(0)}</span>
+                   <span class="price-original-pdp">₪${(compare/100).toFixed(0)}</span>`
+                : `<span class="price-current-pdp">₪${(price/100).toFixed(0)}</span>`
+              }
             </div>
-            ${count ? `<div class="product-reviews-pdp"><div class="rating-stars-pdp">${renderStars(rating,p.id)}</div><span class="rating-number-pdp">${rating}</span><span class="reviews-count-pdp">(${count})</span></div>` : ''}
-            ${onSale ? `<div class="shipping-info-badge"><span class="shipping-text">חיסכון של ${(threshold/100).toFixed(0)},000 ש״ח</span></div>` : ''}
+
+            ${reviews_count ? `
+              <div class="product-reviews-pdp">
+                <div class="rating-stars-pdp">${renderStars(rating, p.id)}</div>
+                <span class="rating-number-pdp">${rating}</span>
+                <span class="reviews-count-pdp">(${reviews_count})</span>
+              </div>` : ``}
+
+            ${onSale ? `
+              <div class="shipping-info-badge">
+                <svg width="19" height="20" viewBox="0 0 19 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9.49903 1.72058C7.85497 1.72058 6.24783 2.2081 4.88085 3.12149C3.51387 4.03488 2.44843 5.33311 1.81928 6.85203C1.19013 8.37094 1.02551 10.0423 1.34625 11.6548C1.66699 13.2672 2.45868 14.7484 3.6212 15.9109C4.78373 17.0734 6.26487 17.8651 7.87734 18.1859C9.48981 18.5066 11.1612 18.342 12.6801 17.7128C14.199 17.0837 15.4972 16.0182 16.4106 14.6513C17.324 13.2843 17.8115 11.6771 17.8115 10.0331C17.8115 7.82847 16.9357 5.71415 15.3769 4.15526C13.818 2.59636 11.7036 1.72058 9.49903 1.72058ZM9.20215 4.98621C9.3783 4.98621 9.55049 5.03844 9.69696 5.1363C9.84342 5.23417 9.95757 5.37326 10.025 5.536C10.0924 5.69874 10.11 5.87782 10.0757 6.05058C10.0413 6.22335 9.95648 6.38204 9.83192 6.5066C9.70736 6.63115 9.54867 6.71598 9.37591 6.75034C9.20314 6.78471 9.02407 6.76707 8.86132 6.69966C8.69858 6.63225 8.55949 6.5181 8.46162 6.37164C8.36376 6.22517 8.31153 6.05298 8.31153 5.87683C8.31153 5.64062 8.40536 5.41409 8.57239 5.24706C8.73941 5.08004 8.96594 4.98621 9.20215 4.98621ZM10.6865 14.4862H8.31153C8.15406 14.4862 8.00303 14.4237 7.89168 14.3123C7.78033 14.201 7.71778 14.0499 7.71778 13.8925C7.71778 13.735 7.78033 13.584 7.89168 13.4726C8.00303 13.3613 8.15406 13.2987 8.31153 13.2987H8.90528V9.14246H8.31153C8.15406 9.14246 8.00303 9.0799 7.89168 8.96855C7.78033 8.8572 7.71778 8.70618 7.71778 8.54871C7.71778 8.39123 7.78033 8.24021 7.89168 8.12886C8.00303 8.01751 8.15406 7.95496 8.31153 7.95496H9.49903C9.6565 7.95496 9.80752 8.01751 9.91887 8.12886C10.0302 8.24021 10.0928 8.39123 10.0928 8.54871V13.2987H10.6865C10.844 13.2987 10.995 13.3613 11.1064 13.4726C11.2177 13.584 11.2803 13.735 11.2803 13.8925C11.2803 14.0499 11.2177 14.201 11.1064 14.3123C10.995 14.4237 10.844 14.4862 10.6865 14.4862Z" fill="#F890A1"/>
+                </svg>
+                <span class="shipping-text">חיסכון של ${(thresholdCents/100).toFixed(0)},000 ש״ח</span>
+                <svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g clip-path="url(#clip0_check_${p.id})">
+                    <path d="M7.40803 0.171387C3.62452 0.171387 0.546387 3.24952 0.546387 7.03303C0.546387 10.8165 3.62452 13.8947 7.40803 13.8947C11.1915 13.8947 14.2697 10.8165 14.2697 7.03303C14.2697 3.24952 11.1915 0.171387 7.40803 0.171387ZM7.40803 12.6471C4.31239 12.6471 1.79396 10.1286 1.79396 7.03303C1.79396 3.93743 4.31239 1.41896 7.40803 1.41896C10.5037 1.41896 13.0221 3.93743 13.0221 7.03303C13.0221 10.1286 10.5036 12.6471 7.40803 12.6471Z" fill="#DD2D4A"/>
+                    <path d="M9.98087 4.60712L6.45215 8.1358L4.83488 6.51849C4.59132 6.27492 4.19634 6.27488 3.95273 6.51845C3.70912 6.76205 3.70912 7.15699 3.95273 7.4006L6.01105 9.45901C6.12803 9.57599 6.28668 9.64174 6.45211 9.64174H6.45215C6.61758 9.64174 6.77623 9.57599 6.89321 9.45906L10.863 5.48932C11.1066 5.24571 11.1066 4.85078 10.863 4.60717C10.6194 4.36356 10.2245 4.36352 9.98087 4.60712Z" fill="#DD2D4A"/>
+                  </g>
+                  <defs><clipPath id="clip0_check_${p.id}"><rect width="13.7233" height="13.7233" fill="white" transform="translate(0.546387 0.171387)"/></clipPath></defs>
+                </svg>
+                <div class="shipping-divider"></div>
+                <span class="discount-text">${discount_percentage}% הנחה</span>
+                <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7.35524 11.6914C7.1248 11.9218 6.83926 12.0371 6.49861 12.0371C6.15796 12.0371 5.87242 11.9218 5.64198 11.6914L0.351898 6.40132C0.241688 6.29111 0.154021 6.16086 0.088897 6.01057C0.023773 5.86028 -0.00878906 5.69998 -0.00878906 5.52965V1.23147C-0.00878906 0.900836 0.108935 0.617796 0.344384 0.382348C0.579832 0.146899 0.862872 0.0291748 1.1935 0.0291748H5.49169C5.66202 0.0291748 5.82232 0.0617368 5.97261 0.126861C6.12289 0.191985 6.25314 0.279652 6.36335 0.389862L11.6534 5.69497C11.8839 5.92541 11.9991 6.20845 11.9991 6.54409C11.9991 6.87973 11.8839 7.16277 11.6534 7.3932L7.35524 11.6914ZM6.49861 10.8498L10.7968 6.5516L5.49169 1.23147H1.1935V5.52965L6.49861 10.8498ZM2.69637 3.63605C2.94684 3.63605 3.15975 3.54838 3.33508 3.37305C3.51042 3.19771 3.59808 2.98481 3.59808 2.73433C3.59808 2.48385 3.51042 2.27095 3.33508 2.09561C3.15975 1.92028 2.94684 1.83261 2.69637 1.83261C2.44589 1.83261 2.23298 1.92028 2.05765 2.09561C1.88231 2.27095 1.79465 2.48385 1.79465 2.73433C1.79465 2.98481 1.88231 3.19771 2.05765 3.37305C2.23298 3.54838 2.44589 3.63605 2.69637 3.63605Z" fill="#DD2D4A"/>
+                </svg>
+              </div>` : ``}
           </div>
         </a>
       </div>`;
   }
 
+  function renderViews(products, sectionId) {
+    const wrapper = document.querySelector('#swiper-pdp-' + sectionId + ' .swiper-wrapper');
+    wrapper.innerHTML = '';
+    products.forEach(prod => {
+      const slide = document.createElement('div');
+      slide.className = 'swiper-slide';
+      slide.innerHTML = renderCard(prod);
+      wrapper.appendChild(slide);
+    });
+    initSlider(sectionId);
+  }
+
   function initSlider(sectionId) {
-    new Swiper('#swiper-pdp-' + sectionId, {
-      slidesPerView: 1,
-      spaceBetween: 18,
-      loop: false,
+    const sw = new Swiper('#swiper-pdp-' + sectionId, {
+      slidesPerView: 'auto',      // мобільний peek
+      spaceBetween: 8,
       centeredSlides: true,
+      loop: false,
+      speed: 350,
+      roundLengths: true,
       navigation: {
         nextEl: `[data-slider="${sectionId}"].product-slider-pdp-next`,
         prevEl: `[data-slider="${sectionId}"].product-slider-pdp-prev`
       },
       breakpoints: {
-        768: { slidesPerView: 4, spaceBetween: 18, centeredSlides: false, allowTouchMove: false }
+        768:  { slidesPerView: 3, spaceBetween: 18, centeredSlides: false, allowTouchMove: false },
+        1250: { slidesPerView: 4, spaceBetween: 18, centeredSlides: false, allowTouchMove: false }
       },
       on: {
-        init(sw) { toggleArrows(sw, sectionId); },
-        slideChange(sw) { toggleArrows(sw, sectionId); }
+        init(sw)    { toggleArrows(sw, sectionId); },
+        resize(sw)  { toggleArrows(sw, sectionId); },
+        slideChange(sw){ toggleArrows(sw, sectionId); }
       }
     });
-    function toggleArrows(sw, sectionId) {
-      const prev = document.querySelector(`[data-slider="${sectionId}"].product-slider-pdp-prev`);
-      const next = document.querySelector(`[data-slider="${sectionId}"].product-slider-pdp-next`);
-      const total = sw.slides.length;
-      const view = window.innerWidth >= 768 ? 4 : 1;
-      if (total > view) { prev.style.display = 'flex'; next.style.display = 'flex'; }
-      else { prev.style.display = 'none'; next.style.display = 'none'; }
+  }
+
+  function toggleArrows(sw, sectionId) {
+    const prev = document.querySelector(`[data-slider="${sectionId}"].product-slider-pdp-prev`);
+    const next = document.querySelector(`[data-slider="${sectionId}"].product-slider-pdp-next`);
+    const perView = window.innerWidth >= 1250 ? 4 : (window.innerWidth >= 768 ? 3 : 1);
+    const show = sw.slides.length > perView;
+    if (prev && next) {
+      prev.style.display = show ? 'flex' : 'none';
+      next.style.display = show ? 'flex' : 'none';
+      prev.classList.toggle('swiper-button-disabled', sw.isBeginning);
+      next.classList.toggle('swiper-button-disabled', sw.isEnd);
     }
   }
+});
 </script>
+
+
 
 {% schema %}
 {

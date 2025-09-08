@@ -240,6 +240,10 @@
   transform: scale(1.05);
 }
 
+.checkout-btn svg {
+transform: rotate(180deg);
+  }
+  
 .cart-item-variant {
   font-size: 12px;
   color: #666;
@@ -383,6 +387,11 @@
 }
 
 @media (max-width: 768px) {
+  .remove-item {
+  width: 24px;
+  height: 24px;
+
+  }
   .cart-drawer {
     width: 100vw;
   }
@@ -402,5 +411,9 @@
   
   .cart-footer {
     padding: 20px;
+  }
+
+  .checkout-btn svg {
+transform: rotate(180deg);
   }
 }

@@ -1,4 +1,39 @@
+{% assign has_content = false %}
+
+{% if section.settings.title != blank and section.settings.title != "" %}
+  {% assign has_content = true %}
+{% endif %}
+
+{% if section.settings.mobile_title != blank and section.settings.mobile_title != "" %}
+  {% assign has_content = true %}
+{% endif %}
+
+{% if section.settings.subtitle != blank and section.settings.subtitle != "" %}
+  {% assign has_content = true %}
+{% endif %}
+
+{% if section.settings.mobile_subtitle != blank and section.settings.mobile_subtitle != "" %}
+  {% assign has_content = true %}
+{% endif %}
+
+{% if section.settings.image %}
+  {% assign has_content = true %}
+{% endif %}
+
+{% if section.settings.bottom_text != blank and section.settings.bottom_text != "" %}
+  {% assign has_content = true %}
+{% endif %}
+
+{% for block in section.blocks %}
+  {% if block.settings.text != blank and block.settings.text != "" %}
+    {% assign has_content = true %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% if has_content %}
 {{ 'product-feautures.css' | asset_url | stylesheet_tag }}
+
 <div
   class="product-features-section"
   style="
@@ -7,12 +42,18 @@
   "
 >
   <div class="container">
-    {% if section.settings.title != blank %}
-      <h2 class="section-title">{{ section.settings.title }}</h2>
+    {% if section.settings.title != blank or section.settings.mobile_title != blank %}
+      <h2 class="section-title">
+        <span class="desktop-title">{{ section.settings.title }}</span>
+        <span class="mobile-title">{{ section.settings.mobile_title | default: section.settings.title }}</span>
+      </h2>
     {% endif %}
 
-    {% if section.settings.subtitle != blank %}
-      <p class="section-subtitle">{{ section.settings.subtitle }}</p>
+    {% if section.settings.subtitle != blank or section.settings.mobile_subtitle != blank %}
+      <p class="section-subtitle">
+        <span class="desktop-subtitle">{{ section.settings.subtitle }}</span>
+        <span class="mobile-subtitle">{{ section.settings.mobile_subtitle | default: section.settings.subtitle }}</span>
+      </p>
     {% endif %}
 
     <div class="features-content {% if section.settings.image_position == 'right' %}reverse{% endif %}">
@@ -26,42 +67,75 @@
         </div>
       {% endif %}
 
-      <div class="features-list">
-        <div class="features-items">
-          {% for block in section.blocks %}
-            <div class="feature-item" {{ block.shopify_attributes }}>
-              <div class="feature-content">
-                <div class="feature-main">
-                  <div class="feature-icon">
-                    {% if block.settings.icon_type == 'svg' %}
-                      {{ block.settings.svg_code }}
-                    {% elsif block.settings.icon_image != blank %}
-                      <img
-                        src="{{ block.settings.icon_image | img_url: '30x30' }}"
-                        alt="{{ block.settings.text }}"
-                        loading="lazy"
-                      >
+      {% if section.blocks.size > 0 or section.settings.bottom_text != blank %}
+        <div class="features-list">
+          {% if section.blocks.size > 0 %}
+            <div class="features-items">
+              {% for block in section.blocks %}
+                <div class="feature-item" {{ block.shopify_attributes }}>
+                  <div class="feature-content">
+                    <div class="feature-main">
+                      <div class="feature-icon">
+                        {% if block.settings.icon_type == 'svg' %}
+                          {% assign svg_content = block.settings.svg_dynamic | default: block.settings.svg_code %}
+                          {% if svg_content != blank %}
+                            {{ svg_content }}
+                          {% endif %}
+                        {% elsif block.settings.icon_image != blank %}
+                          <img
+                            src="{{ block.settings.icon_image | img_url: '30x30' }}"
+                            alt="{{ block.settings.text }}"
+                            loading="lazy"
+                          >
+                        {% endif %}
+                      </div>
+                      <span class="feature-text {% if block.settings.bold_text %}bold{% endif %}">
+                        {{- block.settings.text -}}
+                      </span>
+                    </div>
+                    {% if block.settings.description != blank %}
+                      <div class="feature-description">{{ block.settings.description }}</div>
                     {% endif %}
                   </div>
-                  <span class="feature-text {% if block.settings.bold_text %}bold{% endif %}">
-                    {{- block.settings.text -}}
-                  </span>
                 </div>
-                {% if block.settings.description != blank %}
-                  <div class="feature-description">{{ block.settings.description }}</div>
-                {% endif %}
-              </div>
+              {% endfor %}
             </div>
-          {% endfor %}
-        </div>
+          {% endif %}
 
-        {% if section.settings.bottom_text != blank %}
-          <div class="bottom-text">{{ section.settings.bottom_text }}</div>
-        {% endif %}
-      </div>
+          {% if section.settings.bottom_text != blank %}
+            <div class="bottom-text">{{ section.settings.bottom_text }}</div>
+          {% endif %}
+        </div>
+      {% endif %}
     </div>
   </div>
 </div>
+{% endif %}
+
+<style>
+.mobile-title,
+.mobile-subtitle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-title,
+  .desktop-subtitle {
+    display: none;
+  }
+  
+  .mobile-title,
+  .mobile-subtitle {
+    max-width: 274px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .mobile-subtitle {
+   font-size: 14px;
+  }
+}
+</style>
 
 {% schema %}
 {
@@ -70,13 +144,25 @@
     {
       "type": "text",
       "id": "title",
-      "label": "Section Title",
+      "label": "Section Title (Desktop)",
       "default": "השכיבה הטובה ביותר בחיינו יש לזה בסיס"
     },
     {
-      "type": "textarea",
+      "type": "text",
+      "id": "mobile_title",
+      "label": "Section Title (Mobile)",
+      "info": "Leave empty to use desktop title"
+    },
+    {
+      "type": "text",
       "id": "subtitle",
-      "label": "Section Subtitle"
+      "label": "Section Subtitle (Desktop)"
+    },
+    {
+      "type": "text",
+      "id": "mobile_subtitle",
+      "label": "Section Subtitle (Mobile)",
+      "info": "Leave empty to use desktop subtitle"
     },
     {
       "type": "image_picker",
@@ -138,10 +224,10 @@
           "default": false
         },
         {
-          "type": "textarea",
+          "type": "richtext",
           "id": "description",
           "label": "Additional Description",
-          "info": "Optional text that appears below the feature"
+          "info": "Rich text that appears below the feature"
         },
         {
           "type": "select",
@@ -165,10 +251,16 @@
           "label": "Icon Image"
         },
         {
-          "type": "html",
+          "type": "text",
+          "id": "svg_dynamic",
+          "label": "SVG Code (Dynamic Source)",
+          "info": "Connect to metafield or use dynamic source for SVG icons"
+        },
+        {
+          "type": "textarea",
           "id": "svg_code",
-          "label": "SVG Code",
-          "info": "Paste your SVG code here"
+          "label": "SVG Code (Static)",
+          "info": "Paste your SVG code here as fallback if dynamic source is empty"
         }
       ]
     }

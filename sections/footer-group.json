@@ -103,25 +103,25 @@
         "social_fPRRhg": {
           "type": "social",
           "settings": {
-            "url": "https:\/\/www.tiktok.com\/@sealy_israel"
+            "url": "https://www.tiktok.com/@sealy_israel"
           }
         },
         "ad445fe9-cf00-4a0c-9dc4-d67ba049aae2": {
           "type": "social",
           "settings": {
-            "url": "https:\/\/www.youtube.com\/channel\/UCGlJSck7tw_JNCEWulRz_6Q"
+            "url": "https://www.youtube.com/channel/UCGlJSck7tw_JNCEWulRz_6Q"
           }
         },
         "social_KqVTiY": {
           "type": "social",
           "settings": {
-            "url": "https:\/\/www.instagram.com\/sealy_israel\/"
+            "url": "https://www.instagram.com/sealy_israel/"
           }
         },
         "8302052c-e295-4c60-81ae-cf3ac8c80f30": {
           "type": "social",
           "settings": {
-            "url": "https:\/\/www.facebook.com\/sealyil"
+            "url": "https://www.facebook.com/sealyil"
           }
         },
         "navigation_988TMG": {
@@ -155,13 +155,13 @@
         "social_EA3GPr": {
           "type": "custom",
           "settings": {
-            "url": "https:\/\/cdn.shopify.com\/s\/files\/1\/0852\/5653\/6367\/files\/20231205090907572.pdf?v=1720342449"
+            "url": "https://cdn.shopify.com/s/files/1/0852/5653/6367/files/20231205090907572.pdf?v=1720342449"
           }
         },
         "social_nwftYG": {
           "type": "custom",
           "settings": {
-            "url": "https:\/\/cdn.shopify.com\/s\/files\/1\/0852\/5653\/6367\/files\/2024.pdf?v=1715251078"
+            "url": "https://cdn.shopify.com/s/files/1/0852/5653/6367/files/2024.pdf?v=1715251078"
           }
         }
       },
@@ -188,25 +188,25 @@
         "ad445fe9-cf00-4a0c-9dc4-d67ba049aae2": {
           "type": "social",
           "settings": {
-            "url": "https:\/\/youtube.com"
+            "url": "https://youtube.com"
           }
         },
         "8302052c-e295-4c60-81ae-cf3ac8c80f30": {
           "type": "social",
           "settings": {
-            "url": "https:\/\/facebook.com"
+            "url": "https://facebook.com"
           }
         },
         "b4870e78-cb47-4d79-a3a9-5632d5450689": {
           "type": "social",
           "settings": {
-            "url": "https:\/\/linkedin.com"
+            "url": "https://linkedin.com"
           }
         },
         "afaffbbc-b797-4595-b26b-181f5c53e2cf": {
           "type": "social",
           "settings": {
-            "url": "https:\/\/twitter.com"
+            "url": "https://twitter.com"
           }
         }
       },
@@ -219,7 +219,7 @@
       "disabled": true,
       "settings": {
         "copy": "כל הזכויות שמורות לסילי ישראל",
-        "partner_url": "https:\/\/www.selected.co.il\/"
+        "partner_url": "https://www.selected.co.il/"
       }
     }
   },

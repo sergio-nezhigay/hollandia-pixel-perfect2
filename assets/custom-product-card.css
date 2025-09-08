@@ -30,9 +30,12 @@
 .product-image-container {
   position: relative;
   margin-bottom: 18px;
+  display: flex;
+  justify-content: center;
 }
 
 .product-image {
+  position: relative;
   width: 285px;
   height: 285px;
   background-color: #f3f4f6;
@@ -41,7 +44,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
 }
 
 .product-image img {
@@ -133,7 +135,6 @@
   line-height: 1.2;
 }
 
-/* Loading State */
 .product-card.loading {
   opacity: 0.6;
   pointer-events: none;
@@ -154,13 +155,23 @@
   }
 }
 
-/* RTL Support */
 [dir='rtl'] .discount-badge {
   left: auto;
   right: 12px;
 }
 
-/* Mobile Styles */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .product-image {
+    width: 280px;
+    height: 280px;
+  }
+  
+  .product-image img {
+    max-width: 195px;
+    max-height: 195px;
+  }
+}
+
 @media (max-width: 767px) {
   .product-image {
     width: 304px;
@@ -170,7 +181,8 @@
 
   .product-title {
     font-size: 14px;
-    min-height: 2.2em;
+    min-height: 21px;
+    margin-bottom: 2px;
   }
 
   .price-current {
@@ -190,13 +202,12 @@
 
   [dir='rtl'] .discount-badge {
     left: auto;
-    right: 21px;
+    right: 12px;
     direction: ltr;
     unicode-bidi: embed;
   }
 }
 
-/* Tablet Styles */
 @media (max-width: 1024px) and (min-width: 768px) {
   .product-image {
     width: 240px;
@@ -212,8 +223,12 @@
   }
 }
 
-/* Small Mobile */
 @media (max-width: 480px) {
+  .product-image-container {
+    position: relative;
+    margin-bottom: 22px;
+  }
+  
   .product-image {
     width: 304px;
     height: 304px;
@@ -224,11 +239,11 @@
   }
 
   .price-current {
-    font-size: 17px;
+    font-size: 18px;
   }
 
   .price-original {
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .discount-badge {
@@ -240,7 +255,6 @@
   }
 }
 
-/* High DPI Displays */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .product-image img {
     image-rendering: -webkit-optimize-contrast;
@@ -248,7 +262,6 @@
   }
 }
 
-/* Focus States for Accessibility */
 .product-card-link:focus {
   outline: none;
 }
@@ -259,7 +272,6 @@
   border-radius: 8px;
 }
 
-/* Print Styles */
 @media print {
   .product-card {
     break-inside: avoid;

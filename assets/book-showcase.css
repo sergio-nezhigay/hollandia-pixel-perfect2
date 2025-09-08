@@ -13,7 +13,7 @@
 
 .author-books-section-out-wrapper {
   background: linear-gradient(to bottom, white, #f4efec);
-  padding-bottom: 30px;
+  margin-bottom: -30px;
 }
 
 .author-books-section-wrapper .author-books-products-block {
@@ -349,7 +349,8 @@
   .author-books-section-wrapper
     .author-books-mobile-swiper
     .swiper-pagination-bullet {
-    background-color: rgba(255, 255, 255, 0.6);
+      opacity: 60%;
+    background-color: #ffffff;
     width: 8px;
     height: 8px;
     margin: 0 4px;
