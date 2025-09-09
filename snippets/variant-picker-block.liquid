@@ -16,64 +16,68 @@
 {% assign unique_id = block.id | default: 'variant-picker-' | append: 'random' %}
 
 <div class="variant-picker-block" data-block-id="{{ unique_id }}" {{ block.shopify_attributes }}>
-  
   {% if color_option %}
     <div class="color-picker-section">
       <div class="color-header">
         <span class="color-label">{{ block.settings.color_label | default: 'גוון' }}:</span>
-        <span class="color-value">{{ product.selected_or_first_available_variant.option1 | default: color_option.values.first }}</span>
+        <span class="color-value">
+          {{- product.selected_or_first_available_variant.option1 | default: color_option.values.first -}}
+        </span>
       </div>
-      
+
       <div class="color-swatches-container">
         <div class="color-swatches">
-          {% assign color_objects = product.metafields.color %} 
-{% for value in color_option.values %}
-  {% assign variant_for_color = blank %}
-  {% assign featured_media_id = blank %}
-  {% for variant in product.variants %}
-    {% if variant.option1 == value %}
-      {% assign variant_for_color = variant %}
-      {% if variant.featured_media %}
-        {% assign featured_media_id = variant.featured_media.id %}
-      {% endif %}
-      {% break %}
-    {% endif %}
-  {% endfor %}
+          {% assign color_objects = product.metafields.color %}
+          {% for value in color_option.values %}
+            {% assign variant_for_color = blank %}
+            {% assign featured_media_id = blank %}
+            {% for variant in product.variants %}
+              {% if variant.option1 == value %}
+                {% assign variant_for_color = variant %}
+                {% if variant.featured_media %}
+                  {% assign featured_media_id = variant.featured_media.id %}
+                {% endif %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
 
-  {% assign matched_color = '' %}
-  {% assign color_entries = product.metafields.shopify['color-pattern'].value %}
-  {% for color_obj in color_entries %}
-    {% if color_obj.label == value %}
-      {% assign matched_color = color_obj.color %}
-      {% break %}
-    {% endif %}
-  {% endfor %}
+            {% assign matched_color = '' %}
+            {% assign color_entries = product.metafields.shopify['color-pattern'].value %}
+            {% for color_obj in color_entries %}
+              {% if color_obj.label == value %}
+                {% assign matched_color = color_obj.color %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
 
-  <button class="color-swatch {% if forloop.first %}active{% endif %}" 
-          data-color="{{ value }}" 
-          data-variant-id="{{ variant_for_color.id }}"
-          data-featured-media="{{ featured_media_id }}"
-          {% unless variant_for_color.available %}disabled{% endunless %}>
-    <div class="color-circle"
-         style="background-color: {{ matched_color }};"
-         title="{{ value }}"></div>
-  </button>
-{% endfor %}
-
-
-
+            <button
+              class="color-swatch {% if forloop.first %}active{% endif %}"
+              data-color="{{ value }}"
+              data-variant-id="{{ variant_for_color.id }}"
+              data-featured-media="{{ featured_media_id }}"
+              {% unless variant_for_color.available %}
+                disabled
+              {% endunless %}
+            >
+              <div
+                class="color-circle"
+                style="background-color: {{ matched_color }};"
+                title="{{ value }}"
+              ></div>
+            </button>
+          {% endfor %}
         </div>
-        
+
         {% render 'store-locator' %}
       </div>
     </div>
   {% endif %}
-  
+
   <div class="variant-controls-section">
     <div class="variant-controls-header">
       <span class="controls-label">{{ block.settings.size_label | default: 'בחר גודל מיטה' }}</span>
     </div>
-    
+
     <div class="variant-controls">
       {% if size_option %}
         <div class="size-selector">
@@ -86,10 +90,12 @@
             </button>
             <ul class="select-dropdown" role="listbox">
               {% for value in size_option.values %}
-                <li class="select-option {% if forloop.first %}selected{% endif %}" 
-                    data-value="{{ value }}" 
-                    role="option"
-                    tabindex="0">
+                <li
+                  class="select-option {% if forloop.first %}selected{% endif %}"
+                  data-value="{{ value }}"
+                  role="option"
+                  tabindex="0"
+                >
                   מידה {{ value }}
                 </li>
               {% endfor %}
@@ -97,33 +103,34 @@
           </div>
         </div>
       {% endif %}
-      
-    <div class="quantity-selector">
-    <button class="quantity-btn quantity-plus" type="button">
-    <svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M11 5.07056V17.9039" stroke="#1A1A1B" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M4.5835 11.4873H17.4168" stroke="#1A1A1B" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
-  <input type="number" class="quantity-input" value="1" min="1" max="99">
-      <button class="quantity-btn quantity-minus" type="button">
-    <svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4.5835 11.4873H17.4168" stroke="#1A1A1B" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
-</div>
+
+      {% if product.metafields.custom.show_quantity_picker.value == true %}
+        <div class="quantity-selector">
+          <button class="quantity-btn quantity-plus" type="button">
+            <svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 5.07056V17.9039" stroke="#1A1A1B" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4.5835 11.4873H17.4168" stroke="#1A1A1B" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <input type="number" class="quantity-input" value="1" min="1" max="99">
+          <button class="quantity-btn quantity-minus" type="button">
+            <svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4.5835 11.4873H17.4168" stroke="#1A1A1B" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      {% endif %}
     </div>
   </div>
-  
 </div>
 
 <script>
 (function() {
   'use strict';
-  
+
   function initVariantPicker() {
     const allVariantPickers = document.querySelectorAll('.variant-picker-block');
-    
+
     allVariantPickers.forEach((variantPicker, blockIndex) => {
       const blockId = variantPicker.dataset.blockId || `block-${blockIndex}`;
 
@@ -155,9 +162,9 @@
 
       function toggleDropdown(selectElement) {
         const isOpen = selectElement.classList.contains('open');
-        
+
         closeAllDropdowns();
-        
+
         if (!isOpen) {
           selectElement.classList.add('open');
           const trigger = selectElement.querySelector('.select-trigger');
@@ -173,7 +180,7 @@
           e.preventDefault();
           e.stopPropagation();
           e.stopImmediatePropagation();
-          
+
           setTimeout(() => {
             toggleDropdown(customSelect);
           }, 0);
@@ -192,16 +199,16 @@
           option.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            
+
             selectOptions.forEach(opt => opt.classList.remove('selected'));
             this.classList.add('selected');
-            
+
             if (selectValue) {
               selectValue.textContent = this.textContent;
             }
-            
+
             selectedSize = this.dataset.value;
-            
+
             closeAllDropdowns();
             updateVariantByOptions();
           });
@@ -254,11 +261,11 @@
 
       function updatePricing() {
         if (!currentVariant) return;
-        
+
         const quantity = parseInt(quantityInput.value) || 1;
         const price = currentVariant.price;
         const compareAtPrice = currentVariant.compare_at_price;
-        
+
         const priceTable = document.querySelector('.price-table-block');
         if (priceTable) {
           updatePriceTable(price, compareAtPrice, quantity);
@@ -278,11 +285,11 @@
 
         const currentPriceElements = document.querySelectorAll('.price-column .current-price');
         const deliveryPrice = parseInt(document.querySelector('[data-delivery-price]')?.dataset.deliveryPrice) || 550;
-        
+
         if (currentPriceElements[0]) {
           currentPriceElements[0].textContent = formatPrice(price);
         }
-        
+
         if (currentPriceElements[2]) {
           const totalPrice = Math.floor(price / 100) * quantity + deliveryPrice;
           if (totalPrice >= 1000) {
@@ -293,7 +300,7 @@
             currentPriceElements[2].textContent = `₪${totalPrice}`;
           }
         }
-        
+
         const installmentText = document.querySelector('.discount-text-pdp');
         if (installmentText) {
           const totalPrice = Math.floor(price / 100) * quantity + deliveryPrice;
@@ -305,20 +312,20 @@
       colorSwatches.forEach((swatch, swatchIndex) => {
         swatch.addEventListener('click', function() {
           if (this.disabled) return;
-          
+
           colorSwatches.forEach(s => s.classList.remove('active'));
           this.classList.add('active');
-          
+
           selectedColor = this.dataset.color;
           if (colorValue) {
             colorValue.textContent = selectedColor;
           }
-          
+
           const featuredMediaId = this.dataset.featuredMedia;
           if (featuredMediaId && window.updateGalleryByMediaId) {
             window.updateGalleryByMediaId(featuredMediaId);
           }
-          
+
           updateVariantByOptions();
         });
       });
