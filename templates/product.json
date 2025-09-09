@@ -193,7 +193,9 @@
         "feature_8jcVeg"
       ],
       "name": "Icon Features",
-      "settings": {}
+      "settings": {
+        "data_source": "blocks"
+      }
     },
     "custom_image_with_text_6nTVFX": {
       "type": "custom-image-with-text",
@@ -306,6 +308,7 @@
       ],
       "name": "Product Features",
       "settings": {
+        "name": "product_features{{ product.metafields.custom.product_features_1.value.section_name.value }}",
         "title": "{{ product.metafields.custom.product_features_1.value.section_title_desktop.value }}",
         "mobile_title": "{{ product.metafields.custom.product_features_1.value.section_title_mobile.value }}",
         "subtitle": "",
@@ -380,6 +383,7 @@
       ],
       "name": "Product Features",
       "settings": {
+        "name": "{{ product.metafields.custom.product_features_2.value.section_name.value }}",
         "title": "{{ product.metafields.custom.product_features_2.value.section_title_desktop.value }}",
         "mobile_title": "{{ product.metafields.custom.product_features_2.value.section_title_mobile.value }}",
         "subtitle": "{{ product.metafields.custom.product_features_2.value.section_subtitle_desktop.value }}",

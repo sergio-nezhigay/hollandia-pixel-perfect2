@@ -1,18 +1,18 @@
 {% assign has_content = false %}
 
-{% if section.settings.title != blank and section.settings.title != "" %}
+{% if section.settings.title != blank and section.settings.title != '' %}
   {% assign has_content = true %}
 {% endif %}
 
-{% if section.settings.mobile_title != blank and section.settings.mobile_title != "" %}
+{% if section.settings.mobile_title != blank and section.settings.mobile_title != '' %}
   {% assign has_content = true %}
 {% endif %}
 
-{% if section.settings.subtitle != blank and section.settings.subtitle != "" %}
+{% if section.settings.subtitle != blank and section.settings.subtitle != '' %}
   {% assign has_content = true %}
 {% endif %}
 
-{% if section.settings.mobile_subtitle != blank and section.settings.mobile_subtitle != "" %}
+{% if section.settings.mobile_subtitle != blank and section.settings.mobile_subtitle != '' %}
   {% assign has_content = true %}
 {% endif %}
 
@@ -20,127 +20,146 @@
   {% assign has_content = true %}
 {% endif %}
 
-{% if section.settings.bottom_text != blank and section.settings.bottom_text != "" %}
+{% if section.settings.bottom_text != blank and section.settings.bottom_text != '' %}
   {% assign has_content = true %}
 {% endif %}
 
 {% for block in section.blocks %}
-  {% if block.settings.text != blank and block.settings.text != "" %}
+  {% if block.settings.text != blank and block.settings.text != '' %}
     {% assign has_content = true %}
     {% break %}
   {% endif %}
 {% endfor %}
 
 {% if has_content %}
-{{ 'product-feautures.css' | asset_url | stylesheet_tag }}
+  {{ 'product-feautures.css' | asset_url | stylesheet_tag }}
 
-<div
-  class="product-features-section"
-  style="
-    background-color: {{ section.settings.background_color }};
-    margin-top: {{ section.settings.margin_top }}px;
-  "
->
-  <div class="container">
-    {% if section.settings.title != blank or section.settings.mobile_title != blank %}
-      <h2 class="section-title">
-        <span class="desktop-title">{{ section.settings.title }}</span>
-        <span class="mobile-title">{{ section.settings.mobile_title | default: section.settings.title }}</span>
-      </h2>
-    {% endif %}
-
-    {% if section.settings.subtitle != blank or section.settings.mobile_subtitle != blank %}
-      <p class="section-subtitle">
-        <span class="desktop-subtitle">{{ section.settings.subtitle }}</span>
-        <span class="mobile-subtitle">{{ section.settings.mobile_subtitle | default: section.settings.subtitle }}</span>
-      </p>
-    {% endif %}
-
-    <div class="features-content {% if section.settings.image_position == 'right' %}reverse{% endif %}">
-      {% if section.settings.image != blank %}
-        <div class="image-container">
-          <img
-            src="{{ section.settings.image | img_url: '600x347' }}"
-            alt="{{ section.settings.image.alt | default: section.settings.title }}"
-            loading="lazy"
-          >
+  <div
+    class="product-features-section"
+    style="
+      background-color: {{ section.settings.background_color }};
+      margin-top: {{ section.settings.margin_top }}px;
+    "
+  >
+    <div class="container">
+      {% if section.settings.name != blank %}
+        <div class="section-name">
+          {{ section.settings.name }}
         </div>
       {% endif %}
 
-      {% if section.blocks.size > 0 or section.settings.bottom_text != blank %}
-        <div class="features-list">
-          {% if section.blocks.size > 0 %}
-            <div class="features-items">
-              {% for block in section.blocks %}
-                <div class="feature-item" {{ block.shopify_attributes }}>
-                  <div class="feature-content">
-                    <div class="feature-main">
-                      <div class="feature-icon">
-                        {% if block.settings.icon_type == 'svg' %}
-                          {% assign svg_content = block.settings.svg_dynamic | default: block.settings.svg_code %}
-                          {% if svg_content != blank %}
-                            {{ svg_content }}
+      {% if section.settings.title != blank or section.settings.mobile_title != blank %}
+        <h2 class="section-title">
+          <span class="desktop-title">
+            {{ section.settings.title }}
+          </span>
+          <span class="mobile-title">{{ section.settings.mobile_title | default: section.settings.title }}</span>
+        </h2>
+      {% endif %}
+
+      {% if section.settings.subtitle != blank or section.settings.mobile_subtitle != blank %}
+        <p class="section-subtitle">
+          <span class="desktop-subtitle">{{ section.settings.subtitle }}</span>
+          <span class="mobile-subtitle">
+            {{- section.settings.mobile_subtitle | default: section.settings.subtitle -}}
+          </span>
+        </p>
+      {% endif %}
+
+      <div class="features-content {% if section.settings.image_position == 'right' %}reverse{% endif %}">
+        {% if section.settings.image != blank %}
+          <div class="image-container">
+            <img
+              src="{{ section.settings.image | img_url: '600x347' }}"
+              alt="{{ section.settings.image.alt | default: section.settings.title }}"
+              loading="lazy"
+            >
+          </div>
+        {% endif %}
+
+        {% if section.blocks.size > 0 or section.settings.bottom_text != blank %}
+          <div class="features-list">
+            {% if section.blocks.size > 0 %}
+              <div class="features-items">
+                {% for block in section.blocks %}
+                  <div class="feature-item" {{ block.shopify_attributes }}>
+                    <div class="feature-content">
+                      <div class="feature-main">
+                        <div class="feature-icon">
+                          {% if block.settings.icon_type == 'svg' %}
+                            {% assign svg_content = block.settings.svg_dynamic | default: block.settings.svg_code %}
+                            {% if svg_content != blank %}
+                              {{ svg_content }}
+                            {% endif %}
+                          {% elsif block.settings.icon_image != blank %}
+                            <img
+                              src="{{ block.settings.icon_image | img_url: '30x30' }}"
+                              alt="{{ block.settings.text }}"
+                              loading="lazy"
+                            >
                           {% endif %}
-                        {% elsif block.settings.icon_image != blank %}
-                          <img
-                            src="{{ block.settings.icon_image | img_url: '30x30' }}"
-                            alt="{{ block.settings.text }}"
-                            loading="lazy"
-                          >
-                        {% endif %}
+                        </div>
+                        <span class="feature-text {% if block.settings.bold_text %}bold{% endif %}">
+                          {{- block.settings.text -}}
+                        </span>
                       </div>
-                      <span class="feature-text {% if block.settings.bold_text %}bold{% endif %}">
-                        {{- block.settings.text -}}
-                      </span>
+                      {% if block.settings.description != blank %}
+                        <div class="feature-description">{{ block.settings.description }}</div>
+                      {% endif %}
                     </div>
-                    {% if block.settings.description != blank %}
-                      <div class="feature-description">{{ block.settings.description }}</div>
-                    {% endif %}
                   </div>
-                </div>
-              {% endfor %}
-            </div>
-          {% endif %}
+                {% endfor %}
+              </div>
+            {% endif %}
 
-          {% if section.settings.bottom_text != blank %}
-            <div class="bottom-text">{{ section.settings.bottom_text }}</div>
-          {% endif %}
-        </div>
-      {% endif %}
+            {% if section.settings.bottom_text != blank %}
+              <div class="bottom-text">{{ section.settings.bottom_text }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
     </div>
   </div>
-</div>
 {% endif %}
 
 <style>
-.mobile-title,
-.mobile-subtitle {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .desktop-title,
-  .desktop-subtitle {
+  .section-name {
     display: none;
   }
-  
   .mobile-title,
   .mobile-subtitle {
-    max-width: 274px;
-    margin: 0 auto;
-    display: block;
+    display: none;
   }
 
-  .mobile-subtitle {
-   font-size: 14px;
+  @media (max-width: 768px) {
+    .desktop-title,
+    .desktop-subtitle {
+      display: none;
+    }
+
+    .mobile-title,
+    .mobile-subtitle {
+      max-width: 274px;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .mobile-subtitle {
+      font-size: 14px;
+    }
   }
-}
 </style>
 
 {% schema %}
 {
   "name": "Product Features",
   "settings": [
+    {
+      "type": "text",
+      "id": "name",
+      "label": "Section Name for developers",
+      "default": "product_features"
+    },
     {
       "type": "text",
       "id": "title",
