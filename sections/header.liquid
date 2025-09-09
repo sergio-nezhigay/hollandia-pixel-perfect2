@@ -77,34 +77,38 @@
               {%- break -%}
             {%- endif -%}
           {%- endfor -%}
-          <script>
-            console.log('Menu item URL:', '{{ link.url }}');
-            {% if has_mega %}
-              console.log('Menu item "{{ link.url }}" has a mega menu.');
-              {% if mega_block.settings.mega_item_1_link != blank %}
-                console.log('Mega menu item URL:', '{{ mega_block.settings.mega_item_1_link }}');
+          {% comment %}
+            <script>
+              console.log('Menu item URL:', '{{ link.url }}');
+              {% if has_mega %}
+                console.log('Menu item "{{ link.url }}" has a mega menu.');
+                {% if mega_block.settings.mega_item_1_link != blank %}
+                  console.log('Mega menu item URL:', '{{ mega_block.settings.mega_item_1_link }}');
+                {% endif %}
+                {% if mega_block.settings.mega_item_2_link != blank %}
+                  console.log('Mega menu item URL:', '{{ mega_block.settings.mega_item_2_link }}');
+                {% endif %}
+                {% if mega_block.settings.mega_item_3_link != blank %}
+                  console.log('Mega menu item URL:', '{{ mega_block.settings.mega_item_3_link }}');
+                {% endif %}
+                {% if mega_block.settings.mega_item_4_link != blank %}
+                  console.log('Mega menu item URL:', '{{ mega_block.settings.mega_item_4_link }}');
+                {% endif %}
               {% endif %}
-              {% if mega_block.settings.mega_item_2_link != blank %}
-                console.log('Mega menu item URL:', '{{ mega_block.settings.mega_item_2_link }}');
+              {% if link.links.size > 0 %}
+                console.log('Menu item "{{ link.url }}" has a submenu (child links).');
+                {% for sublink in link.links %}
+                  console.log('Submenu item URL:', '{{ sublink.url }}');
+                {% endfor %}
               {% endif %}
-              {% if mega_block.settings.mega_item_3_link != blank %}
-                console.log('Mega menu item URL:', '{{ mega_block.settings.mega_item_3_link }}');
-              {% endif %}
-              {% if mega_block.settings.mega_item_4_link != blank %}
-                console.log('Mega menu item URL:', '{{ mega_block.settings.mega_item_4_link }}');
-              {% endif %}
-            {% endif %}
-            {% if link.links.size > 0 %}
-              console.log('Menu item "{{ link.url }}" has a submenu (child links).');
-              {% for sublink in link.links %}
-                console.log('Submenu item URL:', '{{ sublink.url }}');
-              {% endfor %}
-            {% endif %}
-          </script>
+            </script>
+          {% endcomment %}
           <li>
             <a href="{{ link.url }}">{{ link.title }}</a>
+            {%- assign has_mega_menu = false -%}
             {%- for block in section.blocks -%}
               {%- if block.type == 'mega_menu' and block.settings.menu_trigger == link.title -%}
+                {%- assign has_mega_menu = true -%}
                 <div class="mega-menu">
                   <div class="mega-menu-content">
                     {%- if block.settings.mega_item_1_image != blank -%}
@@ -156,8 +160,39 @@
                     {%- endif -%}
                   </div>
                 </div>
+                {%- break -%}
               {%- endif -%}
             {%- endfor -%}
+
+            {%- unless has_mega_menu -%}
+              {%- if link.links.size > 0 -%}
+                <div class="mega-menu submenu-style">
+                  <div class="mega-menu-content">
+                    {%- for sublink in link.links -%}
+                      {%- assign collection = collections[sublink.handle] -%}
+                      <a href="{{ sublink.url }}" class="mega-menu-item">
+                        <div class="mega-menu-image">
+                          {%- if collection.image != blank -%}
+                            <img
+                              src="{{ collection.image | img_url: '474x282' }}"
+                              alt="{{ sublink.title }}"
+                            >
+                          {%- elsif collection.products.first.featured_image != blank -%}
+                            <img
+                              src="{{ collection.products.first.featured_image | img_url: '474x282' }}"
+                              alt="{{ sublink.title }}"
+                            >
+                          {%- else -%}
+                            <div class="mega-menu-placeholder"></div>
+                          {%- endif -%}
+                        </div>
+                        <div class="mega-menu-title">{{ sublink.title }}</div>
+                      </a>
+                    {%- endfor -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endunless -%}
           </li>
         {%- endfor -%}
       </ul>
@@ -238,6 +273,34 @@
                   {%- endif -%}
                 </div>
                 <a href="{{ link.url }}" class="mobile-mega-button">לכל המיטות</a>
+              </div>
+            {%- elsif link.links.size > 0 -%}
+              <div class="menu-item has-mega" onclick="toggleMobileMega(this)">{{ link.title }}</div>
+              <div class="mobile-mega-menu">
+                <div class="mobile-mega-grid">
+                  {%- for sublink in link.links -%}
+                    {%- assign collection = collections[sublink.handle] -%}
+                    <a href="{{ sublink.url }}" class="mobile-mega-item">
+                      <div class="mobile-mega-image">
+                        {%- if collection.image != blank -%}
+                          <img
+                            src="{{ collection.image | img_url: '278x164' }}"
+                            alt="{{ sublink.title }}"
+                          >
+                        {%- elsif collection.products.first.featured_image != blank -%}
+                          <img
+                            src="{{ collection.products.first.featured_image | img_url: '278x164' }}"
+                            alt="{{ sublink.title }}"
+                          >
+                        {%- else -%}
+                          <div class="mobile-mega-placeholder"></div>
+                        {%- endif -%}
+                      </div>
+                      <div class="mobile-mega-title">{{ sublink.title }}</div>
+                    </a>
+                  {%- endfor -%}
+                </div>
+                <a href="{{ link.url }}" class="mobile-mega-button">עוד ב{{ link.title }}</a>
               </div>
             {%- else -%}
               <a href="{{ link.url }}" class="menu-item">{{ link.title }}</a>
@@ -402,6 +465,10 @@
 {
   "name": "Header",
   "settings": [
+    {
+      "type": "paragraph",
+      "content": "Mega Menu: Add a 'Mega Menu' block and set 'Menu Item Name' to match the menu item. Fill images, titles, and links. If a menu item has collections as subitems, their images show automatically. If a collection has no image, its first product image is used; if none, a placeholder appears. Edit menu in Navigation, mega menu in Header blocks."
+    },
     {
       "type": "link_list",
       "id": "main_menu",
