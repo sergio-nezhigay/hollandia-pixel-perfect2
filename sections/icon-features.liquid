@@ -1,42 +1,65 @@
 <!-- sections/icon-features.liquid -->
-<div class="icon-features-section">
-  <div class="container">
-    <div class="icon-features-grid">
-      {% for block in section.blocks %}
-        {% if block.type == 'feature' %}
-          <div class="icon-feature-item" {{ block.shopify_attributes }}>
-            <div class="icon-wrapper">
-              {% if block.settings.custom_svg != blank %}
-                {{ block.settings.custom_svg }}
-              {% elsif block.settings.icon_image != blank %}
-                <img
-                  src="{{ block.settings.icon_image | image_url: width: 80 }}"
-                  alt="{{ block.settings.text }}"
-                  width="40"
-                  height="40"
-                >
+{% if section.settings.data_source == 'blocks' %}
+  <div class="icon-features-section">
+    <div class="container">
+      <div class="icon-features-grid">
+        {% for block in section.blocks %}
+          {% if block.type == 'feature' %}
+            <div class="icon-feature-item" {{ block.shopify_attributes }}>
+              <div class="icon-wrapper">
+                {% if block.settings.custom_svg != blank %}
+                  {{ block.settings.custom_svg }}
+                {% elsif block.settings.icon_image != blank %}
+                  <img
+                    src="{{ block.settings.icon_image | image_url: width: 80 }}"
+                    alt="{{ block.settings.text }}"
+                    width="40"
+                    height="40"
+                  >
+                {% endif %}
+              </div>
+              {% if block.settings.text != blank %}
+                <p class="icon-text">{{ block.settings.text }}</p>
               {% endif %}
             </div>
-            {% if block.settings.text != blank %}
-              <p class="icon-text">{{ block.settings.text }}</p>
-            {% endif %}
-          </div>
-        {% endif %}
-      {% endfor %}
+          {% endif %}
+        {% endfor %}
+      </div>
     </div>
   </div>
-</div>
+{% elsif section.settings.data_source == 'metaobject' %}
+  {% if product.metafields.custom.product_features_icons.value != blank %}
+    <div class="icon-features-section">
+      <div class="container">
+        <div class="icon-features-grid">
+          {% for feature_icon in product.metafields.custom.product_features_icons.value %}
+            <div class="icon-feature-item">
+              <div class="icon-wrapper">
+                {% if feature_icon.svg_code != blank %}
+                  {{ feature_icon.svg_code }}
+                {% endif %}
+              </div>
+              {% if feature_icon.text != blank %}
+                <p class="icon-text">{{ feature_icon.text }}</p>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
 
 <style>
   .icon-features-section {
     padding: 36px 0 30px;
   }
-  
-@media (max-width: 767px) {
-  .icon-features-section {
-    padding: 40px 0 34px;
+
+  @media (max-width: 767px) {
+    .icon-features-section {
+      padding: 40px 0 34px;
+    }
   }
-}
 
   .container {
     max-width: 1200px;
@@ -119,7 +142,18 @@
   "name": "Icon Features",
   "tag": "section",
   "class": "section",
-  "settings": [],
+  "settings": [
+    {
+      "type": "select",
+      "id": "data_source",
+      "label": "Data Source",
+      "options": [
+        { "value": "blocks", "label": "Section Blocks" },
+        { "value": "metaobject", "label": "Product Metaobject" }
+      ],
+      "default": "blocks"
+    }
+  ],
   "blocks": [
     {
       "type": "feature",
